@@ -26,7 +26,7 @@ public class MusicPlayer implements ActionListener {
     JLabel songNameLbl = new JLabel();
     ImageIcon frameIcon = new ImageIcon(getClass().getResource("/resources/images/musicIcon.png"));
     //ImageIcon playBtnIcon = new ImageIcon(getClass().getResource("/resources/images/playButton.png"));
-    JButton selectBtn = new JButton("Select Music");
+    JButton selectBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/musicFolderIcon.png")));
     //JButton playBtn = new JButton("Play");
     JButton playBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/playButton.png")));
     JButton pauseBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/pauseButton.png")));
@@ -69,7 +69,7 @@ public class MusicPlayer implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //This places the buttons into position and added into the JFrame.
-        selectBtn.setBounds(160,10,110,30);
+        selectBtn.setBounds(150,10,110,30);
         frame.add(selectBtn);
 
         songNameLbl.setBounds(100,50,300,30);
