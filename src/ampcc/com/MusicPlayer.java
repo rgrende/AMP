@@ -24,12 +24,15 @@ https://www.tutorialsfield.com/how-to-play-mp3-file-in-java/
 public class MusicPlayer implements ActionListener {
     JFrame frame;
     JLabel songNameLbl = new JLabel();
-    ImageIcon frameIcon = new ImageIcon("C:\\Users\\ELTECH\\IdeaProjects\\AMP\\src\\ampcc\\com\\musicIcon.png");
+    ImageIcon frameIcon = new ImageIcon(getClass().getResource("/resources/images/musicIcon.png"));
+    //ImageIcon playBtnIcon = new ImageIcon(getClass().getResource("/resources/images/playButton.png"));
     JButton selectBtn = new JButton("Select Music");
-    JButton playBtn = new JButton("Play");
-    JButton pauseBtn = new JButton("Pause");
+    //JButton playBtn = new JButton("Play");
+    JButton playBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/playButton.png")));
+    JButton pauseBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/pauseButton.png")));
     JButton resumeBtn = new JButton("Resume");
-    JButton stopBtn = new JButton("Stop");
+    JButton stopBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/stopIcon.png")));
+/*    JButton shuffleBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/shuffleIcon.png")));*/
     JFileChooser fileChooser;
     FileInputStream fileInputStream;
     BufferedInputStream bufferedInputStream;
@@ -55,6 +58,7 @@ public class MusicPlayer implements ActionListener {
     //This sets up the GUI for the MusicPlayer
     public void prepareGUI(){
         frame = new JFrame();
+
         frame.setTitle("AMP - Amplified Music Player");
         frame.setIconImage(frameIcon.getImage()); //adds icon in JFrame
         frame.getContentPane().setLayout(null); // the Layout is null for now
@@ -80,8 +84,14 @@ public class MusicPlayer implements ActionListener {
         resumeBtn.setBounds(210,110,100,30);
         frame.add(resumeBtn);
 
+/*        stopBtn.setBounds(210,110,100,30);
+        frame.add(stopBtn);*/
+
         stopBtn.setBounds(300,110,100,30);
         frame.add(stopBtn);
+
+/*        shuffleBtn.setBounds(300,110,100,30);
+        frame.add(shuffleBtn);*/
 
     }
     //The added Action Listener to each button
@@ -113,7 +123,7 @@ public class MusicPlayer implements ActionListener {
         //If click Play Button than this starts the Play Thread
         if(e.getSource() == playBtn){
             playThread.start();
-            songNameLbl.setText("Now playing : "+filename);
+            songNameLbl.setText("Now playing : " + filename);
         }
         //If click Pause Button than this pauses the Player's loaded file
         if(e.getSource() == pauseBtn){
@@ -126,7 +136,9 @@ public class MusicPlayer implements ActionListener {
                     e1.printStackTrace();
                 }
             }
+
         }
+
         //If click Resume Button than this starts the Resume Thread
         // hence allows the current music file to continue
         if(e.getSource() == resumeBtn){
