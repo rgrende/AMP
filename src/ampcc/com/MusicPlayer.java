@@ -22,28 +22,28 @@ https://www.tutorialsfield.com/how-to-play-mp3-file-in-java/
  */
 //From MusicPlayer lets implement an ActionListener for the GUI
 public class MusicPlayer implements ActionListener {
-    JFrame frame;
-    JLabel songNameLbl = new JLabel();
-    ImageIcon frameIcon = new ImageIcon(getClass().getResource("/resources/images/musicIcon.png"));
+    private JFrame frame;
+    private JLabel songNameLbl = new JLabel();
+    private ImageIcon frameIcon = new ImageIcon(getClass().getResource("/resources/images/musicIcon.png"));
     //ImageIcon playBtnIcon = new ImageIcon(getClass().getResource("/resources/images/playButton.png"));
-    JButton selectBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/musicFolderIcon.png")));
+    private JButton selectBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/musicFolderIcon.png")));
     //JButton playBtn = new JButton("Play");
-    JButton playBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/playButton.png")));
-    JButton pauseBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/pauseButton.png")));
-    JButton resumeBtn = new JButton("Resume");
-    JButton stopBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/stopIcon.png")));
+    private JButton playBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/playButton.png")));
+    private JButton pauseBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/pauseButton.png")));
+    private JButton resumeBtn = new JButton("Resume");
+    private JButton stopBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/stopIcon.png")));
 /*    JButton shuffleBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/shuffleIcon.png")));*/
-    JFileChooser fileChooser;
-    FileInputStream fileInputStream;
-    BufferedInputStream bufferedInputStream;
-    File myFile = null;
-    String filename;
-    String filePath;
-    long totalLength;//keep this individual
-    long pause;//keep this individual
-    Player player;//from jlayer-1.0.1.jar
-    Thread playThread;//keep this individual
-    Thread resumeThread;//keep this individual
+    private JFileChooser fileChooser;
+    private FileInputStream fileInputStream;
+    private BufferedInputStream bufferedInputStream;
+    private File myFile = null;
+    private String filename;
+    private String filePath;
+    private long totalLength;//keep this individual
+    private long pause;//keep this individual
+    private Player player;//from jlayer-1.0.1.jar
+    private Thread playThread;//keep this individual
+    private Thread resumeThread;//keep this individual
 
     //The Constructor of class MusicPlayer
     // Must add in the Voids and Runnables
