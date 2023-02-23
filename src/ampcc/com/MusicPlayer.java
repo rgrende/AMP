@@ -3,13 +3,13 @@ package ampcc.com;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
-//import the necessary packages provided by java and javax.
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+
 /*
 This is a basic Java music player that uses Swing, Awt, io, and JLayer.
 There has been minor edification. It will need boolean(s)
@@ -102,6 +102,7 @@ public class MusicPlayer implements ActionListener {
             fileChooser.setCurrentDirectory(new File(System.getProperty("user.home") + System.getProperty("file.separator")+ "Music"));
             fileChooser.setDialogTitle("Select Music");
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            fileChooser.setFileFilter(new FileNameExtensionFilter("AAC files", "aac"));
             fileChooser.setFileFilter(new FileNameExtensionFilter("Wav files","wav"));
             fileChooser.setFileFilter(new FileNameExtensionFilter("Mp3 files","mp3"));
             if(fileChooser.showOpenDialog(selectBtn)==JFileChooser.APPROVE_OPTION){
@@ -167,7 +168,7 @@ public class MusicPlayer implements ActionListener {
     };
 
     //This starts Playing the selected file music
-    // For the Resume Button
+    //For the Resume Button
     Runnable runnableResume = new Runnable() {
         @Override
         public void run() {
