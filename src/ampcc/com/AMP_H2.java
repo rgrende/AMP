@@ -12,6 +12,7 @@ public class AMP_H2 {
         try {
             Connection conn = DriverManager.getConnection(DB_URL);
             Statement stat = conn.createStatement();
+/*
 
             stat.execute("CREATE TABLE Song(id NUMERIC (31) PRIMARY KEY ,\n" +
                     "    artist_id NUMERIC (31) NOT NULL ,\n" +
@@ -27,10 +28,10 @@ public class AMP_H2 {
                     "    (1, 'I DONT KNOW HOW BUT THEY FOUND ME')");
             stat.execute("INSERT INTO Song(id,artist_id,\"name\",length,\"year\",\"file\") VALUES\n" +
                     "    (1,1,'DO IT ALL THE TIME',167,2018,'songfilepath')");
+*/
+            ResultSet results = stat.executeQuery("SELECT * FROM Artist");
 
-            ResultSet results = stat.executeQuery("SELECT * FROM Song");
-
-            System.out.println("Reading Songs table...");
+            System.out.println("Reading Artist table...");
             while (results.next()) {
                 System.out.println(results);
             }
