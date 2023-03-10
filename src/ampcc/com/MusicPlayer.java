@@ -91,6 +91,14 @@ public class MusicPlayer implements ActionListener {
         stopBtn.addActionListener(this);
     }
 
+    private void stopPlaying() {
+        if (player != null) {
+            player.close();
+            playBtn.setIcon(playIcon);
+            player = null;
+        }
+    }
+
     //This Action Event selects mp3 and wav files from a Dialog Window
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -104,41 +112,40 @@ public class MusicPlayer implements ActionListener {
             fileChooser.setFileFilter(new FileNameExtensionFilter("Wav files", "wav"));
             fileChooser.setFileFilter(new FileNameExtensionFilter("Mp3 files", "mp3"));
             if (fileChooser.showOpenDialog(selectBtn) == JFileChooser.APPROVE_OPTION) {
+                stopPlaying();
                 myFile = fileChooser.getSelectedFile();
                 filename = fileChooser.getSelectedFile().getName();
                 filePath = fileChooser.getSelectedFile().getPath();
                 skip = 0;
-                songNameLbl.setText("Now playing : " + filename);
+                int index = filename.lastIndexOf(".");
+                String displayName = filename;
+                if (index > 0) {
+                    displayName = displayName.substring(0,index);
+                }
+                songNameLbl.setText("Now playing : " + displayName);
             }
         }
         //If click Play Button than this starts the Play Thread
         if (e.getSource() == playBtn) {
             if (playBtn.getIcon() == playIcon) {
-                playBtn.setIcon(pauseIcon);
                 playThread = new Thread(runnablePlay);
                 playThread.start();
             } else {
-                playBtn.setIcon(playIcon);
                 player.isComplete();
-                if (player != null) {
-                    try {
-                        skip = totalLength - fileInputStream.available();
-                        player.close();
-                        player = null;
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
+                try {
+                    skip = totalLength - fileInputStream.available();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
+                stopPlaying();
             }
         }
 
         //If click Stop Button than this stops the current music file
         if (e.getSource() == stopBtn) {
             //code for stop button
-            if (player != null) {
-                player.close();
-                songNameLbl.setText("");
-            }
+            songNameLbl.setText("");
+            stopPlaying();
 
         }
 
@@ -149,12 +156,16 @@ public class MusicPlayer implements ActionListener {
     Runnable runnablePlay = new Runnable() {
         @Override
         public void run() {
+            if (myFile == null || !myFile.canRead()) {
+                return;
+            }
             try {
                 fileInputStream = new FileInputStream(myFile);
                 totalLength = fileInputStream.available();
                 BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
                 player = new Player(bufferedInputStream);
                 fileInputStream.skip(skip);
+                playBtn.setIcon(pauseIcon);
                 player.play();//This starts playing the selected music file
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
