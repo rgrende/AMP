@@ -39,6 +39,8 @@
 \setlength{\arrayrulewidth}{0.0mm}
 \setlength{\tabcolsep}{12pt}
 \renewcommand{\arraystretch}{2.5}
+% Allows a number of rows combined, adjust its column width, and insert content in its cell
+\usepackage{multirow}
 
 % Formatting the use of images
 % The package to manage images
@@ -197,12 +199,40 @@ No. & Definition & No. & Definition \\
     \item \textbf{About AMP}: About AMP: \faIcon[regular]{question-circle}
     \begin{description}
         \item[] Shows what AMP is, who created the program, and information about OS and system requirements.
-        \item[-] \textbf{OS Support}:
-            \item[] \faIcon{apple} MacOS 10.12 Sierra and above.
-            \item[] \faIcon{windows} Windows 10 and above.
+        \item[-] \textbf{OS Support}:        
+            \item[] \faIcon{apple} MacOS 10.12 Sierra, macOS 13.2.1 Ventura and above.
+            \item[] \faIcon{windows} Windows 10, Windows 11 and above.
+            \vspace{0.2cm}
         \item[-] \textbf{System Requirements}:
-            \item[Minimum Specs:] CPU at 1GHz (64-bit), RAM 2GB, Hard Drive Disk size 16GB, integrated/dedicated graphics is able to display 720p, and an onboard sound or a sound card.
-            \item[Recommended Specs:] CPU at 2GHz (64-bit), RAM 4GB, Solid State Disk size 32GB, integrated/dedicated graphics is able to display 1080p and above, and an onboard sound or a sound card.
+
+            {\rowcolors{2}{black!20!gray!10}{black!10!gray!5}
+            \begin{tabular}{ |p{3cm}|p{10cm}| }
+            \hline
+            \multicolumn{2}{|c|}{\textbf{Minimum Specs}} \\
+            \hline
+            Processor & 1GHz (32-bit/64-bit), ARM Apple Silicon or ARM Processor \\
+            RAM & 2GB \\
+            Storage & 16GB Hard Drive Disk \\
+            Graphics Card & integrated graphics \\
+            Resolution & 1280x720 \\
+            Sound & onboard sound \\
+            \hline
+            \end{tabular}
+
+            {\rowcolors{2}{black!20!gray!10}{black!10!gray!5}
+            \begin{tabular}{ |p{3cm}|p{10cm} }
+            \hline
+            \multicolumn{2}{|c|}{\textbf{Recommended Specs}} \\
+            \hline
+            Processor & 2GHz (64-bit) or above, Intel multi-core or AMD multi-core \\
+            RAM & 4GB or more \\
+            Storage & 32GB Solid State Drive \\
+            Graphics Card & integrated graphics or dedicated graphics of 2GB or more \\
+            Resolution & 1920x1080 or above \\
+            Sound & onboard sound or sound card \\
+            \hline
+            \end{tabular}
+
     \end{description}
 \end{itemize}
 
@@ -214,7 +244,7 @@ No. & Definition & No. & Definition \\
 \subsection{Playlists}
 
 \begin{itemize}
-    \item \textbf{[ * ]}: The top playlist.
+    \item \textbf{[*]}: The top playlist.
     \begin{description}
         \item[] Displays the top playlist. This is the top-tier playlist that always remains first in the order of created playlists. Recommended to use for common-use songs.
     \end{description}
