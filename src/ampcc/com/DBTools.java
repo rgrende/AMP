@@ -17,11 +17,11 @@ public class DBTools {
         System.out.println();
 
         System.out.println("All Artists:");
-        t.readArtists(2);
+        t.readArtists(1);
         System.out.println();
 
         System.out.println("All Playlists:");
-        t.readPlaylists(2);
+        t.readPlaylists(1);
         System.out.println();
     }
     public void readSongs(int flag) { // flag = 1 = runLine, flag = 2 = arrayLine
@@ -55,14 +55,14 @@ public class DBTools {
         if (flag == 1) {
             runLine(line);
         } else if (flag == 2) {
-            Object[] a = arrayLine(line);
-            for (Object o : a) {
-                System.out.println(o);
+            Object[][] a = arrayLine(line);
+            for (int i = 1; i < a.length; i++) {
+                System.out.println(a[1][i]);
             }
         }
     }
 
-    private Object[] arrayResults(ResultSet r) {
+    private Object[][] arrayResults(ResultSet r) { //TODO: return array in more accessable way
         try {
             ResultSetMetaData rmd = r.getMetaData();
             int columnCount = rmd.getColumnCount();
@@ -84,7 +84,7 @@ public class DBTools {
                 }
                 rowCount++;
             }
-            return new Object[]{colNames, data};
+            return new Object[][]{colNames, data};
         } catch (Exception ex){
             System.out.println("ERROR: " + ex.getMessage());
         }
@@ -123,7 +123,7 @@ public class DBTools {
             Connection conn = DriverManager.getConnection(this.DB_URL);
             Statement stat = conn.createStatement();
             ResultSet results = stat.executeQuery(line);
-            run(results); // change to Object[] ret = arrayResults(results); when needed
+            run(results);
             stat.close();
             conn.close();
         } catch(Exception ex){
@@ -131,19 +131,19 @@ public class DBTools {
         }
     }
 
-    public Object[] arrayLine(String line) {
+    public Object[][] arrayLine(String line) { //TODO: fix and make it return array
         try {
             Connection conn = DriverManager.getConnection(this.DB_URL);
             Statement stat = conn.createStatement();
             ResultSet results = stat.executeQuery(line);
-            Object[] ret = arrayResults(results);
+            Object[][] ret = arrayResults(results);
             stat.close();
             conn.close();
             return ret;
         } catch(Exception ex){
             System.out.println("ERROR: " + ex.getMessage());
         }
-        return new Object[0];
+        return new Object[0][0];
     }
 
 }
