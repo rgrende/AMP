@@ -3,3 +3,9 @@ INSERT INTO Artist(id,artist_name) VALUES
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
     (1,1,'DO IT ALL THE TIME',167,2018,'songfilepath');
+
+INSERT INTO Playlist(id,playlist_name) VALUES
+    (1,'Football');
+
+INSERT INTO SongPlaylist(song_id,playlist_id) VALUES
+    (1,1);
