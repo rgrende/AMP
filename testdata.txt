@@ -1,0 +1,5 @@
+INSERT INTO Artist(id,artist_name) VALUES
+    (1, 'I DONT KNOW HOW BUT THEY FOUND ME');
+
+INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
+    (1,1,'DO IT ALL THE TIME',167,2018,'songfilepath');
