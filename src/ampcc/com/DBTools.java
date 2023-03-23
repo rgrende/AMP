@@ -36,9 +36,15 @@ public class DBTools {
         run(flag, line);
     }
 
-    public void readTagSongs(String t_id, int flag) {
+    public void readSongTag(String t_id, int flag) {
         String line = "SELECT * FROM Song s, SongTag st WHERE s.song_id = st.song_id " +
                 " AND st.Tag_id = " + t_id + ";";
+        run(flag, line);
+    }
+
+    public void readSongPlaylist(String p_id, int flag) {
+        String line = "SELECT * FROM Song s, SongPlaylist sp WHERE s.song_id = sp.song_id " +
+                " AND sp.playlist_id = " + p_id + ";";
         run(flag, line);
     }
 
