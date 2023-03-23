@@ -1,5 +1,6 @@
 package ampcc.com;
 //import global packages from jlayer-1.0.1.jar
+
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
@@ -9,6 +10,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.Arrays;
+import java.util.List;
 
 /*
 This is a basic Java music player that uses Swing, Awt, io, and JLayer.
@@ -22,137 +25,129 @@ https://www.tutorialsfield.com/how-to-play-mp3-file-in-java/
  */
 //From MusicPlayer lets implement an ActionListener for the GUI
 public class MusicPlayer implements ActionListener {
+    //change image on the fly
+    private static final String playImage = "/resources/images/playButton.png";
+    private static final String pauseImage = "/resources/images/pauseButton.png";
+    private static final ImageIcon playIcon = new ImageIcon(MusicPlayer.class.getResource(playImage));
+    private static final ImageIcon pauseIcon = new ImageIcon(MusicPlayer.class.getResource(pauseImage));
+
     JFrame frame;
     JLabel songNameLbl = new JLabel();
     ImageIcon frameIcon = new ImageIcon(getClass().getResource("/resources/images/musicIcon.png"));
-    //ImageIcon playBtnIcon = new ImageIcon(getClass().getResource("/resources/images/playButton.png"));
     JButton selectBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/musicFolderIcon.png")));
-    //JButton playBtn = new JButton("Play");
-    JButton playBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/playButton.png")));
-    JButton pauseBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/pauseButton.png")));
-    JButton resumeBtn = new JButton("Resume");
+    JButton playBtn = new JButton(playIcon);
     JButton stopBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/stopIcon.png")));
-/*    JButton shuffleBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/shuffleIcon.png")));*/
+    /*    JButton shuffleBtn = new JButton(new ImageIcon(getClass().getResource("/resources/images/shuffleIcon.png")));*/
     JFileChooser fileChooser;
     FileInputStream fileInputStream;
-    BufferedInputStream bufferedInputStream;
     File myFile = null;
     String filename;
     String filePath;
     long totalLength;//keep this individual
-    long pause;//keep this individual
+    long skip;//keep this individual
     Player player;//from jlayer-1.0.1.jar
     Thread playThread;//keep this individual
-    Thread resumeThread;//keep this individual
 
     //The Constructor of class MusicPlayer
     // Must add in the Voids and Runnables
-    public MusicPlayer(){
+    public MusicPlayer() {
         prepareGUI();
         addActionEvents();
-        playThread = new Thread(runnablePlay);
-        resumeThread = new Thread(runnableResume);
-
     }
 
     //This sets up the GUI for the MusicPlayer
-    public void prepareGUI(){
+    public void prepareGUI() {
         frame = new JFrame();
 
         frame.setTitle("AMP - Amplified Music Player");
         frame.setIconImage(frameIcon.getImage()); //adds icon in JFrame
         frame.getContentPane().setLayout(null); // the Layout is null for now
         frame.getContentPane().setBackground(Color.LIGHT_GRAY);
-        frame.setSize(440,200);
+        frame.setSize(440, 200);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //This places the buttons into position and added into the JFrame.
-        selectBtn.setBounds(150,10,110,30);
+        selectBtn.setBounds(150, 10, 110, 30);
         frame.add(selectBtn);
 
-        songNameLbl.setBounds(100,50,300,30);
+        songNameLbl.setBounds(100, 50, 300, 30);
         frame.add(songNameLbl);
 
-        playBtn.setBounds(30,110,100,30);
+        playBtn.setBounds(30, 110, 100, 30);
         frame.add(playBtn);
 
-        pauseBtn.setBounds(120,110,100,30);
-        frame.add(pauseBtn);
-
-        resumeBtn.setBounds(210,110,100,30);
-        frame.add(resumeBtn);
-
-/*        stopBtn.setBounds(210,110,100,30);
-        frame.add(stopBtn);*/
-
-        stopBtn.setBounds(300,110,100,30);
+        stopBtn.setBounds(300, 110, 100, 30);
         frame.add(stopBtn);
 
 /*        shuffleBtn.setBounds(300,110,100,30);
         frame.add(shuffleBtn);*/
 
     }
+
     //The added Action Listener to each button
-    public void addActionEvents(){
+    public void addActionEvents() {
         selectBtn.addActionListener(this);
         playBtn.addActionListener(this);
-        pauseBtn.addActionListener(this);
-        resumeBtn.addActionListener(this);
         stopBtn.addActionListener(this);
+    }
+
+    private void stopPlaying() {
+        if (player != null) {
+            player.close();
+            playBtn.setIcon(playIcon);
+            player = null;
+        }
     }
 
     //This Action Event selects mp3 and wav files from a Dialog Window
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == selectBtn){
+        if (e.getSource() == selectBtn) {
             fileChooser = new JFileChooser();
             //fileChooser.setCurrentDirectory(new File(System.getProperty("user.home") + System.getProperty("file.separator")+ "Music"));
-            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home") + System.getProperty("file.separator")+ "Music"));
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home") + System.getProperty("file.separator") + "Music"));
             fileChooser.setDialogTitle("Select Music");
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             fileChooser.setFileFilter(new FileNameExtensionFilter("AAC files", "aac"));
-            fileChooser.setFileFilter(new FileNameExtensionFilter("Wav files","wav"));
-            fileChooser.setFileFilter(new FileNameExtensionFilter("Mp3 files","mp3"));
-            if(fileChooser.showOpenDialog(selectBtn)==JFileChooser.APPROVE_OPTION){
-                myFile=fileChooser.getSelectedFile();
-                filename=fileChooser.getSelectedFile().getName();
-                filePath=fileChooser.getSelectedFile().getPath();
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Wav files", "wav"));
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Mp3 files", "mp3"));
+            if (fileChooser.showOpenDialog(selectBtn) == JFileChooser.APPROVE_OPTION) {
+                stopPlaying();
+                myFile = fileChooser.getSelectedFile();
+                filename = fileChooser.getSelectedFile().getName();
+                filePath = fileChooser.getSelectedFile().getPath();
+                skip = 0;
+                int index = filename.lastIndexOf(".");
+                String displayName = filename;
+                if (index > 0) {
+                    displayName = displayName.substring(0,index);
+                }
+                songNameLbl.setText("Now playing : " + displayName);
             }
         }
         //If click Play Button than this starts the Play Thread
-        if(e.getSource() == playBtn){
-            playThread.start();
-            songNameLbl.setText("Now playing : " + filename);
-        }
-        //If click Pause Button than this pauses the Player's loaded file
-        if(e.getSource() == pauseBtn){
-            //code for pause button
-            if(player != null){
+        if (e.getSource() == playBtn) {
+            if (playBtn.getIcon() == playIcon) {
+                playThread = new Thread(runnablePlay);
+                playThread.start();
+            } else {
+                player.isComplete();
                 try {
-                    pause = fileInputStream.available();
-                    player.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                    skip = totalLength - fileInputStream.available();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
+                stopPlaying();
             }
-
         }
 
-        //If click Resume Button than this starts the Resume Thread
-        // hence allows the current music file to continue
-        if(e.getSource() == resumeBtn){
-            //starting resume thread
-            resumeThread.start();
-        }
         //If click Stop Button than this stops the current music file
-        if(e.getSource() == stopBtn){
+        if (e.getSource() == stopBtn) {
             //code for stop button
-            if(player != null){
-                player.close();
-                songNameLbl.setText("");
-            }
+            songNameLbl.setText("");
+            stopPlaying();
 
         }
 
@@ -163,40 +158,37 @@ public class MusicPlayer implements ActionListener {
     Runnable runnablePlay = new Runnable() {
         @Override
         public void run() {
-            try {
-                fileInputStream = new FileInputStream(myFile);
-                bufferedInputStream = new BufferedInputStream(fileInputStream);
-                player = new Player(bufferedInputStream);
-                totalLength = fileInputStream.available();
-                player.play();//This starts playing the selected music file
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (JavaLayerException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (myFile == null || !myFile.canRead()) {
+                return;
+            }
+            //while there are songs in the queue, play
+            java.util.List<File> songQueue = Arrays.asList(myFile);
+            for (File nextSong : songQueue) {
+                myFile = nextSong;
+                playNextSong();
             }
         }
     };
 
-    //This starts Playing the selected file music
-    //For the Resume Button
-    Runnable runnableResume = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                fileInputStream = new FileInputStream(myFile);
-                bufferedInputStream = new BufferedInputStream(fileInputStream);
-                player = new Player(bufferedInputStream);
-                fileInputStream.skip(totalLength-pause);
-                player.play();
-            } catch (FileNotFoundException evt) {
-                evt.printStackTrace();
-            } catch (JavaLayerException evt) {
-                evt.printStackTrace();
-            } catch (IOException evt) {
-                evt.printStackTrace();
-            }
+    private void playNextSong() {
+        try {
+            fileInputStream = new FileInputStream(myFile);
+            totalLength = fileInputStream.available();
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+            player = new Player(bufferedInputStream);
+            fileInputStream.skip(skip);
+            playBtn.setIcon(pauseIcon);
+            player.play();//This starts playing the selected music file
+            songNameLbl.setText("");
+            stopPlaying();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (JavaLayerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    };
+    }
 }
+
