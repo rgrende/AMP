@@ -6,6 +6,10 @@ public class DBTools {
     final String DB_URL="jdbc:h2:file:..\\data\\db";
 
     public static void main(String[] args) {
+        test();
+    }
+
+    public static void test() {
         DBTools t = new DBTools();
 
         System.out.println("All Songs:");
@@ -20,7 +24,6 @@ public class DBTools {
         t.readPlaylists(2);
         System.out.println();
     }
-
     public void readSongs(int flag) { // flag = 1 = runLine, flag = 2 = arrayLine
         String line = "SELECT * FROM Song";
         run(flag, line);
