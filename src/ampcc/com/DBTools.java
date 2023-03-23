@@ -62,7 +62,7 @@ public class DBTools {
         }
     }
 
-    private Object[][] arrayResults(ResultSet r) { //TODO: return array in more accessable way
+    private Object[][] arrayResults(ResultSet r) { //TODO: return array in more accessible way
         try {
             ResultSetMetaData rmd = r.getMetaData();
             int columnCount = rmd.getColumnCount();
