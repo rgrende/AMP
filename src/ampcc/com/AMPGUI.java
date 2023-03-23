@@ -6,9 +6,17 @@ package ampcc.com;
 
 //imports
 //import javazoom.jl.decoder.JavaLayerException;
-//import javazoom.jl.player.Player;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Arrays;
 /*
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
@@ -22,7 +30,20 @@ import java.util.Arrays;
 /**
  * @author rakiahgrende
  */
-public class AMPGUI extends javax.swing.JFrame {
+public class AMPGUI extends JFrame {
+    private static final String playImage = "/resources/images/playButton.png";
+    private static final String pauseImage = "/resources/images/pauseButton.png";
+    private static final ImageIcon playIcon = new ImageIcon(MusicPlayer.class.getResource(playImage));
+    private static final ImageIcon pauseIcon = new ImageIcon(MusicPlayer.class.getResource(pauseImage));
+
+    private FileInputStream fileInputStream;
+    private File myFile = null;
+    private String filename;
+    private String filePath;
+    private long totalLength;//keep this individual
+    private long skip;//keep this individual
+    private Player player;//from jlayer-1.0.1.jar
+    private Thread playThread;//keep this individual
 
     /**
      * Creates new form m
@@ -167,10 +188,10 @@ public class AMPGUI extends javax.swing.JFrame {
 
         nowPlaying.setFont(new java.awt.Font("Helvetica", 0, 24)); // NOI18N
         nowPlaying.setForeground(new java.awt.Color(0, 0, 0));
-        nowPlaying.setName(""); // NOI18N
+        //nowPlaying.setName(""); // NOI18N
         nowPlaying.setText("Now Playing:");
 
-        playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/playButton.png"))); // NOI18N
+        playButton.setIcon(playIcon);
         playButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 playButtonActionPerformed(evt);
@@ -178,8 +199,18 @@ public class AMPGUI extends javax.swing.JFrame {
         });
 
         stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/stopIcon.png"))); // NOI18N
+        stopButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopButtonActionPerformed(evt);
+            }
+        });
 
         library.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/musicFolderIcon.png"))); // NOI18N
+        library.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                libraryActionPerformed(evt);
+            }
+        });
 
         file.setText("File");
         file.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
@@ -334,28 +365,6 @@ public class AMPGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>
-    /*
-    private static final String playImage = "/resources/images/playButton.png";
-    private static final String pauseImage = "/resources/images/pauseButton.png";
-    private static final ImageIcon playIcon = new ImageIcon(MusicPlayer.class.getResource(playImage));
-    private static final ImageIcon pauseIcon = new ImageIcon(MusicPlayer.class.getResource(pauseImage));
-
-    JFileChooser fileChooser;
-    FileInputStream fileInputStream;
-    File myFile = null;
-    String filename;
-    String filePath;
-    long totalLength;//keep this individual
-    long skip;//keep this individual
-    Player player;//from jlayer-1.0.1.jar
-    Thread playThread;//keep this individual
-
-    //The added Action Listener to each button
-    public void addActionEvents() {
-        library.addActionListener((ActionListener) this);
-        playButton.addActionListener((ActionListener) this);
-        stopButton.addActionListener((ActionListener) this);
-    }
 
     private void stopPlaying() {
         if (player != null) {
@@ -364,57 +373,7 @@ public class AMPGUI extends javax.swing.JFrame {
             player = null;
         }
     }
-    //@Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == library) {
-            fileChooser = new JFileChooser();
-            //fileChooser.setCurrentDirectory(new File(System.getProperty("user.home") + System.getProperty("file.separator")+ "Music"));
-            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home") + System.getProperty("file.separator") + "Music"));
-            fileChooser.setDialogTitle("Select Music");
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            fileChooser.setFileFilter(new FileNameExtensionFilter("AAC files", "aac"));
-            fileChooser.setFileFilter(new FileNameExtensionFilter("Wav files", "wav"));
-            fileChooser.setFileFilter(new FileNameExtensionFilter("Mp3 files", "mp3"));
-            if (fileChooser.showOpenDialog(library) == JFileChooser.APPROVE_OPTION) {
-                stopPlaying();
-                myFile = fileChooser.getSelectedFile();
-                filename = fileChooser.getSelectedFile().getName();
-                filePath = fileChooser.getSelectedFile().getPath();
-                skip = 0;
-                int index = filename.lastIndexOf(".");
-                String displayName = filename;
-                if (index > 0) {
-                    displayName = displayName.substring(0, index);
-                }
-            }
-        }
-        //If click Play Button than this starts the Play Thread
-        if (e.getSource() == playButton) {
-            if (playButton.getIcon() == playIcon) {
-                playThread = new Thread(runnablePlay);
-                playThread.start();
-            } else {
-                player.isComplete();
-                try {
-                    skip = totalLength - fileInputStream.available();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                stopPlaying();
-            }
-        }
 
-        //If click Stop Button than this stops the current music file
-        if (e.getSource() == stopButton) {
-            //code for stop button
-            songName.setText("");
-            stopPlaying();
-
-        }
-
-    }
-
-     */
 
     private void fadeActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
@@ -428,8 +387,48 @@ public class AMPGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }
 
+    private void libraryActionPerformed(java.awt.event.ActionEvent evt){
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home") + System.getProperty("file.separator") + "Music"));
+        fileChooser.setDialogTitle("Select Music");
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(new FileNameExtensionFilter("AAC files", "aac"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Wav files", "wav"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Mp3 files", "mp3"));
+        if (fileChooser.showOpenDialog(library) == JFileChooser.APPROVE_OPTION) {
+            stopPlaying();
+            myFile = fileChooser.getSelectedFile();
+            filename = fileChooser.getSelectedFile().getName();
+            filePath = fileChooser.getSelectedFile().getPath();
+            skip = 0;
+            int index = filename.lastIndexOf(".");
+            String displayName = filename;
+            if (index > 0) {
+                displayName = displayName.substring(0,index);
+            }
+            songName.setText(displayName);
+        }
+    }
+
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        if (playButton.getIcon() == playIcon) {
+            playThread = new Thread(runnablePlay);
+            playThread.start();
+        } else {
+            player.isComplete();
+            try {
+                skip = totalLength - fileInputStream.available();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            stopPlaying();
+        }
+    }
+
+    private void stopButtonActionPerformed(java.awt.event.ActionEvent evt){
+        //code for stop button
+        songName.setText("");
+        stopPlaying();
     }
 
     /**
@@ -466,47 +465,43 @@ public class AMPGUI extends javax.swing.JFrame {
     //</editor-fold>
     //</editor-fold>
 
-    /* Create and display the form */
 
+    Runnable runnablePlay = new Runnable() {
+         @Override
+         public void run() {
+             if (myFile == null || !myFile.canRead()) {
+                 return;
+             }
+             //while there are songs in the queue, play
+             java.util.List<File> songQueue = Arrays.asList(myFile);
+             for (File nextSong : songQueue) {
+                 myFile = nextSong;
+                 playNextSong();
+             }
+         }
+     };
 
-   /* //Runnable runnablePlay = new Runnable() {
-        @Override
-        public void run() {
-            new AMPGUI().setVisible(true);
-            if (myFile == null || !myFile.canRead()) {
-                return;
-            }
-            //while there are songs in the queue, play
-            java.util.List<File> songQueue = Arrays.asList(myFile);
-            for (File nextSong : songQueue) {
-                myFile = nextSong;
-                playNextSong();
-            }
-        }
-    }
+     private void playNextSong() {
+         try {
+             fileInputStream = new FileInputStream(myFile);
+             totalLength = fileInputStream.available();
+             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+             player = new Player(bufferedInputStream);
+             fileInputStream.skip(skip);
+             playButton.setIcon(pauseIcon);
+             player.play();//This starts playing the selected music file
+             //songName.setText("");
+             stopPlaying();
 
-    private void playNextSong() {
-        try {
-            fileInputStream = new FileInputStream(myFile);
-            totalLength = fileInputStream.available();
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-            player = new Player(bufferedInputStream);
-            fileInputStream.skip(skip);
-            playButton.setIcon(pauseIcon);
-            player.play();//This starts playing the selected music file
-            songName.setText("");
-            stopPlaying();
+         } catch (FileNotFoundException e) {
+             e.printStackTrace();
+         } catch (JavaLayerException e) {
+             e.printStackTrace();
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+     }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (JavaLayerException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    */
     // Variables declaration - do not modify
     private javax.swing.JMenuItem add;
     private javax.swing.JScrollPane backPanel;
