@@ -28,7 +28,7 @@ public class DBTools {
     }
 
     public void readTagSongs(String t_id) {
-        String line = "SELECT * FROM Song s, SongTag st WHERE s.id = st.song_id " +
+        String line = "SELECT * FROM Song s, SongTag st WHERE s.song_id = st.song_id " +
                 " AND st.Tag_id = " + t_id + ";";
         runLine(line);
 
@@ -95,12 +95,27 @@ public class DBTools {
             Connection conn = DriverManager.getConnection(this.DB_URL);
             Statement stat = conn.createStatement();
             ResultSet results = stat.executeQuery(line);
-            printResults(results);
+            printResults(results); // change to Object[] ret = arrayResults(results); when needed
             stat.close();
             conn.close();
         } catch(Exception ex){
             System.out.println("ERROR: " + ex.getMessage());
         }
+    }
+
+    private Object[] arrayLine(String line) {
+        try {
+            Connection conn = DriverManager.getConnection(this.DB_URL);
+            Statement stat = conn.createStatement();
+            ResultSet results = stat.executeQuery(line);
+            Object[] ret = arrayResults(results);
+            stat.close();
+            conn.close();
+            return ret;
+        } catch(Exception ex){
+            System.out.println("ERROR: " + ex.getMessage());
+        }
+        return new Object[0];
     }
 
 }
