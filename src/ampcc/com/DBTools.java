@@ -9,29 +9,48 @@ public class DBTools {
         DBTools t = new DBTools();
 
         System.out.println("All Songs:");
-        t.readSongs();
+        t.readSongs(1);
         System.out.println();
 
         System.out.println("All Artists:");
-        t.readArtists();
+        t.readArtists(2);
+        System.out.println();
+
+        System.out.println("All Playlists:");
+        t.readPlaylists(2);
         System.out.println();
     }
 
-    public void readSongs() {
+    public void readSongs(int flag) { // flag = 1 = runLine, flag = 2 = arrayLine
         String line = "SELECT * FROM Song";
-        runLine(line);
+        run(flag, line);
     }
 
-    public void readArtists() {
+    public void readArtists(int flag) {
         String line = "SELECT * FROM Artist";
-        runLine(line);
+        run(flag, line);
     }
 
-    public void readTagSongs(String t_id) {
+    public void readPlaylists(int flag) {
+        String line = "SELECT * FROM Playlist";
+        run(flag, line);
+    }
+
+    public void readTagSongs(String t_id, int flag) {
         String line = "SELECT * FROM Song s, SongTag st WHERE s.song_id = st.song_id " +
                 " AND st.Tag_id = " + t_id + ";";
-        runLine(line);
+        run(flag, line);
+    }
 
+    private void run(int flag, String line) {
+        if (flag == 1) {
+            runLine(line);
+        } else if (flag == 2) {
+            Object[] a = arrayLine(line);
+            for (Object o : a) {
+                System.out.println(o);
+            }
+        }
     }
 
     private Object[] arrayResults(ResultSet r) {
@@ -63,7 +82,7 @@ public class DBTools {
         return null;
     }
 
-    private void printResults(ResultSet r) {
+    private void run(ResultSet r) {
         try {
             ResultSetMetaData rmd = r.getMetaData();
             int columnCount = rmd.getColumnCount();
@@ -90,12 +109,12 @@ public class DBTools {
         }
     }
 
-    private void runLine(String line) {
+    public void runLine(String line) {
         try {
             Connection conn = DriverManager.getConnection(this.DB_URL);
             Statement stat = conn.createStatement();
             ResultSet results = stat.executeQuery(line);
-            printResults(results); // change to Object[] ret = arrayResults(results); when needed
+            run(results); // change to Object[] ret = arrayResults(results); when needed
             stat.close();
             conn.close();
         } catch(Exception ex){
@@ -103,7 +122,7 @@ public class DBTools {
         }
     }
 
-    private Object[] arrayLine(String line) {
+    public Object[] arrayLine(String line) {
         try {
             Connection conn = DriverManager.getConnection(this.DB_URL);
             Statement stat = conn.createStatement();
