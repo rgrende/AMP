@@ -9,18 +9,25 @@ package ampcc.com;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
-import javax.sound.sampled.FloatControl;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import javax.sound.sampled.FloatControl;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 /*
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
@@ -49,7 +56,9 @@ public class AMPGUI extends JFrame {
     private Player player;//from jlayer-1.0.1.jar
     private Thread playThread;//keep this individual
     private float currentVolume = 0F;
-    private int numSongs;
+    private List<File> musicFiles = new ArrayList<>();
+    private int musicFileIndex;
+    private DefaultListModel songsToPlay;
 
     /**
      * Creates new form m
@@ -67,47 +76,47 @@ public class AMPGUI extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
-        backPanel2 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        playlistList = new javax.swing.JList<>();
-        playlists = new javax.swing.JLabel();
-        fadeButton = new javax.swing.JButton();
-        scrollPane = new javax.swing.JScrollPane();
-        //songQueue = new javax.swing.JList<Song>();
-        shuffleButton = new javax.swing.JToggleButton();
-        volume = new javax.swing.JSlider();
-        queueLabel = new javax.swing.JLabel();
-        backPanel = new javax.swing.JScrollPane();
-        playlist = new javax.swing.JList<>();
-        nowPlaying = new java.awt.Label();
-        playButton = new javax.swing.JButton();
-        stopButton = new javax.swing.JButton();
-        songName = new javax.swing.JLabel();
-        song = new javax.swing.JProgressBar();
-        library = new javax.swing.JButton();
-        menuBar = new javax.swing.JMenuBar();
-        file = new javax.swing.JMenu();
-        create = new javax.swing.JMenuItem();
-        importSong = new javax.swing.JMenuItem();
-        edit = new javax.swing.JMenu();
-        clip = new javax.swing.JMenuItem();
-        tags = new javax.swing.JMenuItem();
-        modify = new javax.swing.JMenu();
-        add = new javax.swing.JMenuItem();
-        remove = new javax.swing.JMenuItem();
-        search = new javax.swing.JMenuItem();
-        playMenu = new javax.swing.JMenu();
-        selectAll = new javax.swing.JMenuItem();
-        help = new javax.swing.JMenu();
-        documentation = new javax.swing.JMenuItem();
+        backPanel2 = new JPanel();
+        jScrollPane2 = new JScrollPane();
+        playlistList = new JList<>();
+        playlists = new JLabel();
+        fadeButton = new JButton();
+        scrollPane = new JScrollPane();
+        songQueue = new JList();
+        shuffleButton = new JToggleButton();
+        volume = new JSlider();
+        queueLabel = new JLabel();
+        backPanel = new JScrollPane();
+        playlist = new JList<>();
+        nowPlaying = new Label();
+        playButton = new JButton();
+        stopButton = new JButton();
+        songName = new JLabel();
+        song = new JProgressBar();
+        library = new JButton();
+        menuBar = new JMenuBar();
+        file = new JMenu();
+        create = new JMenuItem();
+        importSong = new JMenuItem();
+        edit = new JMenu();
+        clip = new JMenuItem();
+        tags = new JMenuItem();
+        modify = new JMenu();
+        add = new JMenuItem();
+        remove = new JMenuItem();
+        search = new JMenuItem();
+        playMenu = new JMenu();
+        selectAll = new JMenuItem();
+        help = new JMenu();
+        documentation = new JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(0, 0, 0));
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new Color(0, 0, 0));
 
-        backPanel2.setBackground(new java.awt.Color(51, 51, 51));
+        backPanel2.setBackground(new Color(51, 51, 51));
 
-        playlistList.setBackground(new java.awt.Color(102, 102, 102));
-        playlistList.setModel(new javax.swing.AbstractListModel<String>() {
+        playlistList.setBackground(new Color(102, 102, 102));
+        playlistList.setModel(new AbstractListModel<String>() {
             final String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
 
             public int getSize() {
@@ -120,39 +129,41 @@ public class AMPGUI extends JFrame {
         });
         jScrollPane2.setViewportView(playlistList);
 
-        javax.swing.GroupLayout backPanel2Layout = new javax.swing.GroupLayout(backPanel2);
+        GroupLayout backPanel2Layout = new GroupLayout(backPanel2);
         backPanel2.setLayout(backPanel2Layout);
         backPanel2Layout.setHorizontalGroup(
-                backPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                backPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(backPanel2Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(jScrollPane2)
                                 .addContainerGap())
         );
         backPanel2Layout.setVerticalGroup(
-                backPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanel2Layout.createSequentialGroup()
+                backPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(GroupLayout.Alignment.TRAILING, backPanel2Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 741, Short.MAX_VALUE)
+                                .addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 741, Short.MAX_VALUE)
                                 .addContainerGap())
         );
 
-        playlists.setFont(new java.awt.Font("Helvetica", 0, 24)); // NOI18N
+        playlists.setFont(new Font("Helvetica", 0, 24)); // NOI18N
         playlists.setText("Playlists");
 
-        fadeButton.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18N
+        fadeButton.setFont(new Font("Helvetica", 0, 18)); // NOI18N
         fadeButton.setText("Fade");
-        fadeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        fadeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 fadeButtonActionPerformed(evt);
             }
         });
 
-        scrollPane.setBackground(new java.awt.Color(51, 51, 51));
-        scrollPane.setForeground(new java.awt.Color(51, 51, 51));
+        scrollPane.setBackground(new Color(51, 51, 51));
+        scrollPane.setForeground(new Color(51, 51, 51));
 
-        /*
-        songQueue.setModel(new javax.swing.AbstractListModel<String>() {
+
+        songsToPlay = new DefaultListModel();
+        songQueue.setModel(songsToPlay);
+        /*songQueue.setModel(new javax.swing.AbstractListModel<String>() {
             final String[] strings = {};
 
             public int getSize() {
@@ -164,22 +175,29 @@ public class AMPGUI extends JFrame {
             }
         });
 
+         */
+
 
         scrollPane.setViewportView(songQueue);
 
-         */
 
-        shuffleButton.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18N
+        shuffleButton.setFont(new Font("Helvetica", 0, 18)); // NOI18N
         shuffleButton.setText("Shuffle");
+        shuffleButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                shuffleButtonActionPerformed(evt);
+            }
+        });
 
-        queueLabel.setFont(new java.awt.Font("Helvetica", 0, 24)); // NOI18N
+
+        queueLabel.setFont(new Font("Helvetica", 0, 24)); // NOI18N
         queueLabel.setText("  Current Queue");
 
-        playlist.setBackground(new java.awt.Color(51, 0, 153));
+        playlist.setBackground(new Color(51, 0, 153));
         playlist.setBorder(null);
-        playlist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
-        playlist.setForeground(new java.awt.Color(255, 255, 255));
-        playlist.setModel(new javax.swing.AbstractListModel<String>() {
+        playlist.setFont(new Font("Helvetica", 0, 14)); // NOI18N
+        playlist.setForeground(new Color(255, 255, 255));
+        playlist.setModel(new AbstractListModel<String>() {
             final String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
 
             public int getSize() {
@@ -190,21 +208,21 @@ public class AMPGUI extends JFrame {
                 return strings[i];
             }
         });
-        playlist.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+        playlist.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
                 playlistMouseClicked(evt);
             }
         });
         backPanel.setViewportView(playlist);
 
-        nowPlaying.setFont(new java.awt.Font("Helvetica", 0, 24)); // NOI18N
-        nowPlaying.setForeground(new java.awt.Color(0, 0, 0));
+        nowPlaying.setFont(new Font("Helvetica", 0, 24)); // NOI18N
+        nowPlaying.setForeground(new Color(0, 0, 0));
         //nowPlaying.setName(""); // NOI18N
         nowPlaying.setText("Now Playing:");
 
         playButton.setIcon(playIcon);
-        playButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        playButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 playButtonActionPerformed(evt);
             }
         });
@@ -218,27 +236,27 @@ public class AMPGUI extends JFrame {
 
         volumeControl(volume.getValue());
 
-        stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/stopIcon.png"))); // NOI18N
-        stopButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        stopButton.setIcon(new ImageIcon(getClass().getResource("/resources/images/stopIcon.png"))); // NOI18N
+        stopButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 stopButtonActionPerformed();
             }
         });
 
-        library.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/musicFolderIcon.png"))); // NOI18N
-        library.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        library.setIcon(new ImageIcon(getClass().getResource("/resources/images/musicFolderIcon.png"))); // NOI18N
+        library.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 libraryActionPerformed(evt);
             }
         });
 
         file.setText("File");
-        file.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        file.setFont(new Font("Helvetica", 0, 14)); // NOI18N
 
         create.setText("Create");
         create.setToolTipText("");
-        create.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        create.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 createActionPerformed(evt);
             }
         });
@@ -250,7 +268,7 @@ public class AMPGUI extends JFrame {
         menuBar.add(file);
 
         edit.setText("Edit");
-        edit.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        edit.setFont(new Font("Helvetica", 0, 14)); // NOI18N
 
         clip.setText("Clip");
         edit.add(clip);
@@ -261,7 +279,7 @@ public class AMPGUI extends JFrame {
         menuBar.add(edit);
 
         modify.setText("Modify");
-        modify.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        modify.setFont(new Font("Helvetica", 0, 14)); // NOI18N
 
         add.setText("Add");
         modify.add(add);
@@ -275,7 +293,7 @@ public class AMPGUI extends JFrame {
         menuBar.add(modify);
 
         playMenu.setText("Play");
-        playMenu.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        playMenu.setFont(new Font("Helvetica", 0, 14)); // NOI18N
 
         selectAll.setText("Select All");
         playMenu.add(selectAll);
@@ -283,7 +301,7 @@ public class AMPGUI extends JFrame {
         menuBar.add(playMenu);
 
         help.setText("Help");
-        help.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        help.setFont(new Font("Helvetica", 0, 14)); // NOI18N
 
         documentation.setText("Documentation");
         help.add(documentation);
@@ -292,102 +310,100 @@ public class AMPGUI extends JFrame {
 
         setJMenuBar(menuBar);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(13, 13, 13)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(playlists, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addComponent(playlists, GroupLayout.PREFERRED_SIZE, 144, GroupLayout.PREFERRED_SIZE)
                                                         .addGroup(layout.createSequentialGroup()
-                                                                .addComponent(backPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(backPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                                                .addComponent(backPanel, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(backPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(164, 164, 164)
-                                                .addComponent(nowPlaying, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(songName, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(song, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(nowPlaying, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(songName, GroupLayout.PREFERRED_SIZE, 231, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE))
+                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(song, GroupLayout.PREFERRED_SIZE, 410, GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                                                 .addGroup(layout.createSequentialGroup()
                                                                         .addGap(18, 18, 18)
-                                                                        .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                        .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 405, GroupLayout.PREFERRED_SIZE))
+                                                                .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                                                         .addGap(38, 38, 38)
-                                                                        .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                        .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
+                                                                        .addComponent(playButton, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                        .addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
                                                                         .addComponent(fadeButton)
-                                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                                         .addComponent(shuffleButton)
                                                                         .addGap(10, 10, 10)))
                                                         .addGroup(layout.createSequentialGroup()
                                                                 .addGap(128, 128, 128)
-                                                                .addComponent(queueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                                .addComponent(queueLabel, GroupLayout.PREFERRED_SIZE, 183, GroupLayout.PREFERRED_SIZE)))
                                                 .addContainerGap(0, Short.MAX_VALUE))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                                .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                .addComponent(volume, GroupLayout.PREFERRED_SIZE, 275, GroupLayout.PREFERRED_SIZE)
                                                                 .addGap(78, 78, 78))
-                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                                .addComponent(library, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                .addComponent(library, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE)
                                                                 .addGap(33, 33, 33))))))
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(20, 20, 20)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(library, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(library, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(songName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(nowPlaying, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addComponent(songName, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(nowPlaying, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                                 .addGap(18, 18, 18)
-                                                .addComponent(song, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(song, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(playlists, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(volume, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(playlists, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
                                                 .addGap(18, 18, 18)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                        .addComponent(playButton, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-                                                        .addComponent(stopButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                .addComponent(fadeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(shuffleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
-                                                .addComponent(queueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 531, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                        .addComponent(playButton, GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                                                        .addComponent(stopButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                                .addComponent(fadeButton, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(shuffleButton, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                                                .addComponent(queueLabel, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 531, GroupLayout.PREFERRED_SIZE)
                                                 .addContainerGap(59, Short.MAX_VALUE))
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(40, 40, 40)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                                         .addComponent(backPanel)
-                                                        .addComponent(backPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                                        .addComponent(backPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
     }// </editor-fold>
 
-    //songQueue = new Song[1];
-    //numSongs = 0;
 
     private void stopPlaying() {
         if (player != null) {
@@ -413,20 +429,31 @@ public class AMPGUI extends JFrame {
         fileChooser.setFileFilter(new FileNameExtensionFilter("AAC files", "aac"));
         fileChooser.setFileFilter(new FileNameExtensionFilter("Wav files", "wav"));
         fileChooser.setFileFilter(new FileNameExtensionFilter("Mp3 files", "mp3"));
+        fileChooser.setMultiSelectionEnabled(true);
         if (fileChooser.showOpenDialog(library) == JFileChooser.APPROVE_OPTION) {
+            Collections.addAll(musicFiles, fileChooser.getSelectedFiles());
+            updateQueue();
+        }
+        /*
+
             stopPlaying();
             myFile = fileChooser.getSelectedFile();
             filename = fileChooser.getSelectedFile().getName();
             filePath = fileChooser.getSelectedFile().getPath();
             skip = 0;
-            int index = filename.lastIndexOf(".");
+
             String displayName = filename;
             if (index > 0) {
                 displayName = displayName.substring(0,index);
             }
             songName.setText(displayName);
         }
+
+         */
+        //update GUi
+
     }
+
 
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {
         if (playButton.getIcon() == playIcon) {
@@ -447,6 +474,12 @@ public class AMPGUI extends JFrame {
         //code for stop button
         songName.setText("");
         stopPlaying();
+    }
+
+
+    private void shuffleButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        Collections.shuffle(musicFiles, new Random());
+        updateQueue();
     }
 
     private void fadeButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -481,6 +514,19 @@ public class AMPGUI extends JFrame {
             player.setVolume(dB);
         }
 
+    }
+
+    private void updateQueue() {
+        songsToPlay.clear();
+        for (File f : musicFiles) {
+            String filename = f.getName();
+            int index = filename.lastIndexOf(".");
+            String displayName = filename;
+            if (index > 0) {
+                displayName = displayName.substring(0, index);
+            }
+            songsToPlay.addElement(displayName);
+        }
     }
 
     /*
