@@ -23,8 +23,15 @@ public class DBTools {
         t.readArtists(1);
         System.out.println();
 
-        System.out.println("All Playlist Names:");
+        System.out.println("All Playlist Names (Array print):");
         t.readPlaylistNames(2);
+        System.out.println();
+
+        System.out.println("All Playlist Names (Array get):");
+        String[] r = t.getPlaylistNames();
+        for (String s: r) {
+            System.out.println(s);
+        }
         System.out.println();
     }
     public void readSongs(int flag) { // flag = 1 = runLine, flag = 2 = arrayLine
@@ -44,12 +51,14 @@ public class DBTools {
 
     public String[] getPlaylistNames() {
         String line = "SELECT playlist_name FROM Playlist";
-        Object[][] result = get(line);
+        String[][] result = arrayLine(line);
         String[] playlists = new String[result.length];
-        for (int i = 0; i < result.length; i++) {
-            for (Object o :result[i]) {
-                playlists[i] = o.toString();
+        int count = 0;
+        for (String[] row : result) {
+            for (String s : row) {
+                playlists[count] = s;
             }
+            count++;
         }
         return playlists;
     }
@@ -67,23 +76,20 @@ public class DBTools {
         run(flag, line);
     }
 
-    private Object[][] get(String line) {
-        return arrayLine(line);
-    }
     private void run(int flag, String line) {
         if (flag == 1) {
             runLine(line);
         } else if (flag == 2) {
-            Object[][] a = arrayLine(line);
-            for (Object[] objects : a) {
-                for (Object object : objects) {
-                    System.out.println(object);
+            String[][] a = arrayLine(line);
+            for (String[] strings : a) {
+                for (String s : strings) {
+                    System.out.println(s);
                 }
             }
         }
     }
 
-    private Object[][] arrayResults(ResultSet r) { //TODO: return array in more accessible way
+    private String[][] arrayResults(ResultSet r) { //TODO: return array in more accessible way
         try {
             ResultSetMetaData rmd = r.getMetaData();
             int columnCount = rmd.getColumnCount();
@@ -111,7 +117,7 @@ public class DBTools {
         } catch (Exception ex){
             System.out.println("ERROR: " + ex.getMessage());
         }
-        return new Object[0][0];
+        return new String[0][0];
     }
 
     private void printResults(ResultSet r) {
@@ -154,19 +160,34 @@ public class DBTools {
         }
     }
 
-    public Object[][] arrayLine(String line) { //TODO: fix and make it return array
+    public String[][] arrayLine(String line) { //TODO: fix and make it return array
         try {
             Connection conn = DriverManager.getConnection(this.DB_URL);
             Statement stat = conn.createStatement(TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY);
             ResultSet results = stat.executeQuery(line);
-            Object[][] ret = arrayResults(results);
+            String[][] ret = arrayResults(results);
             stat.close();
             conn.close();
             return ret;
         } catch(Exception ex){
             System.out.println("ERROR: " + ex.getMessage());
         }
-        return new Object[0][0];
+        return new String[0][0];
+    }
+
+    public String[][] getLine(String line) { //TODO: fix and make it return array
+        try {
+            Connection conn = DriverManager.getConnection(this.DB_URL);
+            Statement stat = conn.createStatement(TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY);
+            ResultSet results = stat.executeQuery(line);
+            String[][] ret = arrayResults(results);
+            stat.close();
+            conn.close();
+            return ret;
+        } catch(Exception ex){
+            System.out.println("ERROR: " + ex.getMessage());
+        }
+        return new String[0][0];
     }
 
 }
