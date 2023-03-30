@@ -36,6 +36,7 @@ public class AMPGUI extends JFrame {
     private static final ImageIcon playIcon = new ImageIcon(MusicPlayer.class.getResource(playImage));
     private static final ImageIcon pauseIcon = new ImageIcon(MusicPlayer.class.getResource(pauseImage));
 
+
     private FileInputStream fileInputStream;
     private File myFile = null;
     private String filename;
@@ -44,6 +45,8 @@ public class AMPGUI extends JFrame {
     private long skip;//keep this individual
     private Player player;//from jlayer-1.0.1.jar
     private Thread playThread;//keep this individual
+
+    private DBTools db = new DBTools();
 
     /**
      * Creates new form m
@@ -64,6 +67,7 @@ public class AMPGUI extends JFrame {
         backPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         playlistList = new javax.swing.JList<>();
+        //for (String pl : db.getPlaylistNames()) {playlistList.add(new javax.swing.JLabel(pl));}
         playlists = new javax.swing.JLabel();
         fade = new javax.swing.JButton();
         scrollPane = new javax.swing.JScrollPane();

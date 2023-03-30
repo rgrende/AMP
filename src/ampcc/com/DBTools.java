@@ -6,7 +6,7 @@ import static java.sql.ResultSet.TYPE_SCROLL_INSENSITIVE;
 
 public class DBTools {
 
-    final String DB_URL="jdbc:h2:file:..\\data\\db";
+    final String DB_URL="jdbc:h2:file:../data/db";
 
     public static void main(String[] args) {
         test();
@@ -42,6 +42,19 @@ public class DBTools {
         run(flag, line);
     }
 
+    public String[] getPlaylistNames() {
+        String line = "SELECT playlist_name FROM Playlist";
+        Object[][] result = get(line);
+        String[] playlists = new String[result.length];
+        for (int i = 0; i < result.length; i++) {
+            for (Object o :result[i]) {
+                playlists[i] = o.toString();
+            }
+        }
+        return playlists;
+    }
+
+
     public void readSongTag(String t_id, int flag) {
         String line = "SELECT * FROM Song s, SongTag st WHERE s.song_id = st.song_id " +
                 " AND st.Tag_id = " + t_id + ";";
@@ -54,6 +67,9 @@ public class DBTools {
         run(flag, line);
     }
 
+    private Object[][] get(String line) {
+        return arrayLine(line);
+    }
     private void run(int flag, String line) {
         if (flag == 1) {
             runLine(line);
