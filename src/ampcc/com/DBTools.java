@@ -89,7 +89,7 @@ public class DBTools {
         }
     }
 
-    private String[][] arrayResults(ResultSet r) { //TODO: return array in more accessible way
+    private String[][] arrayResults(ResultSet r) {
         try {
             ResultSetMetaData rmd = r.getMetaData();
             int columnCount = rmd.getColumnCount();
@@ -161,21 +161,6 @@ public class DBTools {
     }
 
     public String[][] arrayLine(String line) { //TODO: fix and make it return array
-        try {
-            Connection conn = DriverManager.getConnection(this.DB_URL);
-            Statement stat = conn.createStatement(TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY);
-            ResultSet results = stat.executeQuery(line);
-            String[][] ret = arrayResults(results);
-            stat.close();
-            conn.close();
-            return ret;
-        } catch(Exception ex){
-            System.out.println("ERROR: " + ex.getMessage());
-        }
-        return new String[0][0];
-    }
-
-    public String[][] getLine(String line) { //TODO: fix and make it return array
         try {
             Connection conn = DriverManager.getConnection(this.DB_URL);
             Statement stat = conn.createStatement(TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY);
