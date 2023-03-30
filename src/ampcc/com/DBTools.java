@@ -59,9 +59,9 @@ public class DBTools {
             runLine(line);
         } else if (flag == 2) {
             Object[][] a = arrayLine(line);
-            for (int r = 0; r < a.length; r++) {
-                for (int c = 0; c < a[r].length; c++) {
-                    System.out.println(a[r][c]);
+            for (Object[] objects : a) {
+                for (Object object : objects) {
+                    System.out.println(object);
                 }
             }
         }
@@ -74,7 +74,7 @@ public class DBTools {
 
             r.last();
             int rowCount = r.getRow();
-            r.first();
+            r.beforeFirst();
 
             String[] colNames = new String[columnCount];
             String[][] data = new String[rowCount][columnCount];
@@ -83,15 +83,15 @@ public class DBTools {
                 colNames[i-1] = rmd.getColumnName(i);
             }
             while (r.next()) {
-                String[] values = new String[columnCount];
+                Object[] values = new String[columnCount];
                 for (int i = 1; i <= columnCount; i++) {
-                    values[i - 1] = r.getString(i);
+                    values[i - 1] = r.getObject(i);
                 }
                 for (int item = 0; item < values.length; item++) {
                     data[r.getRow()-1][item] = values[item].toString();
                 }
             }
-            return new Object[][]{colNames, data};
+            return data;
         } catch (Exception ex){
             System.out.println("ERROR: " + ex.getMessage());
         }
