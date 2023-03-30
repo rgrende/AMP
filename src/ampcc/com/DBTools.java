@@ -1,6 +1,9 @@
 package ampcc.com;
 import java.sql.*;
 
+import static java.sql.ResultSet.CONCUR_READ_ONLY;
+import static java.sql.ResultSet.TYPE_SCROLL_INSENSITIVE;
+
 public class DBTools {
 
     final String DB_URL="jdbc:h2:file:..\\data\\db";
@@ -20,8 +23,8 @@ public class DBTools {
         t.readArtists(1);
         System.out.println();
 
-        System.out.println("All Playlists:");
-        t.readPlaylists(1);
+        System.out.println("All Playlist Names:");
+        t.readPlaylistNames(2);
         System.out.println();
     }
     public void readSongs(int flag) { // flag = 1 = runLine, flag = 2 = arrayLine
@@ -34,8 +37,8 @@ public class DBTools {
         run(flag, line);
     }
 
-    public void readPlaylists(int flag) {
-        String line = "SELECT * FROM Playlist";
+    public void readPlaylistNames(int flag) {
+        String line = "SELECT playlist_name FROM Playlist";
         run(flag, line);
     }
 
@@ -56,8 +59,10 @@ public class DBTools {
             runLine(line);
         } else if (flag == 2) {
             Object[][] a = arrayLine(line);
-            for (int i = 1; i < a.length; i++) {
-                System.out.println(a[1][i]);
+            for (int r = 0; r < a.length; r++) {
+                for (int c = 0; c < a[r].length; c++) {
+                    System.out.println(a[r][c]);
+                }
             }
         }
     }
@@ -67,31 +72,33 @@ public class DBTools {
             ResultSetMetaData rmd = r.getMetaData();
             int columnCount = rmd.getColumnCount();
 
+            r.last();
+            int rowCount = r.getRow();
+            r.first();
+
             String[] colNames = new String[columnCount];
-            String[][] data = new String[r.getRow()][columnCount];
+            String[][] data = new String[rowCount][columnCount];
 
             for (int i = 1; i <= columnCount; i++) {
                 colNames[i-1] = rmd.getColumnName(i);
             }
-            int rowCount = 0;
             while (r.next()) {
-                Object[] values = new Object[columnCount];
+                String[] values = new String[columnCount];
                 for (int i = 1; i <= columnCount; i++) {
-                    values[i - 1] = r.getObject(i);
+                    values[i - 1] = r.getString(i);
                 }
                 for (int item = 0; item < values.length; item++) {
-                    data[rowCount][item] = values[item].toString();
+                    data[r.getRow()-1][item] = values[item].toString();
                 }
-                rowCount++;
             }
             return new Object[][]{colNames, data};
         } catch (Exception ex){
             System.out.println("ERROR: " + ex.getMessage());
         }
-        return null;
+        return new Object[0][0];
     }
 
-    private void run(ResultSet r) {
+    private void printResults(ResultSet r) {
         try {
             ResultSetMetaData rmd = r.getMetaData();
             int columnCount = rmd.getColumnCount();
@@ -121,9 +128,9 @@ public class DBTools {
     public void runLine(String line) {
         try {
             Connection conn = DriverManager.getConnection(this.DB_URL);
-            Statement stat = conn.createStatement();
+            Statement stat = conn.createStatement(TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY);
             ResultSet results = stat.executeQuery(line);
-            run(results);
+            printResults(results);
             stat.close();
             conn.close();
         } catch(Exception ex){
@@ -134,7 +141,7 @@ public class DBTools {
     public Object[][] arrayLine(String line) { //TODO: fix and make it return array
         try {
             Connection conn = DriverManager.getConnection(this.DB_URL);
-            Statement stat = conn.createStatement();
+            Statement stat = conn.createStatement(TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY);
             ResultSet results = stat.executeQuery(line);
             Object[][] ret = arrayResults(results);
             stat.close();
