@@ -11,6 +11,9 @@ import javazoom.jl.player.Player;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +31,7 @@ import java.util.Arrays;
 
 
 /**
- * @author rakiahgrende
+ * @authors Rakiah Grende, Robert ,and Elaine Schultz
  */
 public class AMPGUI extends JFrame {
     private static final String playImage = "/resources/images/playButton.png";
@@ -46,10 +49,11 @@ public class AMPGUI extends JFrame {
     private Thread playThread;//keep this individual
 
     /**
-     * Creates new form m
+     * Creates a new form.
      */
     public AMPGUI() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -94,6 +98,10 @@ public class AMPGUI extends JFrame {
         selectAll = new javax.swing.JMenuItem();
         help = new javax.swing.JMenu();
         documentation = new javax.swing.JMenuItem();
+        about = new javax.swing.JMenuItem();
+        preferences = new javax.swing.JMenu();
+        theme = new javax.swing.JMenuItem();
+        hotKeys = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
@@ -262,11 +270,37 @@ public class AMPGUI extends JFrame {
 
         menuBar.add(playMenu);
 
+        preferences.setText("Preferences");
+        preferences.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+
+        theme.setText("Theme");
+        preferences.add(theme);
+
+        hotKeys.setText("Hot Keys");
+        preferences.add(hotKeys);
+
+        menuBar.add(preferences);
+
         help.setText("Help");
         help.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
 
         documentation.setText("Documentation");
         help.add(documentation);
+        documentation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                documentationActionPerformed(evt);
+            }
+        });
+
+        about.setText("About AMP");
+        help.add(about);
+
+        about.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutActionPerformed(evt);
+            }
+        });
+
 
         menuBar.add(help);
 
@@ -366,6 +400,36 @@ public class AMPGUI extends JFrame {
         pack();
     }// </editor-fold>
 
+    private void documentationActionPerformed(java.awt.event.ActionEvent evt) {
+        if (Desktop.isDesktopSupported()) {
+            try {
+                File docFile = new File("documentation/AMP_Documentation.pdf");
+                Desktop.getDesktop().open(docFile);
+            } catch (IOException ex) {
+                // no application registered for PDFs
+            }
+        }
+    }
+
+    // This will be updated. It's only a quick simple JFrame to test the about JMenuItem.
+    private void aboutActionPerformed(java.awt.event.ActionEvent evt) {
+        JFrame abtFrame = new JFrame();
+        JPanel abtPane = new JPanel();
+
+        abtFrame.setTitle("About AMP");
+        abtFrame.setSize(450,250);
+        JLabel abtLbl = new JLabel("AMP (Athlete Music Player) is a DJ application created for Carroll College’s sports programs.");
+
+        // Add in the components
+        abtPane.add(abtLbl);
+
+        abtFrame.add(abtPane); // add the panel in the frame
+        abtFrame.setResizable(false);
+        abtFrame.setVisible(true);
+        abtFrame.pack();
+        abtFrame.setLocationRelativeTo(null);
+    }
+
     private void stopPlaying() {
         if (player != null) {
             player.close();
@@ -373,7 +437,6 @@ public class AMPGUI extends JFrame {
             player = null;
         }
     }
-
 
     private void fadeActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
@@ -430,6 +493,7 @@ public class AMPGUI extends JFrame {
         songName.setText("");
         stopPlaying();
     }
+
 
     /**
      * @param args the command line arguments
@@ -509,10 +573,14 @@ public class AMPGUI extends JFrame {
     private javax.swing.JMenuItem clip;
     private javax.swing.JMenuItem create;
     private javax.swing.JMenuItem documentation;
+    private javax.swing.JMenuItem about;
     private javax.swing.JMenu edit;
     private javax.swing.JButton fade;
     private javax.swing.JMenu file;
     private javax.swing.JMenu help;
+    private javax.swing.JMenu preferences;
+    private javax.swing.JMenuItem theme;
+    private javax.swing.JMenuItem hotKeys;
     private javax.swing.JMenuItem importSong;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton library;
@@ -538,5 +606,3 @@ public class AMPGUI extends JFrame {
     private javax.swing.JSlider volume;
     // End of variables declaration
 }
-
-
