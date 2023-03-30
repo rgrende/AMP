@@ -9,7 +9,10 @@ package ampcc.com;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
+import javax.sound.sampled.FloatControl;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -17,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
+import javax.sound.sampled.FloatControl;
 /*
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
@@ -44,6 +48,8 @@ public class AMPGUI extends JFrame {
     private long skip;//keep this individual
     private Player player;//from jlayer-1.0.1.jar
     private Thread playThread;//keep this individual
+    private float currentVolume = 0F;
+    private int numSongs;
 
     /**
      * Creates new form m
@@ -65,9 +71,9 @@ public class AMPGUI extends JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         playlistList = new javax.swing.JList<>();
         playlists = new javax.swing.JLabel();
-        fade = new javax.swing.JButton();
+        fadeButton = new javax.swing.JButton();
         scrollPane = new javax.swing.JScrollPane();
-        queueList = new javax.swing.JList<>();
+        //songQueue = new javax.swing.JList<Song>();
         shuffleButton = new javax.swing.JToggleButton();
         volume = new javax.swing.JSlider();
         queueLabel = new javax.swing.JLabel();
@@ -134,19 +140,20 @@ public class AMPGUI extends JFrame {
         playlists.setFont(new java.awt.Font("Helvetica", 0, 24)); // NOI18N
         playlists.setText("Playlists");
 
-        fade.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18N
-        fade.setText("Fade");
-        fade.addActionListener(new java.awt.event.ActionListener() {
+        fadeButton.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18N
+        fadeButton.setText("Fade");
+        fadeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fadeActionPerformed(evt);
+                fadeButtonActionPerformed(evt);
             }
         });
 
         scrollPane.setBackground(new java.awt.Color(51, 51, 51));
         scrollPane.setForeground(new java.awt.Color(51, 51, 51));
 
-        queueList.setModel(new javax.swing.AbstractListModel<String>() {
-            final String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+        /*
+        songQueue.setModel(new javax.swing.AbstractListModel<String>() {
+            final String[] strings = {};
 
             public int getSize() {
                 return strings.length;
@@ -156,7 +163,11 @@ public class AMPGUI extends JFrame {
                 return strings[i];
             }
         });
-        scrollPane.setViewportView(queueList);
+
+
+        scrollPane.setViewportView(songQueue);
+
+         */
 
         shuffleButton.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18N
         shuffleButton.setText("Shuffle");
@@ -198,10 +209,19 @@ public class AMPGUI extends JFrame {
             }
         });
 
+        volume.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent evt) {
+                volumeControl(volume.getValue());
+            }
+        });
+
+        volumeControl(volume.getValue());
+
         stopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/stopIcon.png"))); // NOI18N
         stopButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                stopButtonActionPerformed(evt);
+                stopButtonActionPerformed();
             }
         });
 
@@ -308,7 +328,7 @@ public class AMPGUI extends JFrame {
                                                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                                                         .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
-                                                                        .addComponent(fade)
+                                                                        .addComponent(fadeButton)
                                                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                         .addComponent(shuffleButton)
                                                                         .addGap(10, 10, 10)))
@@ -348,7 +368,7 @@ public class AMPGUI extends JFrame {
                                                         .addComponent(playButton, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                                                         .addComponent(stopButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                .addComponent(fade, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(fadeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                 .addComponent(shuffleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
                                                 .addComponent(queueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -366,17 +386,15 @@ public class AMPGUI extends JFrame {
         pack();
     }// </editor-fold>
 
+    //songQueue = new Song[1];
+    //numSongs = 0;
+
     private void stopPlaying() {
         if (player != null) {
             player.close();
             playButton.setIcon(playIcon);
             player = null;
         }
-    }
-
-
-    private void fadeActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
     }
 
     private void createActionPerformed(java.awt.event.ActionEvent evt) {
@@ -425,11 +443,52 @@ public class AMPGUI extends JFrame {
         }
     }
 
-    private void stopButtonActionPerformed(java.awt.event.ActionEvent evt){
+    private void stopButtonActionPerformed(){
         //code for stop button
         songName.setText("");
         stopPlaying();
     }
+
+    private void fadeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        Runnable fadeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                float decrease = currentVolume / 20; //slow down every quarter second by 1/20 for five seconds
+                float origVolume = currentVolume;
+                while (currentVolume > 0) {
+                    volumeControl(currentVolume - decrease);
+                    try {
+                        Thread.sleep(250);
+                    } catch (InterruptedException ignored) {
+
+                    }
+                }
+                stopButtonActionPerformed();
+                volumeControl(origVolume);
+            }
+        };
+        Thread t = new Thread(fadeRunnable);
+        t.start();
+    }
+
+
+
+    public void volumeControl(float volume) {
+        currentVolume = volume;
+        if (player != null) {
+            float value = volume/100.0f;
+            float dB = (float)(Math.log(value)/Math.log(10.0)*20.0);
+            player.setVolume(dB);
+        }
+
+    }
+
+    /*
+    public void addSong(Song newSong) {
+        //if (songQueue.length)
+    }
+
+     */
 
     /**
      * @param args the command line arguments
@@ -510,7 +569,7 @@ public class AMPGUI extends JFrame {
     private javax.swing.JMenuItem create;
     private javax.swing.JMenuItem documentation;
     private javax.swing.JMenu edit;
-    private javax.swing.JButton fade;
+    private javax.swing.JButton fadeButton;
     private javax.swing.JMenu file;
     private javax.swing.JMenu help;
     private javax.swing.JMenuItem importSong;
@@ -525,7 +584,7 @@ public class AMPGUI extends JFrame {
     private javax.swing.JList<String> playlistList;
     private javax.swing.JLabel playlists;
     private javax.swing.JLabel queueLabel;
-    private javax.swing.JList<String> queueList;
+    private javax.swing.JList<String> songQueue;
     private javax.swing.JMenuItem remove;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JMenuItem search;
