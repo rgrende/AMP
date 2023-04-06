@@ -512,12 +512,7 @@ public class AMPGUI extends JFrame {
             filePath = fileChooser.getSelectedFile().getPath();
             skip = 0;
 
-            String displayName = filename;
-            if (index > 0) {
-                displayName = displayName.substring(0,index);
-            }
-            songName.setText(displayName);
-        }
+
 
          */
         //update GUi
@@ -689,6 +684,12 @@ public class AMPGUI extends JFrame {
              player = new Player(bufferedInputStream);
              fileInputStream.skip(skip);
              playButton.setIcon(pauseIcon);
+             String displayName = myFile.getName();
+             int index = displayName.lastIndexOf(".");
+             if (index > 0) {
+                 displayName = displayName.substring(0,index);
+             }
+             songName.setText(displayName);
              player.play();//This starts playing the selected music file
              played = player != null;
              //songName.setText("");
