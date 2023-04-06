@@ -503,8 +503,8 @@ public class AMPGUI extends JFrame {
 
     private void playlistMouseClicked(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
-        // get songs from playlist via database
-        // populate song list with songs
+        // get playlist id and its songs
+        // populate song list with songs (playlistList?)
         // update screen
     }
     private void queueListMouseClicked(java.awt.event.MouseEvent evt) {
