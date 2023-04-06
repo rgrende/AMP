@@ -52,7 +52,7 @@ public class AMPGUI extends JFrame {
     private float currentVolume = 0F;
     private int numSongs;
 
-    private DBTools db = new DBTools();
+
 
     /**
      * Creates new form m
