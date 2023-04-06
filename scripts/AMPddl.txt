@@ -1,0 +1,131 @@
+ALTER TABLE Song DROP CONSTRAINT IF EXISTS Song_Artist_FK;
+ALTER TABLE SongPlaylist DROP CONSTRAINT IF EXISTS SongPlaylist_Song_FK;
+ALTER TABLE SongPlaylist DROP CONSTRAINT IF EXISTS SongPlaylist_Playlist_FK;
+ALTER TABLE SongTag DROP CONSTRAINT IF EXISTS SongTag_Song_FK;
+ALTER TABLE SongTag DROP CONSTRAINT IF EXISTS SongTag_Tag_FK;
+
+
+DROP TABLE Artist;
+DROP TABLE SongTag;
+DROP TABLE SongPlaylist;
+DROP TABLE Tag;
+DROP TABLE Playlist;
+DROP TABLE Song;
+
+
+
+
+CREATE TABLE Artist
+(
+    id NUMERIC (31) PRIMARY KEY ,
+    artist_name VARCHAR
+)
+;
+
+
+CREATE TABLE Playlist
+(
+    id NUMERIC (31) PRIMARY KEY ,
+    playlist_name VARCHAR NOT NULL
+)
+;
+
+
+CREATE TABLE Song
+(
+    id NUMERIC (31) PRIMARY KEY ,
+    artist_id NUMERIC (31) NOT NULL ,
+    song_name VARCHAR ,
+    song_length NUMERIC (31) ,
+    release_year NUMERIC (4) ,
+    file_path VARCHAR
+)
+;
+
+CREATE TABLE Tag
+(
+    id NUMERIC (31) PRIMARY KEY ,
+    tag_name VARCHAR
+)
+;
+
+
+CREATE TABLE SongPlaylist
+(
+    song_id NUMERIC (31) NOT NULL ,
+    playlist_id NUMERIC (31) NOT NULL
+)
+;
+
+ALTER TABLE SongPlaylist ADD CONSTRAINT SongPlaylist_PK PRIMARY KEY (song_id,
+                                                                     playlist_id)
+;
+
+CREATE TABLE SongTag
+(
+    song_id NUMERIC (31) NOT NULL ,
+    tag_id NUMERIC (31) NOT NULL
+)
+;
+
+ALTER TABLE SongTag ADD CONSTRAINT SongTag_PK PRIMARY KEY (song_id,
+                                                           tag_id)
+;
+
+
+
+
+ALTER TABLE Song
+    ADD CONSTRAINT Song_Artist_FK FOREIGN KEY
+        (
+         artist_id
+            )
+        REFERENCES Artist
+            (
+             id
+                )
+;
+
+ALTER TABLE SongPlaylist
+    ADD CONSTRAINT SongPlaylist_Playlist_FK FOREIGN KEY
+        (
+         playlist_id
+            )
+        REFERENCES Playlist
+            (
+             id
+                )
+;
+
+ALTER TABLE SongPlaylist
+    ADD CONSTRAINT SongPlaylist_Song_FK FOREIGN KEY
+        (
+         song_id
+            )
+        REFERENCES Song
+            (
+             id
+                )
+;
+
+ALTER TABLE SongTag
+    ADD CONSTRAINT SongTag_Song_FK FOREIGN KEY
+        (
+         song_id
+            )
+        REFERENCES Song
+            (
+             id
+                )
+;
+
+ALTER TABLE SongTag
+    ADD CONSTRAINT SongTag_Tag_FK FOREIGN KEY
+        (
+         tag_id
+            )
+        REFERENCES Tag
+            (
+             id
+                )
+;

@@ -1,0 +1,80 @@
+INSERT INTO Artist(id,artist_name) VALUES
+    (1, 'I DONT KNOW HOW BUT THEY FOUND ME');
+
+INSERT INTO Artist(id,artist_name) VALUES
+    (2, 'Backstreet Boys');
+
+INSERT INTO Artist(id,artist_name) VALUES
+    (3, 'The Goo Goo Dolls');
+
+INSERT INTO Artist(id,artist_name) VALUES
+    (4, 'Capital Cities');
+
+INSERT INTO Artist(id,artist_name) VALUES
+    (5, 'WALK THE MOON');
+
+INSERT INTO Artist(id,artist_name) VALUES
+    (6, 'David Guetta');
+
+INSERT INTO Artist(id,artist_name) VALUES
+    (7, 'Darius Rucker');
+
+INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
+    (1,1,'DO IT ALL THE TIME',167,2018,'songfilepath');
+
+INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
+    (2,2,'I Want It That Way',213,2001,'songfilepath');
+
+INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
+    (3,3,'Iris',289,2007,'songfilepath');
+
+INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
+    (4,4,'Safe and Sound',192,2013,'songfilepath');
+
+INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
+    (5,5,'Shut Up and Dance',199,2014,'songfilepath');
+
+INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
+    (6,6,'Titanium (feat. Sia)',245,2011,'songfilepath');
+
+INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
+    (7,7,'Wagon Wheel',298,2013,'songfilepath');
+
+INSERT INTO Playlist(id,playlist_name) VALUES
+    (1,'Football');
+
+INSERT INTO Playlist(id,playlist_name) VALUES
+    (2,'Mens Soccer');
+
+INSERT INTO Playlist(id,playlist_name) VALUES
+    (3,'Womens Basketball');
+
+INSERT INTO SongPlaylist(song_id,playlist_id) VALUES
+    (1,1);
+
+INSERT INTO SongPlaylist(song_id,playlist_id) VALUES
+    (2,1);
+
+INSERT INTO SongPlaylist(song_id,playlist_id) VALUES
+    (3,1);
+
+INSERT INTO SongPlaylist(song_id,playlist_id) VALUES
+    (4,2);
+
+INSERT INTO SongPlaylist(song_id,playlist_id) VALUES
+    (5,2);
+
+INSERT INTO SongPlaylist(song_id,playlist_id) VALUES
+    (6,3);
+
+INSERT INTO SongPlaylist(song_id,playlist_id) VALUES
+    (7,3);
+
+INSERT INTO SongPlaylist(song_id,playlist_id) VALUES
+    (1,3);
+
+INSERT INTO SongPlaylist(song_id,playlist_id) VALUES
+    (5,1);
+
+INSERT INTO SongPlaylist(song_id,playlist_id) VALUES
+    (3,2);

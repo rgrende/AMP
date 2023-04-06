@@ -47,6 +47,7 @@ public class AMPGUI extends JFrame {
     private static final ImageIcon playIcon = new ImageIcon(MusicPlayer.class.getResource(playImage));
     private static final ImageIcon pauseIcon = new ImageIcon(MusicPlayer.class.getResource(pauseImage));
 
+
     private FileInputStream fileInputStream;
     private File myFile = null;
     private String filename;
@@ -59,6 +60,7 @@ public class AMPGUI extends JFrame {
     private List<File> musicFiles = new ArrayList<>();
     private int musicFileIndex = 0;
     private DefaultListModel songsToPlay;
+    private DBTools db = new DBTools();
 
     /**
      * Creates new form m
@@ -76,9 +78,11 @@ public class AMPGUI extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
+        DBTools t = new DBTools();
         backPanel2 = new JPanel();
         jScrollPane2 = new JScrollPane();
         playlistList = new JList<>();
+        //for (String pl : db.getPlaylistNames()) {playlistList.add(new javax.swing.JLabel(pl));}
         playlists = new JLabel();
         fadeButton = new JButton();
         scrollPane = new JScrollPane();
@@ -119,7 +123,7 @@ public class AMPGUI extends JFrame {
 
         playlistList.setBackground(new Color(102, 102, 102));
         playlistList.setModel(new AbstractListModel<String>() {
-            final String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+            final String[] strings = {"Song 1", "Song 2", "Song 3"};
 
             public int getSize() {
                 return strings.length;
@@ -231,7 +235,7 @@ public class AMPGUI extends JFrame {
         playlist.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         playlist.setForeground(new Color(255, 255, 255));
         playlist.setModel(new AbstractListModel<String>() {
-            final String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+            final String[] strings = t.getPlaylistNames();
 
             public int getSize() {
                 return strings.length;
@@ -482,6 +486,9 @@ public class AMPGUI extends JFrame {
 
     private void playlistMouseClicked(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
+        // get songs from playlist via database
+        // populate song list with songs
+        // update screen
     }
 
     private void libraryActionPerformed(java.awt.event.ActionEvent evt){
