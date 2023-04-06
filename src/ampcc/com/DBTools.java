@@ -1,4 +1,9 @@
 package ampcc.com;
+import org.h2.tools.RunScript;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.Reader;
 import java.sql.*;
 
 import static java.sql.ResultSet.CONCUR_READ_ONLY;
@@ -9,7 +14,14 @@ public class DBTools {
     final String DB_URL="jdbc:h2:file:../data/db";
 
     public static void main(String[] args) {
+        initialize();
         test();
+    }
+
+    public static void initialize() {
+        DBTools t = new DBTools();
+        t.runScript("scripts/AMPddl.txt");
+        t.runScript("scripts/testdata.txt");
     }
 
     public static void test() {
@@ -173,6 +185,16 @@ public class DBTools {
             System.out.println("ERROR: " + ex.getMessage());
         }
         return new String[0][0];
+    }
+
+    private void runScript(String fn) {
+        try {
+            Connection conn = DriverManager.getConnection(this.DB_URL);
+            RunScript.execute(conn, new FileReader(fn));
+            conn.close();
+        } catch(Exception ex){
+            System.out.println("ERROR: " + ex.getMessage());
+        }
     }
 
 }
