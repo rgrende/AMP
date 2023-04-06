@@ -70,6 +70,8 @@ public class AMPGUI extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
+        DBTools t = new DBTools();
+
         backPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         playlistList = new javax.swing.JList<>();
@@ -112,7 +114,7 @@ public class AMPGUI extends JFrame {
 
         playlistList.setBackground(new java.awt.Color(102, 102, 102));
         playlistList.setModel(new javax.swing.AbstractListModel<String>() {
-            final String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+            final String[] strings = {"Song 1", "Song 2", "Song 3"};
 
             public int getSize() {
                 return strings.length;
@@ -184,7 +186,7 @@ public class AMPGUI extends JFrame {
         playlist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         playlist.setForeground(new java.awt.Color(255, 255, 255));
         playlist.setModel(new javax.swing.AbstractListModel<String>() {
-            final String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+            final String[] strings = t.getPlaylistNames();
 
             public int getSize() {
                 return strings.length;
@@ -407,6 +409,9 @@ public class AMPGUI extends JFrame {
 
     private void playlistMouseClicked(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
+        // get songs from playlist via database
+        // populate song list with songs
+        // update screen
     }
 
     private void libraryActionPerformed(java.awt.event.ActionEvent evt){
