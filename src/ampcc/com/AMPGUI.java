@@ -31,7 +31,11 @@ import java.io.*;
 import java.util.Arrays;
 
  */
-
+// Please keep these imports for the UI color theme templates.
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 
 /**
  * @author Rakiah Grende, Robert Hereth, and Elaine Schultz
@@ -108,7 +112,9 @@ public class AMPGUI extends JFrame {
         documentation = new javax.swing.JMenuItem();
         about = new javax.swing.JMenuItem(); // added in 3 JMenuItems and 1 JMenu -Elaine @ 20230331
         preferences = new javax.swing.JMenu();
-        theme = new javax.swing.JMenuItem();
+        theme = new javax.swing.JMenu(); // changed JMenuItem to JMenu.
+        lightTheme = new javax.swing.JMenuItem(); // Added in light and dark theme JMenu.
+        darkTheme = new javax.swing.JMenuItem();
         hotKeys = new javax.swing.JMenuItem();
         newPlaylist = new javax.swing.JMenuItem(); // added in 4 JMenuItems -Elaine @20230406
         newTag = new javax.swing.JMenuItem();
@@ -211,8 +217,9 @@ public class AMPGUI extends JFrame {
         });
         backPanel.setViewportView(playlist);
 
+        // The Now Playing JLabel is here. Temporary remove this later.
         nowPlaying.setFont(new java.awt.Font("Helvetica", 0, 24)); // NOI18N
-        nowPlaying.setForeground(new java.awt.Color(0, 0, 0));
+//        nowPlaying.setForeground(new java.awt.Color(0, 0, 0));
         //nowPlaying.setName(""); // NOI18N
         nowPlaying.setText("Now Playing: ");
 
@@ -252,7 +259,7 @@ public class AMPGUI extends JFrame {
         file.setMnemonic(KeyEvent.VK_F); // Added in Mnemonic to F.
 
         // Made changes to create as SubMenu format. And added in JMenuItems for Create.
-        create.setText("Create"); //Changed from a JMenu to a JMenuItems to be a SubMenu.
+        create.setText("Create"); // Changed from JMenu to a JMenuItems to be a SubMenu.
         create.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         create.setMnemonic(KeyEvent.VK_C); // Changed setToolTipText into a setMnemonic to C.
         create.addActionListener(new java.awt.event.ActionListener() {
@@ -262,13 +269,13 @@ public class AMPGUI extends JFrame {
         });
 
         // The JMenuItems for SubMenu Create.
-        newPlaylist.setText("Add a new Playlist");
+        newPlaylist.setText("New Playlist");
         newPlaylist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
-        newTag.setText("Add a new Tag");
+        newTag.setText("New Tag");
         newTag.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
-        newScreen.setText("Add a new Screen");
+        newScreen.setText("New Screen");
         newScreen.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
-        newSong.setText("Add a new Song");
+        newSong.setText("New Song");
         newSong.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         file.add(create);
         create.add(newPlaylist);
@@ -286,6 +293,7 @@ public class AMPGUI extends JFrame {
         exit.setText("Exit");
         exit.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
+        exit.setMnemonic(KeyEvent.VK_E); // Added in Mnemonic to e.
         file.add(exit);
 
         // Added in Action Performed for Exit.
@@ -332,19 +340,44 @@ public class AMPGUI extends JFrame {
         /* Added in new JMenu and its JMenu Items for Preferences. */
         preferences.setText("Preferences");
         preferences.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        preferences.setMnemonic(KeyEvent.VK_H);
 
         theme.setText("Theme");
+        theme.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        theme.setMnemonic(KeyEvent.VK_T);
+        lightTheme.setText("Light Mode");
+        lightTheme.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        darkTheme.setText("Dark Mode");
+        darkTheme.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         preferences.add(theme);
+        theme.add(lightTheme);
+        theme.add(darkTheme);
+        lightTheme.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lightThemeActionPerformed(evt);
+            }
+        });
+
+        darkTheme.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                darkThemeActionPerformed(evt);
+            }
+        });
+
 
         hotKeys.setText("Hot Keys");
+        hotKeys.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         preferences.add(hotKeys);
 
         menuBar.add(preferences);
 
         help.setText("Help");
-        help.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        help.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+        help.setMnemonic(KeyEvent.VK_H);
 
         documentation.setText("Documentation");
+        documentation.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+        documentation.setMnemonic(KeyEvent.VK_D);
         help.add(documentation);
 
         /* Added in action listener and its method for documentation MenuItem. */
@@ -354,7 +387,9 @@ public class AMPGUI extends JFrame {
             }
         });
         /* Added in the About JMenuItem, its Action Listener and its method. */
-        about.setText("About AMP");
+        about.setText("About...");
+        about.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+        about.setMnemonic(KeyEvent.VK_A);
         help.add(about);
 
         about.addActionListener(new java.awt.event.ActionListener() {
@@ -463,6 +498,33 @@ public class AMPGUI extends JFrame {
 
 /*    //songQueue = new Song[1];
     //numSongs = 0;*/
+
+    // Testing this dark theme created by library flatlaf jar.
+    // This method is to perform the UI to change as Dark theme.
+    // Change the Theme into a group button item.
+    // The goal is to change this into a state change...
+    // So do not have to close out the current JFrame.
+    private void darkThemeActionPerformed(java.awt.event.ActionEvent evt) {
+        FlatDarculaLaf.setup();
+        // Creates the UI here.
+        dispose();
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new AMPGUI().setVisible(true);
+            }
+        });
+    }
+
+    private void lightThemeActionPerformed(java.awt.event.ActionEvent evt) {
+        FlatLightLaf.setup();
+        // Creates the UI here.
+        dispose();
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new AMPGUI().setVisible(true);
+            }
+        });
+    }
 
     /*   This method is an Action Event to open our documentation PDF file
      This may subject to change. I will see if I can adjust this to
@@ -707,7 +769,9 @@ public class AMPGUI extends JFrame {
     private javax.swing.JMenu file;
     private javax.swing.JMenu help;
     private javax.swing.JMenu preferences;
-    private javax.swing.JMenuItem theme;
+    private javax.swing.JMenu theme; // changed to JMenu.
+    private javax.swing.JMenuItem lightTheme;
+    private javax.swing.JMenuItem darkTheme;
     private javax.swing.JMenuItem hotKeys;
     private javax.swing.JMenuItem importSong;
     private javax.swing.JScrollPane jScrollPane2;
