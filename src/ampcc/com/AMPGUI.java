@@ -14,6 +14,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -70,7 +71,7 @@ public class AMPGUI extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
-        DBTools t = new DBTools();
+        DBTools internalDB = new DBTools();
 
         backPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -186,7 +187,7 @@ public class AMPGUI extends JFrame {
         playlist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         playlist.setForeground(new java.awt.Color(255, 255, 255));
         playlist.setModel(new javax.swing.AbstractListModel<String>() {
-            final String[] strings = t.getPlaylistNames();
+            final String[] strings = internalDB.getPlaylistNames();
 
             public int getSize() {
                 return strings.length;
@@ -407,9 +408,24 @@ public class AMPGUI extends JFrame {
         // TODO add your handling code here:
     }
 
-    private void playlistMouseClicked(java.awt.event.MouseEvent evt) {
+    private void playlistMouseClicked(MouseEvent evt) {
         // TODO add your handling code here:
-        // get playlist id and its songs
+        //if (evt.getButton() == 1) {
+            String p_name = playlist.getModel().getElementAt(playlist.getSelectedIndex());
+            DBTools db = new DBTools();
+            String[][] pid = db.getPlaylistID(p_name);
+            for (String[] r : pid) { for (String s : r) {System.out.println(s);}}
+            /**
+            String[][] roughSongs = db.getSongPlaylist(pid);
+            String[] songNames = new String[roughSongs[2].length];
+            int c = 0;
+            for (String row : roughSongs[2]) {
+                songNames[c] = roughSongs[2][c];
+                c++;
+            }
+            System.out.println(songNames);
+             **/
+        //}
         // populate song list with songs (playlistList?)
         // update screen
     }

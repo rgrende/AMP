@@ -82,10 +82,15 @@ public class DBTools {
         run(flag, line);
     }
 
-    public void readSongPlaylist(String p_id, int flag) {
-        String line = "SELECT * FROM Song s, SongPlaylist sp WHERE s.song_id = sp.song_id " +
+    public String[][] getSongPlaylist(String p_id) {
+        String line = "SELECT * FROM Song s, SongPlaylist sp, Playlist p WHERE s.song_id = sp.song_id " +
                 " AND sp.playlist_id = " + p_id + ";";
-        run(flag, line);
+        return arrayLine(line);
+    }
+
+    public String[][] getPlaylistID(String p_name) {
+        String line = "SELECT id FROM Playlist WHERE Playlist.playlist_name = '" + p_name + "';";
+        return arrayLine(line);
     }
 
     private void run(int flag, String line) {
@@ -172,7 +177,7 @@ public class DBTools {
         }
     }
 
-    public String[][] arrayLine(String line) { //TODO: fix and make it return array
+    public String[][] arrayLine(String line) {
         try {
             Connection conn = DriverManager.getConnection(this.DB_URL);
             Statement stat = conn.createStatement(TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY);
