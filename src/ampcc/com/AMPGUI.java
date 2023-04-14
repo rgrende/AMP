@@ -553,7 +553,9 @@ public class AMPGUI extends JFrame {
         }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AMPGUI().setVisible(true);
+                AMPGUI amp = new AMPGUI();
+                amp.setVisible(true);
+                amp.setMinimumSize(new Dimension(1000, 400));
             }
         });
     }
