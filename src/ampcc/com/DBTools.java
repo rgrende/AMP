@@ -83,7 +83,7 @@ public class DBTools {
     }
 
     public String[][] getSongPlaylist(String p_id) {
-        String line = "SELECT * FROM Song s, SongPlaylist sp, Playlist p WHERE s.id = sp.song_id " +
+        String line = "SELECT DISTINCT s.* FROM Song s, SongPlaylist sp, Playlist p WHERE s.id = sp.song_id " +
                 " AND sp.playlist_id = " + p_id + ";";
         return arrayLine(line);
     }
@@ -127,7 +127,7 @@ public class DBTools {
                     if (rmd.getColumnType(i) != 12) {
                         values[i - 1] = r.getObject(i).toString();
                     } else {
-                        values[i - 1] = r.getObject(i);
+                        values[i - 1] = r.getString(i);
                     }
                 }
                 for (int item = 0; item < values.length; item++) {

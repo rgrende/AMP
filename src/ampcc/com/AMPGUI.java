@@ -417,13 +417,11 @@ public class AMPGUI extends JFrame {
             String id = "";
             for (String[] r : pid) { for (String s : r) {id = s;}}
             String[][] songs = db.getSongPlaylist(id);
-            String[] songNames = new String[songs[2].length];
-            int c = 0;
-            for (String row : songs[2]) {
-                songNames[c] = songs[2][c];
-                c++;
+            String[] songNames = new String[songs.length];
+            for (int i = 0; i < songs.length; i++) {
+                songNames[i] = songs[i][2];
             }
-            System.out.println(songNames);
+            for (String name : songNames) {System.out.println(name);}
         //}
         // populate song list with songs (playlistList?)
         // update screen
