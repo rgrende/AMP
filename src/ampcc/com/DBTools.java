@@ -124,7 +124,11 @@ public class DBTools {
             while (r.next()) {
                 Object[] values = new String[columnCount];
                 for (int i = 1; i <= columnCount; i++) {
-                    values[i - 1] = r.getObject(i).toString();
+                    if (rmd.getColumnType(i) != 12) {
+                        values[i - 1] = r.getObject(i).toString();
+                    } else {
+                        values[i - 1] = r.getObject(i);
+                    }
                 }
                 for (int item = 0; item < values.length; item++) {
                     data[r.getRow()-1][item] = values[item].toString();
