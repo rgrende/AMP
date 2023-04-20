@@ -83,7 +83,7 @@ public class DBTools {
     }
 
     public String[][] getSongPlaylist(String p_id) {
-        String line = "SELECT * FROM Song s, SongPlaylist sp, Playlist p WHERE s.song_id = sp.song_id " +
+        String line = "SELECT * FROM Song s, SongPlaylist sp, Playlist p WHERE s.id = sp.song_id " +
                 " AND sp.playlist_id = " + p_id + ";";
         return arrayLine(line);
     }
@@ -124,7 +124,7 @@ public class DBTools {
             while (r.next()) {
                 Object[] values = new String[columnCount];
                 for (int i = 1; i <= columnCount; i++) {
-                    values[i - 1] = r.getObject(i);
+                    values[i - 1] = r.getObject(i).toString();
                 }
                 for (int item = 0; item < values.length; item++) {
                     data[r.getRow()-1][item] = values[item].toString();

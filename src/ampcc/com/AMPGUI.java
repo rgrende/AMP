@@ -414,17 +414,16 @@ public class AMPGUI extends JFrame {
             String p_name = playlist.getModel().getElementAt(playlist.getSelectedIndex());
             DBTools db = new DBTools();
             String[][] pid = db.getPlaylistID(p_name);
-            for (String[] r : pid) { for (String s : r) {System.out.println(s);}}
-            /**
-            String[][] roughSongs = db.getSongPlaylist(pid);
-            String[] songNames = new String[roughSongs[2].length];
+            String id = "";
+            for (String[] r : pid) { for (String s : r) {id = s;}}
+            String[][] songs = db.getSongPlaylist(id);
+            String[] songNames = new String[songs[2].length];
             int c = 0;
-            for (String row : roughSongs[2]) {
-                songNames[c] = roughSongs[2][c];
+            for (String row : songs[2]) {
+                songNames[c] = songs[2][c];
                 c++;
             }
             System.out.println(songNames);
-             **/
         //}
         // populate song list with songs (playlistList?)
         // update screen
