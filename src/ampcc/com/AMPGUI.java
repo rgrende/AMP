@@ -421,7 +421,21 @@ public class AMPGUI extends JFrame {
             for (int i = 0; i < songs.length; i++) {
                 songNames[i] = songs[i][2];
             }
-            for (String name : songNames) {System.out.println(name);}
+            for (String name : songNames) {System.out.println(name);} //TODO: Make show in GUI
+
+        playlistList.setModel(new javax.swing.AbstractListModel<String>() {
+            final String[] strings = songNames;
+
+            public int getSize() {
+                return strings.length;
+            }
+
+            public String getElementAt(int i) {
+                return strings[i];
+            }
+        });
+        jScrollPane2.setViewportView(playlistList);
+
         //}
         // populate song list with songs (playlistList?)
         // update screen
