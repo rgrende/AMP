@@ -4,7 +4,7 @@ AMP: Athletics Music Player for Carroll College
 Created by : Rakiah Grende, Robert Hereth, and Elaine Schultz
 ---------------------------------------------------------------------------
 
-NOTE: This application is not complete. Due to time restrictions and
+NOTE: This application is not complete and fully featured.
 
 
 
