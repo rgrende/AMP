@@ -122,8 +122,6 @@ public class AMPGUI extends JFrame {
         about = new javax.swing.JMenuItem(); // added in 3 JMenuItems and 1 JMenu -Elaine @ 20230331
         preferences = new javax.swing.JMenu();
         theme = new javax.swing.JMenu(); // changed JMenuItem to JMenu.
-        lightTheme = new javax.swing.JMenuItem(); // Added in light and dark theme JMenu.
-        darkTheme = new javax.swing.JMenuItem();
         newPlaylist = new javax.swing.JMenuItem(); // added in 4 JMenuItems -Elaine @20230406
         newTag = new javax.swing.JMenuItem();
         newScreen = new javax.swing.JMenuItem();
@@ -373,18 +371,6 @@ public class AMPGUI extends JFrame {
         }
 
         themeItems[0].setSelected(true); // Selects the first theme from the menu item.
-
-/*        lightTheme.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lightThemeActionPerformed(evt);
-            }
-        });
-
-        darkTheme.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                darkThemeActionPerformed(evt);
-            }
-        });*/
 
         menuBar.add(preferences);
 
@@ -784,8 +770,6 @@ public class AMPGUI extends JFrame {
     private javax.swing.JMenu help;
     private javax.swing.JMenu preferences;
     private javax.swing.JMenu theme; // changed to JMenu.
-    private javax.swing.JMenuItem lightTheme;
-    private javax.swing.JMenuItem darkTheme;
     private javax.swing.JMenuItem importSong;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton library;
@@ -813,7 +797,6 @@ public class AMPGUI extends JFrame {
     private javax.swing.JMenuItem newTag;
     private javax.swing.JMenuItem newScreen;
     private javax.swing.JMenuItem newSong;
-
     private javax.swing.JMenuItem exit; // added in Exit JMenuItem.
     // End of variables declaration
 }
