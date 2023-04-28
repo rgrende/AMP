@@ -5,11 +5,8 @@
 package ampcc.com;
 
 //imports
-//import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
-
-import javax.sound.sampled.FloatControl;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -29,17 +26,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
-import java.util.Arrays;
-import javax.sound.sampled.FloatControl;
-/*
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.*;
 import java.util.Arrays;
 
- */
+
 
 
 /**
@@ -56,7 +45,7 @@ public class AMPGUI extends JFrame {
     private File myFile = null;
     private String filename;
     private String filePath;
-    private int totalLength;//keep this individual
+    private long totalLength;//keep this individual
     private long skip;//keep this individual
     private Player player;//from jlayer-1.0.1.jar
     private Thread playThread;//keep this individual
@@ -83,7 +72,6 @@ public class AMPGUI extends JFrame {
     private void initComponents() {
 
         DBTools internalDB = new DBTools();
-
         backPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         playlistList = new javax.swing.JList<>();
@@ -91,8 +79,11 @@ public class AMPGUI extends JFrame {
         playlists = new javax.swing.JLabel();
         fadeButton = new javax.swing.JButton();
         scrollPane = new javax.swing.JScrollPane();
-        //songQueue = new javax.swing.JList<Song>();
+        songQueue = new javax.swing.JList();
         shuffleButton = new javax.swing.JToggleButton();
+        nextButton = new javax.swing.JButton();
+        backButton = new javax.swing.JButton();
+        clearButton = new javax.swing.JButton();
         volume = new javax.swing.JSlider();
         queueLabel = new javax.swing.JLabel();
         backPanel = new javax.swing.JScrollPane();
@@ -128,7 +119,6 @@ public class AMPGUI extends JFrame {
         setBackground(new java.awt.Color(0, 0, 0));
         backPanel2.setBackground(new java.awt.Color(51, 51, 51));
 
-        backPanel2.setBackground(new java.awt.Color(51, 51, 51));
         playlistList.setBackground(new java.awt.Color(102, 102, 102));
         playlistList.setModel(new javax.swing.AbstractListModel<String>() {
             final String[] strings = {"Song 1", "Song 2", "Song 3"};
@@ -191,7 +181,7 @@ public class AMPGUI extends JFrame {
 
             @Override
             public void mousePressed(MouseEvent e) {
-               
+
             }
 
             @Override
@@ -377,8 +367,7 @@ public class AMPGUI extends JFrame {
                                                 .addContainerGap(85, Short.MAX_VALUE)
                                                 .addComponent(song, javax.swing.GroupLayout.PREFERRED_SIZE, 468, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(13, 13, 13)
-                                                .addComponent(backPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(backPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(backPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addGroup(layout.createSequentialGroup()
@@ -429,9 +418,7 @@ public class AMPGUI extends JFrame {
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(library, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(26, 26, 26)
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -489,10 +476,10 @@ public class AMPGUI extends JFrame {
             playButton.setIcon(playIcon);
             if (clearSong) {
                 songName.setText("");
+                song.setValue(0);
             }
         }
     }
-
 
     private void createActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
@@ -526,14 +513,7 @@ public class AMPGUI extends JFrame {
         });
         jScrollPane2.setViewportView(playlistList);
 
-        //}
-        // populate song list with songs (playlistList?)
-        // update screen
     }
-    private void queueListMouseClicked(java.awt.event.MouseEvent evt) {
-
-    }
-
 
     private void libraryActionPerformed(java.awt.event.ActionEvent evt){
         JFileChooser fileChooser = new JFileChooser();
@@ -705,9 +685,6 @@ public class AMPGUI extends JFrame {
     Runnable runnablePlay = new Runnable() {
          @Override
          public void run() {
-             if (myFile == null || !myFile.canRead()) {
-                 return;
-             }
              //while there are songs in the queue, play
              for (; musicFileIndex < musicFiles.size(); musicFileIndex++) {
                  if (!playNextSong())
@@ -724,27 +701,11 @@ public class AMPGUI extends JFrame {
          Timer timer = new Timer(1000, new ActionListener() {
              @Override
              public void actionPerformed(ActionEvent e) {
-                 float initialTime = player.getPosition();
-                 float songTime = initialTime*10000.0f/(totalLength);
-                 song.setBackground(Color.WHITE);
-                 //long HH = TimeUnit.MILLISECONDS.toHours(38114000);
-                 //long MM = TimeUnit.MILLISECONDS.toMinutes(38114000) % 60;
-                 //long SS = TimeUnit.MILLISECONDS.toSeconds(38114000) % 60;
-                 //float songTime = float.format("%02d:%02d:%02d", HH, MM, SS);
-                 //song.setMinimum(player.getPosition());
-                 //song.setMaximum(totalLength);
-                 song.setValue((int) songTime/2);
-                 //System.out.println(TimeUnit.MILLISECONDS.toMinutes(songProgress));
-                 //int songPercent = (int)(player.getPosition()/totalLength);
-                 //float songTime = (int) songPercent*1000;
-                 //System.out.println(player.getPosition()/totalLength);
-                 /*
-                 if (songTime < 60) {
-                     System.out.println(songTime);
-                 }if {
-                     System.out.println("1:"+(songTime-60.0f));
+                 try {
+                     song.setValue((int) (totalLength-fileInputStream.available()));
+                 } catch (IOException ex) {
+                     ex.printStackTrace();
                  }
-                  */
              }
          });
          timer.setRepeats(true);
@@ -761,6 +722,8 @@ public class AMPGUI extends JFrame {
                  displayName = displayName.substring(0,index);
              }
              songName.setText(displayName);
+             song.setMinimum(0);
+             song.setMaximum((int) totalLength);
              timer.start();
              player.play();//This starts playing the selected music file
              played = player != null;
