@@ -111,6 +111,8 @@ public class AMPGUI extends JFrame {
         edit = new javax.swing.JMenu();
         clip = new javax.swing.JMenuItem();
         tags = new javax.swing.JMenuItem();
+        addPlaylist = new javax.swing.JMenuItem(); // added in 2 JMenuItems -Elaine @ 20230428
+        removePlaylist = new javax.swing.JMenuItem();
         modify = new javax.swing.JMenu();
         add = new javax.swing.JMenuItem();
         remove = new javax.swing.JMenuItem();
@@ -122,7 +124,7 @@ public class AMPGUI extends JFrame {
         about = new javax.swing.JMenuItem(); // added in 3 JMenuItems and 1 JMenu -Elaine @ 20230331
         preferences = new javax.swing.JMenu();
         theme = new javax.swing.JMenu(); // changed JMenuItem to JMenu.
-        newPlaylist = new javax.swing.JMenuItem(); // added in 4 JMenuItems -Elaine @20230406
+        newPlaylist = new javax.swing.JMenuItem(); // added in 4 JMenuItems -Elaine @ 20230406
         newTag = new javax.swing.JMenuItem();
         newScreen = new javax.swing.JMenuItem();
         newSong = new javax.swing.JMenuItem();
@@ -309,15 +311,30 @@ public class AMPGUI extends JFrame {
         });
         menuBar.add(file);
 
+        // The Edit JMenu and its JMenuItems.
         edit.setText("Edit");
         edit.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         edit.setMnemonic(KeyEvent.VK_E); // Added in Mnemonic to e.
 
         clip.setText("Clip");
+        clip.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        clip.setMnemonic(KeyEvent.VK_C); // Added in Mnemonic to c.
         edit.add(clip);
 
         tags.setText("Tags");
+        tags.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        tags.setMnemonic(KeyEvent.VK_S); // Added in Mnemonic to c.
         edit.add(tags);
+
+        addPlaylist.setText("Add Playlist");
+        addPlaylist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        addPlaylist.setMnemonic(KeyEvent.VK_A);
+        edit.add(addPlaylist);
+
+        removePlaylist.setText("Remove Playlist");
+        removePlaylist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        removePlaylist.setMnemonic(KeyEvent.VK_R);
+        edit.add(removePlaylist);
 
         menuBar.add(edit);
 
@@ -326,12 +343,15 @@ public class AMPGUI extends JFrame {
         modify.setMnemonic(KeyEvent.VK_D);
 
         add.setText("Add");
+        add.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         modify.add(add);
 
         remove.setText("Remove");
+        remove.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         modify.add(remove);
 
         search.setText("Search");
+        search.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         modify.add(search);
 
         menuBar.add(modify);
@@ -341,6 +361,7 @@ public class AMPGUI extends JFrame {
         playMenu.setMnemonic(KeyEvent.VK_A); // Added in Mnemonic to a.
 
         selectAll.setText("Select All");
+        selectAll.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         playMenu.add(selectAll);
 
         menuBar.add(playMenu);
@@ -371,6 +392,8 @@ public class AMPGUI extends JFrame {
         }
 
         themeItems[0].setSelected(true); // Selects the first theme from the menu item.
+        themeItems[0].setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        themeItems[1].setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
 
         menuBar.add(preferences);
 
@@ -765,6 +788,8 @@ public class AMPGUI extends JFrame {
     private javax.swing.JMenuItem documentation;
     private javax.swing.JMenuItem about;
     private javax.swing.JMenu edit;
+    private javax.swing.JMenuItem addPlaylist; // Added in add and remove playlist JMenuItems. 04282023 -ES
+    private javax.swing.JMenuItem removePlaylist;
     private javax.swing.JButton fadeButton;
     private javax.swing.JMenu file;
     private javax.swing.JMenu help;
