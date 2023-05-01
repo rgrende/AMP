@@ -7,44 +7,23 @@ package ampcc.com;
 //imports
 
 //import javazoom.jl.decoder.JavaLayerException;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.awt.event.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.Arrays;
-
-
-
-// Please keep these imports for the UI color theme templates.
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
-import com.formdev.flatlaf.FlatLightLaf;
-
-
-
 
 import static com.formdev.flatlaf.FlatLaf.updateUILater;
 
@@ -70,10 +49,10 @@ public class AMPGUI extends JFrame {
     private Player player;//from jlayer-1.0.1.jar
     private Thread playThread;//keep this individual
     private float currentVolume = 0F;
-    private List<File> musicFiles = new ArrayList<>();
+    private final List<File> musicFiles = new ArrayList<>();
     private int musicFileIndex = 0;
     private DefaultListModel songsToPlay;
-    private DBTools db = new DBTools();
+    private final DBTools db = new DBTools();
 
     /**
      * Creates new form m
@@ -201,7 +180,7 @@ public class AMPGUI extends JFrame {
 
         songsToPlay = new DefaultListModel();
         songQueue.setModel(songsToPlay);
-        songQueue.addMouseListener(new MouseListener(){
+        songQueue.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
@@ -321,6 +300,9 @@ public class AMPGUI extends JFrame {
         create.setMnemonic(KeyEvent.VK_C); // Changed setToolTipText into a setMnemonic to C.
         create.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createActionPerformed(evt);
+            }
+        });
 
         backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/back.png"))); // NOI18N
         backButton.addActionListener(new java.awt.event.ActionListener() {
@@ -472,7 +454,7 @@ public class AMPGUI extends JFrame {
         // Creates the radio button menu items for the theme names.
         themeItems = new JRadioButtonMenuItem[themeNames.length];
         themeModeBtnGrp = new ButtonGroup(); // This manages the theme names.
-        AMPGUI.ThemeModeHandler themeModeHandler = new AMPGUI.ThemeModeHandler(); // Handles the theme.
+        ThemeModeHandler themeModeHandler = new ThemeModeHandler(); // Handles the theme.
 
         // Creates the Theme radio button menu items.
         for (int count = 0; count < themeItems.length; count++) {
@@ -628,11 +610,8 @@ public class AMPGUI extends JFrame {
         );
 
         pack();
-    }// </editor-fold>
+    };
 
-
-/*    //songQueue = new Song[1];
-    //numSongs = 0;*/
 
     /*   This method is an Action Event to open our documentation PDF file
      This may subject to change. I will see if I can adjust this to
@@ -656,7 +635,7 @@ public class AMPGUI extends JFrame {
         JPanel rows = new JPanel();
 
         abtFrame.setTitle("About AMP");
-        abtFrame.setSize(500,125);
+        abtFrame.setSize(500, 125);
         JLabel abtLbl = new JLabel(" AMP (Athlete Music Player) is a DJ application created for Carroll College’s sports programs.");
         JLabel createdByLbl = new JLabel(" AMP was created by Rakiah Grende, Robert Hereth, and Elaine Schultz.");
         JLabel copyRightLbl = new JLabel(" @ 2023 Carroll College.");
@@ -705,17 +684,23 @@ public class AMPGUI extends JFrame {
     private void playlistMouseClicked(MouseEvent evt) {
         // TODO add your handling code here:
         //if (evt.getButton() == 1) {
-            String p_name = playlist.getModel().getElementAt(playlist.getSelectedIndex());
-            DBTools db = new DBTools();
-            String[][] pid = db.getPlaylistID(p_name);
-            String id = "";
-            for (String[] r : pid) { for (String s : r) {id = s;}}
-            String[][] songs = db.getSongPlaylist(id);
-            String[] songNames = new String[songs.length];
-            for (int i = 0; i < songs.length; i++) {
-                songNames[i] = songs[i][2];
+        String p_name = playlist.getModel().getElementAt(playlist.getSelectedIndex());
+        DBTools db = new DBTools();
+        String[][] pid = db.getPlaylistID(p_name);
+        String id = "";
+        for (String[] r : pid) {
+            for (String s : r) {
+                id = s;
             }
-            for (String name : songNames) {System.out.println(name);} //TODO: Make show in GUI
+        }
+        String[][] songs = db.getSongPlaylist(id);
+        String[] songNames = new String[songs.length];
+        for (int i = 0; i < songs.length; i++) {
+            songNames[i] = songs[i][2];
+        }
+        for (String name : songNames) {
+            System.out.println(name);
+        }
 
         playlistList.setModel(new javax.swing.AbstractListModel<String>() {
             final String[] strings = songNames;
@@ -732,7 +717,7 @@ public class AMPGUI extends JFrame {
 
     }
 
-    private void libraryActionPerformed(java.awt.event.ActionEvent evt){
+    private void libraryActionPerformed(java.awt.event.ActionEvent evt) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home") + System.getProperty("file.separator") + "git/AMP/songs"));
         fileChooser.setDialogTitle("Select Music");
@@ -766,7 +751,7 @@ public class AMPGUI extends JFrame {
         }
     }
 
-    private void stopButtonActionPerformed(){
+    private void stopButtonActionPerformed() {
         //code for stop button
         stopPlaying(true);
     }
@@ -802,21 +787,21 @@ public class AMPGUI extends JFrame {
     }
 
 
-    private void backButtonActionPerformed(java.awt.event.ActionEvent evt){
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //code for back button
         if (player != null) {
             stopPlaying(true);
             skip = 0;
             musicFileIndex--;
             if (musicFileIndex < 0) {
-                musicFileIndex = musicFiles.size()-1;
+                musicFileIndex = musicFiles.size() - 1;
             }
             playThread = new Thread(runnablePlay);
             playThread.start();
         }
     }
 
-    private void nextButtonActionPerformed(java.awt.event.ActionEvent evt){
+    private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //code for next button
         if (player != null) {
             stopPlaying(true);
@@ -841,8 +826,8 @@ public class AMPGUI extends JFrame {
         //code for volume
         currentVolume = volume;
         if (player != null) {
-            float value = volume/100.0f;
-            float dB = (float)(Math.log(value)/Math.log(10.0)*20.0);
+            float value = volume / 100.0f;
+            float dB = (float) (Math.log(value) / Math.log(10.0) * 20.0);
             player.getClass();
 
 /*          player.setVolume(dB);
@@ -885,7 +870,7 @@ public class AMPGUI extends JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
-        UIManager.put( "Component.hideMnemonics", false ); // This sets Mnemonics visible, because flatlaf defaults as hidden.
+        UIManager.put("Component.hideMnemonics", false); // This sets Mnemonics visible, because flatlaf defaults as hidden.
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -911,89 +896,89 @@ public class AMPGUI extends JFrame {
             }
         });
     }
-    //</editor-fold>
-    //</editor-fold>
+
 
     Runnable runnablePlay = new Runnable() {
-         @Override
-         public void run() {
-             //while there are songs in the queue, play
-             for (; musicFileIndex < musicFiles.size(); musicFileIndex++) {
-                 if (!playNextSong())
-                     break;
-             }
-         }
-     };
-
-     private boolean playNextSong() {
-         if (musicFileIndex < 0 || musicFileIndex >= musicFiles.size())
-             return false;
-         myFile = musicFiles.get(musicFileIndex);
-         boolean played = false;
-         Timer timer = new Timer(1000, new ActionListener() {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-                 try {
-                     song.setValue((int) (totalLength-fileInputStream.available()));
-                 } catch (IOException ex) {
-                     ex.printStackTrace();
-                 }
-             }
-         });
-         timer.setRepeats(true);
-         try {
-             fileInputStream = new FileInputStream(myFile);
-             totalLength = fileInputStream.available();
-             BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-             player = new Player(bufferedInputStream);
-             fileInputStream.skip(skip);
-             playButton.setIcon(pauseIcon);
-             String displayName = myFile.getName();
-             int index = displayName.lastIndexOf(".");
-             if (index > 0) {
-                 displayName = displayName.substring(0,index);
-             }
-             songName.setText(displayName);
-             song.setMinimum(0);
-             song.setMaximum((int) totalLength);
-             timer.start();
-             player.play();//This starts playing the selected music file
-             played = player != null;
-             stopPlaying(played);
-
-         } catch (FileNotFoundException e) {
-             e.printStackTrace();
-         } catch (JavaLayerException e) {
-             e.printStackTrace();
-         } catch (IOException e) {
-             e.printStackTrace();
-         } finally {
-             timer.stop();
-         }
-         return played;
-     }
-
-    // The inner class for Theme Mode selection with Action Listener.
-    private class ThemeModeHandler implements ActionListener {
-
-        // Process the theme selection.
         @Override
-        public void actionPerformed(ActionEvent event) {
-            // The process for color selection.
-            for (int count = 0; count < themeItems.length; count++) {
-                if (themeItems[0].isSelected()) {
-                    FlatLightLaf.setup();
-                    // create UI here...
-                    updateUILater();
-                } // Ends first if statement.
-                else if (themeItems[1].isSelected()) {
-                    FlatMacDarkLaf.setup();
-                    // create UI here...
-                    updateUILater();
-                } // Ends second else if statement.
-            } // Ends the for loop.
-        } // Ends actionPerformed event listener.
-    } // Ends ThemeModeHandler inner class.
+        public void run() {
+            //while there are songs in the queue, play
+            for (; musicFileIndex < musicFiles.size(); musicFileIndex++) {
+                if (!playNextSong())
+                    break;
+            }
+        }
+    };
+
+    private boolean playNextSong() {
+        if (musicFileIndex < 0 || musicFileIndex >= musicFiles.size())
+            return false;
+        myFile = musicFiles.get(musicFileIndex);
+        boolean played = false;
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    song.setValue((int) (totalLength - fileInputStream.available()));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        timer.setRepeats(true);
+        try {
+            fileInputStream = new FileInputStream(myFile);
+            totalLength = fileInputStream.available();
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+            player = new Player(bufferedInputStream);
+            fileInputStream.skip(skip);
+            playButton.setIcon(pauseIcon);
+            String displayName = myFile.getName();
+            int index = displayName.lastIndexOf(".");
+            if (index > 0) {
+                displayName = displayName.substring(0, index);
+            }
+            songName.setText(displayName);
+            song.setMinimum(0);
+            song.setMaximum((int) totalLength);
+            timer.start();
+            player.play();//This starts playing the selected music file
+            played = player != null;
+            stopPlaying(played);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (JavaLayerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            timer.stop();
+        }
+        return played;
+    }
+
+// The inner class for Theme Mode selection with Action Listener.
+private class ThemeModeHandler implements ActionListener {
+
+    // Process the theme selection.
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        // The process for color selection.
+        for (int count = 0; count < themeItems.length; count++) {
+            if (themeItems[0].isSelected()) {
+                FlatLightLaf.setup();
+                // create UI here...
+                updateUILater();
+            } // Ends first if statement.
+            else if (themeItems[1].isSelected()) {
+                FlatMacDarkLaf.setup();
+                // create UI here...
+                updateUILater();
+            } // Ends second else if statement.
+        } // Ends the for loop.
+    } // Ends actionPerformed event listener.
+
+} // Ends ThemeModeHandler inner class.
 
     // Variables declaration - do not modify
     private javax.swing.JMenuItem add;
