@@ -5,6 +5,10 @@
 package ampcc.com;
 
 //imports
+
+//import javazoom.jl.decoder.JavaLayerException;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 import javax.swing.*;
@@ -14,9 +18,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,15 +37,28 @@ import java.util.Arrays;
 
 
 
+// Please keep these imports for the UI color theme templates.
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+
+
+
+
+import static com.formdev.flatlaf.FlatLaf.updateUILater;
 
 /**
- * @author rakiahgrende
+ * @author Rakiah Grende, Robert Hereth, and Elaine Schultz
  */
 public class AMPGUI extends JFrame {
     private static final String playImage = "/resources/images/playButton.png";
     private static final String pauseImage = "/resources/images/pauseButton.png";
     private static final ImageIcon playIcon = new ImageIcon(MusicPlayer.class.getResource(playImage));
     private static final ImageIcon pauseIcon = new ImageIcon(MusicPlayer.class.getResource(pauseImage));
+    // Added in RadioButtonMenuItems and ButtonGroup.
+    private JRadioButtonMenuItem[] themeItems; // This is the theme menu item.
+    private ButtonGroup themeModeBtnGrp; // This manages the theme menu items.
 
 
     private FileInputStream fileInputStream;
@@ -59,7 +79,8 @@ public class AMPGUI extends JFrame {
      * Creates new form m
      */
     public AMPGUI() {
-        initComponents();
+        initComponents(); // Creates the UI components.
+        setLocationRelativeTo(null); // Centers the application.
     }
 
     /**
@@ -96,11 +117,13 @@ public class AMPGUI extends JFrame {
         library = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         file = new javax.swing.JMenu();
-        create = new javax.swing.JMenuItem();
+        create = new javax.swing.JMenu(); // Changed from JMenuItem to a JMenu.
         importSong = new javax.swing.JMenuItem();
         edit = new javax.swing.JMenu();
         clip = new javax.swing.JMenuItem();
         tags = new javax.swing.JMenuItem();
+        addPlaylist = new javax.swing.JMenuItem(); // added in 2 JMenuItems -Elaine @ 20230428
+        removePlaylist = new javax.swing.JMenuItem();
         modify = new javax.swing.JMenu();
         add = new javax.swing.JMenuItem();
         remove = new javax.swing.JMenuItem();
@@ -109,8 +132,19 @@ public class AMPGUI extends JFrame {
         selectAll = new javax.swing.JMenuItem();
         help = new javax.swing.JMenu();
         documentation = new javax.swing.JMenuItem();
+
+        about = new javax.swing.JMenuItem(); // added in 3 JMenuItems and 1 JMenu -Elaine @ 20230331
+        preferences = new javax.swing.JMenu();
+        theme = new javax.swing.JMenu(); // changed JMenuItem to JMenu.
+        newPlaylist = new javax.swing.JMenuItem(); // added in 4 JMenuItems -Elaine @ 20230406
+        newTag = new javax.swing.JMenuItem();
+        newScreen = new javax.swing.JMenuItem();
+        newSong = new javax.swing.JMenuItem();
+        exit = new javax.swing.JMenuItem(); // added in exit JMenuItem.
+
         volumeUp = new javax.swing.JLabel();
         volumeDown = new javax.swing.JLabel();
+
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
@@ -184,6 +218,7 @@ public class AMPGUI extends JFrame {
 
             }
 
+
             @Override
             public void mouseReleased(MouseEvent e) {
 
@@ -200,6 +235,7 @@ public class AMPGUI extends JFrame {
             }
 
         });
+
         scrollPane.setViewportView(songQueue);
 
 
@@ -236,10 +272,12 @@ public class AMPGUI extends JFrame {
         });
         backPanel.setViewportView(playlist);
 
+
         nowPlaying.setFont(new Font("Helvetica", 0, 24)); // NOI18N
         nowPlaying.setForeground(new Color(0, 0, 0));
+
         //nowPlaying.setName(""); // NOI18N
-        nowPlaying.setText("Now Playing:");
+        nowPlaying.setText("Now Playing: ");
 
         playButton.setIcon(playIcon);
         playButton.addActionListener(new ActionListener() {
@@ -248,7 +286,7 @@ public class AMPGUI extends JFrame {
             }
         });
 
-        volume.addChangeListener(new ChangeListener() {
+        volume.addChangeListener(new ChangeListener() { // inner class
             @Override
             public void stateChanged(ChangeEvent evt) {
                 volumeControl(volume.getValue());
@@ -270,6 +308,19 @@ public class AMPGUI extends JFrame {
                 libraryActionPerformed(evt);
             }
         });
+
+
+        // The file JMenu.
+        file.setText("File");
+        file.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        file.setMnemonic(KeyEvent.VK_F); // Added in Mnemonic to F.
+
+        // Made changes to create as SubMenu format. And added in JMenuItems for Create.
+        create.setText("Create"); // Changed from JMenu to a JMenuItems to be a SubMenu.
+        create.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        create.setMnemonic(KeyEvent.VK_C); // Changed setToolTipText into a setMnemonic to C.
+        create.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
 
         backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/back.png"))); // NOI18N
         backButton.addActionListener(new java.awt.event.ActionListener() {
@@ -303,55 +354,167 @@ public class AMPGUI extends JFrame {
         create.setToolTipText("");
         create.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+
                 createActionPerformed(evt);
             }
         });
 
+
+        // The JMenuItems for SubMenu Create.
+        newPlaylist.setText("New Playlist");
+        newPlaylist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        newTag.setText("New Tag");
+        newTag.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        newScreen.setText("New Screen");
+        newScreen.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        newSong.setText("New Song");
+        newSong.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+
+
         file.add(create);
+        create.add(newPlaylist);
+        create.add(newTag);
+        create.add(newScreen);
+        create.add(newSong);
+
 
         importSong.setText("Import");
+        importSong.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        importSong.setMnemonic(KeyEvent.VK_R); // Added in Mnemonic to r.
         file.add(importSong);
 
+        // Added in the Exit application JMenuItem.
+        exit.setText("Exit");
+        exit.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
+        file.add(exit);
+
+        // Added in Action Performed for Exit.
+        exit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitActionPerformed(evt);
+            }
+        });
         menuBar.add(file);
 
+        // The Edit JMenu and its JMenuItems.
         edit.setText("Edit");
-        edit.setFont(new Font("Helvetica", 0, 14)); // NOI18N
+
+        edit.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        edit.setMnemonic(KeyEvent.VK_E); // Added in Mnemonic to e.
 
         clip.setText("Clip");
+        clip.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        clip.setMnemonic(KeyEvent.VK_C); // Added in Mnemonic to c.
         edit.add(clip);
 
         tags.setText("Tags");
+        tags.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        tags.setMnemonic(KeyEvent.VK_S); // Added in Mnemonic to c.
         edit.add(tags);
+
+        addPlaylist.setText("Add Playlist");
+        addPlaylist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        addPlaylist.setMnemonic(KeyEvent.VK_A);
+        edit.add(addPlaylist);
+
+        removePlaylist.setText("Remove Playlist");
+        removePlaylist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        removePlaylist.setMnemonic(KeyEvent.VK_R);
+        edit.add(removePlaylist);
 
         menuBar.add(edit);
 
         modify.setText("Modify");
-        modify.setFont(new Font("Helvetica", 0, 14)); // NOI18N
+
+        modify.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        modify.setMnemonic(KeyEvent.VK_D);
+
 
         add.setText("Add");
+        add.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         modify.add(add);
 
         remove.setText("Remove");
+        remove.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         modify.add(remove);
 
         search.setText("Search");
+        search.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         modify.add(search);
 
         menuBar.add(modify);
 
         playMenu.setText("Play");
-        playMenu.setFont(new Font("Helvetica", 0, 14)); // NOI18N
+
+        playMenu.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        playMenu.setMnemonic(KeyEvent.VK_A); // Added in Mnemonic to a.
+
 
         selectAll.setText("Select All");
+        selectAll.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         playMenu.add(selectAll);
 
         menuBar.add(playMenu);
 
+        /* Added in new JMenu and its JMenu Items for Preferences. */
+        preferences.setText("Preferences");
+        preferences.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        preferences.setMnemonic(KeyEvent.VK_R);
+
+        theme.setText("Theme");
+        theme.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        theme.setMnemonic(KeyEvent.VK_E);
+        preferences.add(theme);
+
+        // Adding in radiobutton format.
+        String[] themeNames = {"Light Mode", "Dark Mode"}; // Creates the string theme names.
+        // Creates the radio button menu items for the theme names.
+        themeItems = new JRadioButtonMenuItem[themeNames.length];
+        themeModeBtnGrp = new ButtonGroup(); // This manages the theme names.
+        AMPGUI.ThemeModeHandler themeModeHandler = new AMPGUI.ThemeModeHandler(); // Handles the theme.
+
+        // Creates the Theme radio button menu items.
+        for (int count = 0; count < themeItems.length; count++) {
+            themeItems[count] = new JRadioButtonMenuItem(themeNames[count]);
+            theme.add(themeItems[count]); // This adds the font menu.
+            themeModeBtnGrp.add(themeItems[count]); // This adds to the button group.
+            themeItems[count].addActionListener(themeModeHandler); // This adds the themeHandler
+        }
+
+        themeItems[0].setSelected(true); // Selects the first theme from the menu item.
+        themeItems[0].setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        themeItems[1].setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+
+        menuBar.add(preferences);
+
         help.setText("Help");
-        help.setFont(new Font("Helvetica", 0, 14)); // NOI18N
+
+        help.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+        help.setMnemonic(KeyEvent.VK_H);
 
         documentation.setText("Documentation");
+        documentation.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+        documentation.setMnemonic(KeyEvent.VK_D);
         help.add(documentation);
+
+        /* Added in action listener and its method for documentation MenuItem. */
+        documentation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                documentationActionPerformed(evt);
+            }
+        });
+        /* Added in the About JMenuItem, its Action Listener and its method. */
+        about.setText("About...");
+        about.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+        about.setMnemonic(KeyEvent.VK_A);
+        help.add(about);
+
+        about.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutActionPerformed(evt);
+            }
+        });
 
         menuBar.add(help);
 
@@ -467,8 +630,62 @@ public class AMPGUI extends JFrame {
         pack();
     }// </editor-fold>
 
+
+/*    //songQueue = new Song[1];
+    //numSongs = 0;*/
+
+    /*   This method is an Action Event to open our documentation PDF file
+     This may subject to change. I will see if I can adjust this to
+     open in a web browser or some other method to open externally.
+     Otherwise, this will be left as is.*/
+    private void documentationActionPerformed(java.awt.event.ActionEvent evt) {
+        if (Desktop.isDesktopSupported()) {
+            try {
+                File docFile = new File("documentation/AMP_Documentation.pdf");
+                Desktop.getDesktop().open(docFile);
+            } catch (IOException ex) {
+                // no application registered for PDFs
+            }
+        }
+    }
+
+    // Updated this JFrame. Need to retest Internal JFrame again later on.
+    private void aboutActionPerformed(java.awt.event.ActionEvent evt) {
+        JFrame abtFrame = new JFrame();
+        JPanel abtPane = new JPanel();
+        JPanel rows = new JPanel();
+
+        abtFrame.setTitle("About AMP");
+        abtFrame.setSize(500,125);
+        JLabel abtLbl = new JLabel(" AMP (Athlete Music Player) is a DJ application created for Carroll College’s sports programs.");
+        JLabel createdByLbl = new JLabel(" AMP was created by Rakiah Grende, Robert Hereth, and Elaine Schultz.");
+        JLabel copyRightLbl = new JLabel(" @ 2023 Carroll College.");
+
+        // Add in the components
+        abtPane.setLayout(new BorderLayout());
+        abtPane.setLayout(new GridLayout(3, 1));
+        abtFrame.add(abtPane, BorderLayout.CENTER); // add the panel in the frame
+        rows.setLayout(new GridLayout(3, 1));
+        rows.add(abtLbl);
+        rows.add(createdByLbl);
+        rows.add(copyRightLbl);
+
+        abtFrame.add(rows, BorderLayout.CENTER);
+        abtFrame.setResizable(false);
+        abtFrame.setVisible(true);
+        abtFrame.setAlwaysOnTop(true);
+        abtFrame.setLocationRelativeTo(null);
+    }
+
+    // An action to perform Exit application.
+    private void exitActionPerformed(java.awt.event.ActionEvent evt) {
+        System.exit(0);
+    }
+
+
     private void stopPlaying(boolean clearSong) {
         //stops audio line
+
         if (player != null) {
             Player p = player;
             player = null;
@@ -584,6 +801,7 @@ public class AMPGUI extends JFrame {
         t.start();
     }
 
+
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt){
         //code for back button
         if (player != null) {
@@ -625,7 +843,20 @@ public class AMPGUI extends JFrame {
         if (player != null) {
             float value = volume/100.0f;
             float dB = (float)(Math.log(value)/Math.log(10.0)*20.0);
-            player.setVolume(dB);
+            player.getClass();
+
+/*          player.setVolume(dB);
+            (3/31/23)This does not work on my end. I get 1 error that says:
+
+            C:\Users\ELTECH\IdeaProjects\AMP\src\ampcc\com\AMPGUI.java:483:19
+            java: cannot find symbol
+            symbol:   method setVolume(float)
+            location: variable player of type javazoom.jl.player.Player
+
+            So, I had to gray this out for now.
+            Hence, the volume slider does not work when it is gray out.
+*/
+
         }
 
     }
@@ -654,10 +885,12 @@ public class AMPGUI extends JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
+        UIManager.put( "Component.hideMnemonics", false ); // This sets Mnemonics visible, because flatlaf defaults as hidden.
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    new FlatLightLaf().setup(); // This sets as light mode by default. Must keep this here.
                     break;
                 }
             }
@@ -680,7 +913,6 @@ public class AMPGUI extends JFrame {
     }
     //</editor-fold>
     //</editor-fold>
-
 
     Runnable runnablePlay = new Runnable() {
          @Override
@@ -741,19 +973,47 @@ public class AMPGUI extends JFrame {
          return played;
      }
 
+    // The inner class for Theme Mode selection with Action Listener.
+    private class ThemeModeHandler implements ActionListener {
+
+        // Process the theme selection.
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            // The process for color selection.
+            for (int count = 0; count < themeItems.length; count++) {
+                if (themeItems[0].isSelected()) {
+                    FlatLightLaf.setup();
+                    // create UI here...
+                    updateUILater();
+                } // Ends first if statement.
+                else if (themeItems[1].isSelected()) {
+                    FlatMacDarkLaf.setup();
+                    // create UI here...
+                    updateUILater();
+                } // Ends second else if statement.
+            } // Ends the for loop.
+        } // Ends actionPerformed event listener.
+    } // Ends ThemeModeHandler inner class.
+
     // Variables declaration - do not modify
     private javax.swing.JMenuItem add;
     private javax.swing.JButton backButton;
     private javax.swing.JScrollPane backPanel;
     private javax.swing.JPanel backPanel2;
     private javax.swing.JMenuItem clip;
-    private javax.swing.JMenuItem create;
+
+    private javax.swing.JMenu create;  // Changed from JMenuItem to JMenu.
     private javax.swing.JButton clearButton;
     private javax.swing.JMenuItem documentation;
+    private javax.swing.JMenuItem about;
     private javax.swing.JMenu edit;
+    private javax.swing.JMenuItem addPlaylist; // Added in add and remove playlist JMenuItems. 04282023 -ES
+    private javax.swing.JMenuItem removePlaylist;
     private javax.swing.JButton fadeButton;
     private javax.swing.JMenu file;
     private javax.swing.JMenu help;
+    private javax.swing.JMenu preferences;
+    private javax.swing.JMenu theme; // changed to JMenu.
     private javax.swing.JMenuItem importSong;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton library;
@@ -778,9 +1038,15 @@ public class AMPGUI extends JFrame {
     private javax.swing.JButton stopButton;
     private javax.swing.JMenuItem tags;
     private javax.swing.JSlider volume;
+
+    private javax.swing.JMenuItem newPlaylist; // added in JMenuItems for Import.
+    private javax.swing.JMenuItem newTag;
+    private javax.swing.JMenuItem newScreen;
+    private javax.swing.JMenuItem newSong;
+    private javax.swing.JMenuItem exit; // added in Exit JMenuItem.
+
     private javax.swing.JLabel volumeDown;
     private javax.swing.JLabel volumeUp;
+
     // End of variables declaration
 }
-
-

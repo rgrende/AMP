@@ -25,5 +25,13 @@
         <SOURCES />
       </library>
     </orderEntry>
+
+    <orderEntry type="library" name="jl1.0.1" level="project" />
+    <orderEntry type="library" name="jlayer-1.0.1" level="project" />
+    <orderEntry type="library" name="jl1.0.1" level="application" />
+    <orderEntry type="library" name="h2-2.1.214" level="application" />
+    <orderEntry type="library" name="flatlaf-3.1" level="project" />
+    <orderEntry type="library" name="h2-2.1.214" level="project" />
+
   </component>
 </module>
