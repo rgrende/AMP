@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.Arrays;
-import java.util.List;
 
 /*
 This is a basic Java music player that uses Swing, Awt, io, and JLayer.
