@@ -1022,6 +1022,9 @@ public class AMPGUI extends JFrame {
         musicFiles.remove(musicFileIndex);
     }
 
+    /**
+     * 
+     */
     private void addSong() {
         int index = playlistList.getSelectedIndex();
         String s_name = playlistList.getModel().getElementAt(playlistList.getSelectedIndex());
