@@ -30,6 +30,7 @@ public class DBTools {
         t.addArtist("17","Billy Joel");
         t.addPlaylist("17","Intermission");
         t.addSong("17","17","Piano Man","123","1980","songs/Piano Man.mp3");
+        System.out.println(t.getSongPath("Piano Man"));
     }
 
     public static void test() {
@@ -101,9 +102,16 @@ public class DBTools {
         return arrayLine(line);
     }
 
-    public String[][] getSongPath(String s_name) {
+    public String getSongPath(String s_name) {
         String line = "SELECT file_path FROM Song WHERE Song.song_name = '" + s_name + "';";
-        return arrayLine(line);
+        String[][] result =  arrayLine(line);
+        String path = "";
+        for (String[] row : result) {
+            for (String s : row) {
+                path = s;
+            }
+        }
+        return path;
     }
 
     public void addPlaylist(String p_id, String p_name) {
