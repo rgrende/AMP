@@ -15,6 +15,7 @@ public class DBTools {
 
     public static void main(String[] args) {
         initialize();
+        modMethods();
         test();
     }
 
@@ -22,6 +23,13 @@ public class DBTools {
         DBTools t = new DBTools();
         t.runScript("scripts/AMPddl.txt");
         t.runScript("scripts/testdata.txt");
+    }
+
+    public static void modMethods() {
+        DBTools t = new DBTools();
+        t.addArtist("17","Billy Joel");
+        t.addPlaylist("17","Intermission");
+        t.addSong("17","17","Piano Man","123","1980","songs/Piano Man.mp3");
     }
 
     public static void test() {
