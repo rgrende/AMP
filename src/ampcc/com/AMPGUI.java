@@ -163,8 +163,8 @@ public class AMPGUI extends JFrame {
         setBackground(new Color(0, 0, 0));
         backPanel2.setBackground(new Color(242, 242, 242));
 
-        JMenuItem removeSong = new JMenuItem("Remove Song");
-        JMenuItem addSong = new JMenuItem("Add Song");
+        JMenuItem removeSong = new JMenuItem("Remove");
+        JMenuItem addSong = new JMenuItem("Add");
         popupMenuPL.add(addSong);
         popupMenuCQ.add(removeSong);
 
@@ -173,6 +173,31 @@ public class AMPGUI extends JFrame {
         playlistList.setTransferHandler(new TransferHandler(){
         //potential drag and drop
         });
+        playlistList.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    maybeShowPopup2(e);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
         playlistList.setModel(new AbstractListModel<String>() {
             final String[] strings = {""};
 
@@ -184,6 +209,8 @@ public class AMPGUI extends JFrame {
                 return strings[i];
             }
         });
+
+
         jScrollPane2.setViewportView(playlistList);
 
         GroupLayout backPanel2Layout = new GroupLayout(backPanel2);
@@ -241,8 +268,7 @@ public class AMPGUI extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    System.out.println("Right-click");
-                    maybeShowPopup(e);
+                    maybeShowPopup1(e);
                 }
             }
 
@@ -998,20 +1024,28 @@ public class AMPGUI extends JFrame {
 
     private void addSong() {
         int index = playlistList.getSelectedIndex();
-        //String s_name = playlistSongs.getModel().getElementAt(playlist.getSelectedIndex());
+        String s_name = playlistList.getModel().getElementAt(playlistList.getSelectedIndex());
         DBTools db = new DBTools();
-        //String filepath = db.getSongPath(s_name);
-        //take filename, get song, load into queue.
+        String filepath = db.getSongPath(s_name);
+        //TODO: know the location, get the file at the filepath and throw into the queue
+        //TODO: take filename, get song, load into queue.
     }
 
     /**
      * This method shows a popup menu in the current queue with an option to delete the selected song in the queue.
      * @param e
      */
-    private void maybeShowPopup(MouseEvent e){
+    private void maybeShowPopup1(MouseEvent e){
         //code for popup menu in current queue
         if (e.isPopupTrigger()) {
             popupMenuCQ.show(e.getComponent(),
+                    e.getX(),e.getY());
+        }
+    }
+    private void maybeShowPopup2(MouseEvent e){
+        //code for popup menu in current queue
+        if (e.isPopupTrigger()) {
+            popupMenuPL.show(e.getComponent(),
                     e.getX(),e.getY());
         }
     }
