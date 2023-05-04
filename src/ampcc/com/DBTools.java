@@ -93,6 +93,29 @@ public class DBTools {
         return arrayLine(line);
     }
 
+    public String[][] getSongPath(String s_name) {
+        String line = "SELECT file_path FROM Song WHERE Song.song_name = '" + s_name + "';";
+        return arrayLine(line);
+    }
+
+    public void addPlaylist(String p_id, String p_name) {
+        String line = "INSERT INTO Playlist(id,playlist_name) VALUES " +
+                "(" + p_id + ", '" + p_name + "');";
+        runLine(line);
+    }
+
+    public void addArtist(String a_id, String a_name) {
+        String line = "INSERT INTO Artist(id,artist_name) VALUES " +
+                "(" + a_id + ", '" + a_name + "');";
+        runLine(line);
+    }
+
+    public void addSong(String s_id, String artist_id, String s_name, String s_length, String release_year, String file_path) {
+        String line = "INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES " +
+                "(" + s_id + ", " + artist_id + ", '" + s_name + "', " + s_length + ", " + release_year + ", '" + file_path + "');";
+        runLine(line);
+    }
+
     private void run(int flag, String line) {
         if (flag == 1) {
             runLine(line);

@@ -20,25 +20,25 @@ INSERT INTO Artist(id,artist_name) VALUES
     (7, 'Darius Rucker');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (1,1,'DO IT ALL THE TIME',167,2018,'songfilepath');
+    (1,1,'DO IT ALL THE TIME',167,2018,'songs/IDKHOW - Do It All The Time.mp3');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (2,2,'I Want It That Way',213,2001,'songfilepath');
+    (2,2,'I Want It That Way',213,2001,'songs/I Want It That Way.mp3');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (3,3,'Iris',289,2007,'songfilepath');
+    (3,3,'Iris',289,2007,'songs/Iris.mp3');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (4,4,'Safe and Sound',192,2013,'songfilepath');
+    (4,4,'Safe and Sound',192,2013,'songs/Safe And Sound.mp3');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (5,5,'Shut Up and Dance',199,2014,'songfilepath');
+    (5,5,'Shut Up and Dance',199,2014,'songs/Shut Up and Dance.mp3');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (6,6,'Titanium (feat. Sia)',245,2011,'songfilepath');
+    (6,6,'Titanium (feat. Sia)',245,2011,'songs/Titanium (feat  Sia).mp3');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (7,7,'Wagon Wheel',298,2013,'songfilepath');
+    (7,7,'Wagon Wheel',298,2013,'songs/Wagon Wheel.mp3');
 
 INSERT INTO Playlist(id,playlist_name) VALUES
     (1,'Football');
