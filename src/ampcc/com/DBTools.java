@@ -109,19 +109,19 @@ public class DBTools {
     public void addPlaylist(String p_id, String p_name) {
         String line = "INSERT INTO Playlist(id,playlist_name) VALUES " +
                 "(" + p_id + ", '" + p_name + "');";
-        runLine(line);
+        execLine(line);
     }
 
     public void addArtist(String a_id, String a_name) {
         String line = "INSERT INTO Artist(id,artist_name) VALUES " +
                 "(" + a_id + ", '" + a_name + "');";
-        runLine(line);
+        execLine(line);
     }
 
     public void addSong(String s_id, String artist_id, String s_name, String s_length, String release_year, String file_path) {
         String line = "INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES " +
                 "(" + s_id + ", " + artist_id + ", '" + s_name + "', " + s_length + ", " + release_year + ", '" + file_path + "');";
-        runLine(line);
+        execLine(line);
     }
 
     private void run(int flag, String line) {
@@ -205,6 +205,18 @@ public class DBTools {
             Statement stat = conn.createStatement(TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY);
             ResultSet results = stat.executeQuery(line);
             printResults(results);
+            stat.close();
+            conn.close();
+        } catch(Exception ex){
+            System.out.println("ERROR: " + ex.getMessage());
+        }
+    }
+
+    public void execLine(String line) {
+        try {
+            Connection conn = DriverManager.getConnection(this.DB_URL);
+            Statement stat = conn.createStatement(TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY);
+            stat.execute(line);
             stat.close();
             conn.close();
         } catch(Exception ex){
