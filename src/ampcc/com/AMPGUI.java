@@ -152,7 +152,9 @@ public class AMPGUI extends JFrame {
         exit = new JMenuItem(); // added in exit JMenuItem.
         volumeUp = new JLabel();
         muteButton = new JToggleButton();
-        popupMenu = new JPopupMenu();
+        popupMenuCQ = new JPopupMenu();
+        popupMenuPL = new JPopupMenu();
+        createPopupMenu = new JPopupMenu();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBackground(new Color(0, 0, 0));
@@ -161,10 +163,15 @@ public class AMPGUI extends JFrame {
         setBackground(new Color(0, 0, 0));
         backPanel2.setBackground(new Color(242, 242, 242));
 
+        JMenuItem removeSong = new JMenuItem("Remove Song");
+        JMenuItem addSong = new JMenuItem("Add Song");
+        popupMenuPL.add(addSong);
+        popupMenuCQ.add(removeSong);
+
         playlistList.setBackground(new Color(102, 102, 102));
         playlistList.setDragEnabled(true);
         playlistList.setTransferHandler(new TransferHandler(){
-
+        //potential drag and drop
         });
         playlistList.setModel(new AbstractListModel<String>() {
             final String[] strings = {""};
@@ -210,8 +217,6 @@ public class AMPGUI extends JFrame {
         scrollPane.setBackground(new Color(51, 51, 51));
         scrollPane.setForeground(new Color(51, 51, 51));
 
-        JMenuItem removeSong = new JMenuItem("Remove Song");
-        popupMenu.add(removeSong);
         /*
         if (removeSong.isEnabled()){
             removeSong();
@@ -407,11 +412,23 @@ public class AMPGUI extends JFrame {
         create.add(newTag);
         create.add(newScreen);
         create.add(newSong);
+        create.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
 
         importSong.setText("Import");
         importSong.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         importSong.setMnemonic(KeyEvent.VK_R); // Added in Mnemonic to r.
         file.add(importSong);
+        importSong.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                libraryActionPerformed(e);
+            }
+        });
 
         // Added in the Exit application JMenuItem.
         exit.setText("Exit");
@@ -751,7 +768,6 @@ public class AMPGUI extends JFrame {
      * @param evt
      */
     private void playlistMouseClicked(MouseEvent evt) {
-        //if (evt.getButton() == 1) {
         String p_name = playlist.getModel().getElementAt(playlist.getSelectedIndex());
         DBTools db = new DBTools();
         String[][] pid = db.getPlaylistID(p_name);
@@ -980,6 +996,14 @@ public class AMPGUI extends JFrame {
         musicFiles.remove(musicFileIndex);
     }
 
+    private void addSong() {
+        int index = playlistList.getSelectedIndex();
+        //String s_name = playlistSongs.getModel().getElementAt(playlist.getSelectedIndex());
+        DBTools db = new DBTools();
+        //String filepath = db.getSongPath(s_name);
+        //take filename, get song, load into queue.
+    }
+
     /**
      * This method shows a popup menu in the current queue with an option to delete the selected song in the queue.
      * @param e
@@ -987,7 +1011,7 @@ public class AMPGUI extends JFrame {
     private void maybeShowPopup(MouseEvent e){
         //code for popup menu in current queue
         if (e.isPopupTrigger()) {
-            popupMenu.show(e.getComponent(),
+            popupMenuCQ.show(e.getComponent(),
                     e.getX(),e.getY());
         }
     }
@@ -1164,6 +1188,8 @@ private class ThemeModeHandler implements ActionListener {
     private javax.swing.JMenuItem newSong;
     private javax.swing.JMenuItem exit; // added in Exit JMenuItem
     private javax.swing.JLabel volumeUp;
-    private javax.swing.JPopupMenu popupMenu;
+    private javax.swing.JPopupMenu popupMenuCQ;
+    private javax.swing.JPopupMenu popupMenuPL;
+    private javax.swing.JPopupMenu createPopupMenu;
     // End of variables declaration
 }
