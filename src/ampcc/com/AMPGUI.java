@@ -15,6 +15,8 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
+import org.h2.command.ddl.DeallocateProcedure;
+
 import javax.swing.*;
 import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
@@ -82,9 +84,7 @@ public class AMPGUI extends JFrame {
     private final List<File> musicFiles = new ArrayList<>();
     private int musicFileIndex = 0;
     private DefaultListModel songsToPlay;
-    private DefaultListModel playlistSongs;
     private final DBTools db = new DBTools();
-
     /**
      * Creates new form m
      */
@@ -102,7 +102,6 @@ public class AMPGUI extends JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
-        DBTools internalDB = new DBTools();
         backPanel2 = new JPanel();
         jScrollPane2 = new JScrollPane();
         playlistList = new JList<>();
@@ -166,7 +165,19 @@ public class AMPGUI extends JFrame {
         JMenuItem removeSong = new JMenuItem("Remove");
         JMenuItem addSong = new JMenuItem("Add");
         popupMenuPL.add(addSong);
+        addSong.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addSong();
+            }
+        });
         popupMenuCQ.add(removeSong);
+        removeSong.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeSong();
+            }
+        });
 
         playlistList.setBackground(new Color(102, 102, 102));
         playlistList.setDragEnabled(true);
@@ -181,7 +192,7 @@ public class AMPGUI extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    maybeShowPopup2(e);
+                    showPopup2(e);
                 }
             }
 
@@ -244,13 +255,6 @@ public class AMPGUI extends JFrame {
         scrollPane.setBackground(new Color(51, 51, 51));
         scrollPane.setForeground(new Color(51, 51, 51));
 
-        /*
-        if (removeSong.isEnabled()){
-            removeSong();
-        }
-
-         */
-
         songsToPlay = new DefaultListModel();
         songQueue.setModel(songsToPlay);
         songQueue.addMouseListener(new MouseListener() {
@@ -264,11 +268,10 @@ public class AMPGUI extends JFrame {
                     playThread.start();
                 }
         }
-
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    maybeShowPopup1(e);
+                    showPopup1(e);
                 }
             }
 
@@ -290,7 +293,6 @@ public class AMPGUI extends JFrame {
 
         scrollPane.setViewportView(songQueue);
 
-
         shuffleButton.setFont(new Font("Helvetica", 0, 18)); // NOI18N
         shuffleButton.setText("Shuffle");
         shuffleButton.addActionListener(new ActionListener() {
@@ -300,14 +302,14 @@ public class AMPGUI extends JFrame {
         });
 
         queueLabel.setFont(new Font("Helvetica", 0, 24)); // NOI18N
-        queueLabel.setText("   Current Queue");
+        queueLabel.setText("    Current Queue");
 
         playlist.setBackground(new Color(153, 153, 153));
         playlist.setBorder(null);
         playlist.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         playlist.setForeground(new Color(255, 255, 255));
         playlist.setModel(new AbstractListModel<String>() {
-            final String[] strings = internalDB.getPlaylistNames();
+            final String[] strings = db.getPlaylistNames();
 
             public int getSize() {
                 return strings.length;
@@ -643,7 +645,7 @@ public class AMPGUI extends JFrame {
                                                                         .addComponent(library, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE)))))
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(111, 111, 111)
-                                                .addComponent(queueLabel, GroupLayout.PREFERRED_SIZE, 183, GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(queueLabel, GroupLayout.PREFERRED_SIZE, 233, GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(174, 174, 174)
                                                 .addComponent(clearButton, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE))
@@ -662,7 +664,7 @@ public class AMPGUI extends JFrame {
                                                                 .addGap(30, 30, 30)
                                                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                                                         .addComponent(nowPlaying, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(songName, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)))
+                                                                        .addComponent(songName, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)))
                                                         .addGroup(layout.createSequentialGroup()
                                                                 .addContainerGap()
                                                                 .addComponent(muteButton, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)))
@@ -795,7 +797,6 @@ public class AMPGUI extends JFrame {
      */
     private void playlistMouseClicked(MouseEvent evt) {
         String p_name = playlist.getModel().getElementAt(playlist.getSelectedIndex());
-        DBTools db = new DBTools();
         String[][] pid = db.getPlaylistID(p_name);
         String id = "";
         for (String[] r : pid) {
@@ -910,7 +911,7 @@ public class AMPGUI extends JFrame {
         Runnable fadeRunnable = new Runnable() {
             @Override
             public void run() {
-                float decrease = currentVolume / 20; //slow down every quarter second by 1/20 for five seconds
+                float decrease = currentVolume / 12; //slow down every quarter second by 1/20 for three seconds
                 float origVolume = currentVolume;
                 while (currentVolume > 0) {
                     volumeControl(currentVolume - decrease);
@@ -975,6 +976,10 @@ public class AMPGUI extends JFrame {
         //code for clear button
         musicFiles.clear();
         updateQueue();
+        if (player.equals(0)){
+            songName.setText("");
+        }
+        //TODO: set text to be null if queue and player are empty.
     }
 
     /**
@@ -1015,37 +1020,46 @@ public class AMPGUI extends JFrame {
      *
      */
     private void removeSong() {
-        int index = songQueue.getSelectedIndex();
-        if (index != -1) {
-            songsToPlay.remove(index);
+        int[] selectedIndices = songQueue.getSelectedIndices();
+        for (int i = selectedIndices.length-1; i >=0; i--) {
+            musicFiles.remove(selectedIndices[i]);
         }
-        musicFiles.remove(musicFileIndex);
+        updateQueue();
     }
 
     /**
-     * 
+     *
      */
     private void addSong() {
-        int index = playlistList.getSelectedIndex();
-        String s_name = playlistList.getModel().getElementAt(playlistList.getSelectedIndex());
-        DBTools db = new DBTools();
-        String filepath = db.getSongPath(s_name);
-        //TODO: know the location, get the file at the filepath and throw into the queue
-        //TODO: take filename, get song, load into queue.
+        for (int index : playlistList.getSelectedIndices()) {
+            String songName = playlistList.getModel().getElementAt(index);
+            String filepath = db.getSongPath(songName);
+            musicFiles.add(new File(filepath));
+        }
+        updateQueue();
+    }
+
+    private void importSongToPlaylist() {
+        for (int index : playlistList.getSelectedIndices()) {
+            String songName = playlistList.getModel().getElementAt(index);
+            String filepath = db.getSongPath(songName);
+            musicFiles.add(new File(filepath));
+        }
+        updateQueue();
     }
 
     /**
      * This method shows a popup menu in the current queue with an option to delete the selected song in the queue.
      * @param e
      */
-    private void maybeShowPopup1(MouseEvent e){
+    private void showPopup1(MouseEvent e){
         //code for popup menu in current queue
         if (e.isPopupTrigger()) {
             popupMenuCQ.show(e.getComponent(),
                     e.getX(),e.getY());
         }
     }
-    private void maybeShowPopup2(MouseEvent e){
+    private void showPopup2(MouseEvent e){
         //code for popup menu in current queue
         if (e.isPopupTrigger()) {
             popupMenuPL.show(e.getComponent(),
