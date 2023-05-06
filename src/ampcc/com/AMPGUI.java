@@ -65,6 +65,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import javax.swing.TransferHandler;
+
+import static ampcc.com.DBTools.initialize;
+import static ampcc.com.DBTools.test;
 import static com.formdev.flatlaf.FlatLaf.updateUILater;
 
 /**
@@ -128,6 +131,7 @@ public class AMPGUI extends JFrame {
         nowPlaying = new Label();
         playButton = new JButton();
         stopButton = new JButton();
+        addSongsButton = new JButton();
         songName = new JLabel();
         song = new JProgressBar();
         library = new JButton();
@@ -194,7 +198,6 @@ public class AMPGUI extends JFrame {
                 importSongToPlaylist();
             }
         });
-
 
         playlistList.setBackground(new Color(102, 102, 102));
         playlistList.setDragEnabled(true);
@@ -456,6 +459,15 @@ public class AMPGUI extends JFrame {
                 } else {
                     volumeControl(volume.getValue());
                 }
+            }
+        });
+
+        addSongsButton.setFont(new Font("Helvetica Neue", 0, 18));
+        addSongsButton.setText("Add to Queue");
+        addSongsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addSong();
             }
         });
 
@@ -814,20 +826,22 @@ public class AMPGUI extends JFrame {
      * @param evt
      */
     private void importSongActionPerformed(java.awt.event.ActionEvent evt){
+        initialize();
+        test();
+
         JFrame importFrame = new JFrame();
         JPanel importPane = new JPanel();
         JPanel rows = new JPanel();
 
         importFrame.setTitle("Import Songs");
         importFrame.setSize(400, 400);
-        JLabel abtLbl = new JLabel(" Choose songs to import.");
+
 
         // Add in the components
         importPane.setLayout(new BorderLayout());
         importPane.setLayout(new GridLayout(3, 1));
         importFrame.add(importPane, BorderLayout.CENTER); // add the panel in the frame
         rows.setLayout(new GridLayout(3, 1));
-        rows.add(abtLbl);
 
         importFrame.add(rows, BorderLayout.CENTER);
         importFrame.setResizable(false);
@@ -1310,6 +1324,7 @@ public class AMPGUI extends JFrame {
     private javax.swing.JToggleButton muteButton;
     private javax.swing.JLabel songName;
     private javax.swing.JButton stopButton;
+    private javax.swing.JButton addSongsButton;
     private javax.swing.JMenuItem tags;
     private javax.swing.JSlider volume;
     private javax.swing.JMenuItem newPlaylist; // added in JMenuItems for Import.
@@ -1324,3 +1339,12 @@ public class AMPGUI extends JFrame {
     private javax.swing.JPopupMenu createPopupMenu;
     // End of variables declaration
 }
+
+    /**
+     *  Next Years ToDos:
+     *  - create new relative GUI
+     *  - add logo
+     *  - drag and drop
+     *  - look into changing player (song time, pause, etc)
+     */
+
