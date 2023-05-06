@@ -1,6 +1,13 @@
 //Rakiah Grende, Robert Hereth, Elaine Schultz
 //CS-430-A-2023SP Senior Project
 //Professor Nate Williams
+/**
+ * This is the Spring 2023 Senior Project program that mimics that of Sound Director. Sound Director is an application
+ * that many schools use as their main media source for sporting events. The Carroll College Athletic Department uses
+ * an older version of Sound Director currently and is open to the idea of switching to a different program. The goal of
+ * this project was to create a music player with all the best features of Sound Director and then add new desired
+ * features as well.
+ */
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -103,7 +110,7 @@ public class AMPGUI extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
         backPanel2 = new JPanel();
-        jScrollPane2 = new JScrollPane();
+        scrollPane2 = new JScrollPane();
         playlistList = new JList<>();
         //for (String pl : db.getPlaylistNames()) {playlistList.add(new javax.swing.JLabel(pl));}
         playlists = new JLabel();
@@ -153,7 +160,7 @@ public class AMPGUI extends JFrame {
         muteButton = new JToggleButton();
         popupMenuCQ = new JPopupMenu();
         popupMenuPL = new JPopupMenu();
-        createPopupMenu = new JPopupMenu();
+        playlistPopupMenu = new JPopupMenu();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBackground(new Color(0, 0, 0));
@@ -162,8 +169,9 @@ public class AMPGUI extends JFrame {
         setBackground(new Color(0, 0, 0));
         backPanel2.setBackground(new Color(242, 242, 242));
 
-        JMenuItem removeSong = new JMenuItem("Remove");
-        JMenuItem addSong = new JMenuItem("Add");
+        JMenuItem removeSong = new JMenuItem("Remove from Queue");
+        JMenuItem addSong = new JMenuItem("Add to Queue");
+        JMenuItem importSongsToPlaylist = new JMenuItem("Import Songs");
         popupMenuPL.add(addSong);
         addSong.addActionListener(new ActionListener() {
             @Override
@@ -178,11 +186,20 @@ public class AMPGUI extends JFrame {
                 removeSong();
             }
         });
+        playlistPopupMenu.add(importSongsToPlaylist);
+        importSongsToPlaylist.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                importSongActionPerformed(e);
+                importSongToPlaylist();
+            }
+        });
+
 
         playlistList.setBackground(new Color(102, 102, 102));
         playlistList.setDragEnabled(true);
         playlistList.setTransferHandler(new TransferHandler(){
-        //potential drag and drop
+            //potential drag and drop
         });
         playlistList.addMouseListener(new MouseListener() {
             @Override
@@ -222,7 +239,7 @@ public class AMPGUI extends JFrame {
         });
 
 
-        jScrollPane2.setViewportView(playlistList);
+        scrollPane2.setViewportView(playlistList);
 
         GroupLayout backPanel2Layout = new GroupLayout(backPanel2);
         backPanel2.setLayout(backPanel2Layout);
@@ -230,14 +247,14 @@ public class AMPGUI extends JFrame {
                 backPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(backPanel2Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane2)
+                                .addComponent(scrollPane2)
                                 .addContainerGap())
         );
         backPanel2Layout.setVerticalGroup(
                 backPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(GroupLayout.Alignment.TRAILING, backPanel2Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+                                .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
                                 .addContainerGap())
         );
 
@@ -267,7 +284,7 @@ public class AMPGUI extends JFrame {
                     playThread = new Thread(runnablePlay);
                     playThread.start();
                 }
-        }
+            }
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON3) {
@@ -322,6 +339,34 @@ public class AMPGUI extends JFrame {
         playlist.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 playlistMouseClicked(evt);
+            }
+        });
+        playlist.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    showPopup3(e);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
             }
         });
         backPanel.setViewportView(playlist);
@@ -443,7 +488,7 @@ public class AMPGUI extends JFrame {
         create.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
             }
         });
 
@@ -453,6 +498,7 @@ public class AMPGUI extends JFrame {
         file.add(importSong);
         importSong.addActionListener(new ActionListener() {
             @Override
+            //this is the wrong way of importing music
             public void actionPerformed(ActionEvent e) {
                 libraryActionPerformed(e);
             }
@@ -741,7 +787,7 @@ public class AMPGUI extends JFrame {
         JPanel rows = new JPanel();
 
         abtFrame.setTitle("About AMP");
-        abtFrame.setSize(500, 125);
+        abtFrame.setSize(700, 155);
         JLabel abtLbl = new JLabel(" AMP (Athlete Music Player) is a DJ application created for Carroll College’s sports programs.");
         JLabel createdByLbl = new JLabel(" AMP was created by Rakiah Grende, Robert Hereth, and Elaine Schultz.");
         JLabel copyRightLbl = new JLabel(" @ 2023 Carroll College.");
@@ -763,7 +809,35 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-    An action to perform Exit application.
+     * This is the method that shows the JOptionPane associated with the popup JMenu for the screens located on the far
+     * left of the GUI.
+     * @param evt
+     */
+    private void importSongActionPerformed(java.awt.event.ActionEvent evt){
+        JFrame importFrame = new JFrame();
+        JPanel importPane = new JPanel();
+        JPanel rows = new JPanel();
+
+        importFrame.setTitle("Import Songs");
+        importFrame.setSize(400, 400);
+        JLabel abtLbl = new JLabel(" Choose songs to import.");
+
+        // Add in the components
+        importPane.setLayout(new BorderLayout());
+        importPane.setLayout(new GridLayout(3, 1));
+        importFrame.add(importPane, BorderLayout.CENTER); // add the panel in the frame
+        rows.setLayout(new GridLayout(3, 1));
+        rows.add(abtLbl);
+
+        importFrame.add(rows, BorderLayout.CENTER);
+        importFrame.setResizable(false);
+        importFrame.setVisible(true);
+        importFrame.setAlwaysOnTop(true);
+        importFrame.setLocationRelativeTo(null);
+    }
+
+    /**
+     An action to perform Exit application.
      */
     private void exitActionPerformed(java.awt.event.ActionEvent evt) {
         System.exit(0);
@@ -771,7 +845,7 @@ public class AMPGUI extends JFrame {
 
     /**
      This method stops the player at its current position and changes the play icon to pause. Used to pause songs in the
-    queue.
+     queue.
      */
     private void stopPlaying(boolean clearSong) {
         //stops audio line
@@ -824,14 +898,14 @@ public class AMPGUI extends JFrame {
                 return strings[i];
             }
         });
-        jScrollPane2.setViewportView(playlistList);
+        scrollPane2.setViewportView(playlistList);
 
     }
 
     /**
-    This method allows users to choose what types of music to play within their local machine. If the user have .mp3
-    files on their local machine, they will be options for the user to choose to select to add the program. After
-    selecting the desired songs, the current queue will populate with those songs.
+     This method allows users to choose what types of music to play within their local machine. If the user have .mp3
+     files on their local machine, they will be options for the user to choose to select to add the program. After
+     selecting the desired songs, the current queue will populate with those songs.
      @param evt
      */
     private void libraryActionPerformed(java.awt.event.ActionEvent evt) {
@@ -847,7 +921,7 @@ public class AMPGUI extends JFrame {
         }
         //update GUi
     }
-
+/*
     private boolean importSongs(TransferHandler.TransferSupport songs) {
         if (playlistList != null) {
             JList playlistList = (JList) songs.getComponent();
@@ -859,9 +933,10 @@ public class AMPGUI extends JFrame {
         }
         return true;
     }
+ */
     /**
-    This method is responsible for the play button and its functionality. If the user presses the play JButton the
-    first song in the current queue will play. After a song is paused, this method will resume the song.
+     This method is responsible for the play button and its functionality. If the user presses the play JButton the
+     first song in the current queue will play. After a song is paused, this method will resume the song.
      @param evt
      */
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -881,8 +956,8 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-    This method is linked to the stop button in the program. If the user clicks the JButton labeled "stop" and there is
-    song currently playing, the song will stop.
+     This method is linked to the stop button in the program. If the user clicks the JButton labeled "stop" and there is
+     song currently playing, the song will stop.
      */
     private void stopButtonActionPerformed() {
         //code for stop button
@@ -890,8 +965,8 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-    This method randomized the songs in the current queue using java's random import and then updates the queue after
-    the songs have been randomized.
+     This method randomized the songs in the current queue using java's random import and then updates the queue after
+     the songs have been randomized.
      @param evt
      */
     private void shuffleButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -901,9 +976,9 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-    One of the requirements for the program. This method allows the user to fade OUT of the current song that is being
-    played. It has its own runnable as it relies on a new thread to end the song. The method essentially decreases the
-    volume by a quarter of a second over a five-second duration period.
+     One of the requirements for the program. This method allows the user to fade OUT of the current song that is being
+     played. It has its own runnable as it relies on a new thread to end the song. The method essentially decreases the
+     volume by a quarter of a second over a five-second duration period.
      @param evt
      */
     private void fadeButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -930,10 +1005,10 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-    This method is responsible for the back button and allows the user to go back to a previous song in the queue as this
-    method also keeps track of song position.
+     This method is responsible for the back button and allows the user to go back to a previous song in the queue as this
+     method also keeps track of song position.
      @param evt
-    */
+     */
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //code for back button
         if (player != null) {
@@ -948,11 +1023,11 @@ public class AMPGUI extends JFrame {
         }
     }
     /**
-    This method is responsible for the functionality of the next button in th GUI. If the user wishes to switch songs in the
-    queue, the next button will play the next song in the next position, keeping track of all the indices of each song. Once
-    the user has reached the end of the queue, this method will circle back to the song in the first position.
+     This method is responsible for the functionality of the next button in th GUI. If the user wishes to switch songs in the
+     queue, the next button will play the next song in the next position, keeping track of all the indices of each song. Once
+     the user has reached the end of the queue, this method will circle back to the song in the first position.
      @param evt
-    */
+     */
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //code for next button
         if (player != null) {
@@ -968,24 +1043,21 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-    This method refers to the array list that keeps track of all the songs the user has selected to played in the
-    current queue. If the user wishes to clear both the array list and JList, the clear button will do so.
+     This method refers to the array list that keeps track of all the songs the user has selected to played in the
+     current queue. If the user wishes to clear both the array list and JList, the clear button will do so.
      @param evt
      */
     private void clearButtonActionPerformed(ActionEvent evt) {
         //code for clear button
         musicFiles.clear();
         updateQueue();
-        if (player.equals(0)){
-            songName.setText("");
-        }
         //TODO: set text to be null if queue and player are empty.
     }
 
     /**
-    This method controls thw volume of the program with the use of a JSlider. The volume for the jplayer library uses
-    decibels to measure sound output. It passes in a float value and if the player is not null, the volume is divided by
-    100 and then that number is plugged into the logarithmic function of log/log of base 10 * 20.
+     This method controls thw volume of the program with the use of a JSlider. The volume for the jplayer library uses
+     decibels to measure sound output. It passes in a float value and if the player is not null, the volume is divided by
+     100 and then that number is plugged into the logarithmic function of log/log of base 10 * 20.
      */
     public void volumeControl(float volume) {
         //code for volumes slider
@@ -998,9 +1070,9 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-    This method updates the current queue on the right side of the GUI. It clears the queue and allows for new songs to
-    be added and played. It strips each song of its file extension and displays the correct name in the now playing
-    JLabel.
+     This method updates the current queue on the right side of the GUI. It clears the queue and allows for new songs to
+     be added and played. It strips each song of its file extension and displays the correct name in the now playing
+     JLabel.
      */
     private void updateQueue() {
         //code that updates the current queue
@@ -1017,7 +1089,8 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     *
+     * This method removes one or more songs in the current queue when the user right clicks with the use of a pop-up
+     * JMenu."
      */
     private void removeSong() {
         int[] selectedIndices = songQueue.getSelectedIndices();
@@ -1028,7 +1101,8 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     *
+     * This method adds one or more songs from the playlists JList (middle most list) when the user right clicks on one
+     * or more songs with the use of a pop-up JMenu."
      */
     private void addSong() {
         for (int index : playlistList.getSelectedIndices()) {
@@ -1039,17 +1113,15 @@ public class AMPGUI extends JFrame {
         updateQueue();
     }
 
+    /**
+     * This method adds songs from the database into the selected playlist also with the use of a pop-up JMenu."
+     */
     private void importSongToPlaylist() {
-        for (int index : playlistList.getSelectedIndices()) {
-            String songName = playlistList.getModel().getElementAt(index);
-            String filepath = db.getSongPath(songName);
-            musicFiles.add(new File(filepath));
-        }
         updateQueue();
     }
 
     /**
-     * This method shows a popup menu in the current queue with an option to delete the selected song in the queue.
+     * The following methods show popup menus in all the JLists."
      * @param e
      */
     private void showPopup1(MouseEvent e){
@@ -1066,47 +1138,54 @@ public class AMPGUI extends JFrame {
                     e.getX(),e.getY());
         }
     }
-        /**
-         * Main method.
-         * @param args the command line arguments
-         */
-        public static void main (String[]args){
-            /* Set the Nimbus look and feel */
-            //<editor-fold default state="collapsed" desc=" Look and feel setting code (optional) ">
-            /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-             * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-             */
-            UIManager.put("Component.hideMnemonics", false); // This sets Mnemonics visible, because flatlaf defaults as hidden.
-            try {
-                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                    if ("Nimbus".equals(info.getName())) {
-                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                        new FlatLightLaf().setup(); // This sets as light mode by default. Must keep this here.
-                        break;
-                    }
-                }
-            } catch (ClassNotFoundException ex) {
-                java.util.logging.Logger.getLogger(AMPGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (InstantiationException ex) {
-                java.util.logging.Logger.getLogger(AMPGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                java.util.logging.Logger.getLogger(AMPGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-                java.util.logging.Logger.getLogger(AMPGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            }
-            java.awt.EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    AMPGUI amp = new AMPGUI();
-                    amp.setVisible(true);
-                    //amp.setMinimumSize(new Dimension(1000, 400));
-                }
-            });
+    private void showPopup3(MouseEvent e){
+        //code for popup menu in current queue
+        if (e.isPopupTrigger()) {
+            playlistPopupMenu.show(e.getComponent(),
+                    e.getX(),e.getY());
         }
+    }
     /**
-    The runnable below is the main run method of the program. It looks at what songs are in the queue, how many, and if
-    it is acceptable to play the next song. It is responsible for loading in the desired songs to the current queue by
-    importing them from the user's library, file explorer, or wherever the music files are stored on the local machine.
-    It also starts a timer, changes the name of the song being played and checks to see if the song has completed.
+     * Main method.
+     * @param args the command line arguments
+     */
+    public static void main (String[]args){
+        /* Set the Nimbus look and feel */
+        //<editor-fold default state="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+         */
+        UIManager.put("Component.hideMnemonics", false); // This sets Mnemonics visible, because flatlaf defaults as hidden.
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    new FlatLightLaf().setup(); // This sets as light mode by default. Must keep this here.
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(AMPGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(AMPGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(AMPGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(AMPGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                AMPGUI amp = new AMPGUI();
+                amp.setVisible(true);
+                //amp.setMinimumSize(new Dimension(1000, 400));
+            }
+        });
+    }
+    /**
+     The runnable below is the main run method of the program. It looks at what songs are in the queue, how many, and if
+     it is acceptable to play the next song. It is responsible for loading in the desired songs to the current queue by
+     importing them from the user's library, file explorer, or wherever the music files are stored on the local machine.
+     It also starts a timer, changes the name of the song being played and checks to see if the song has completed.
      */
     Runnable runnablePlay = new Runnable() {
         @Override
@@ -1169,27 +1248,27 @@ public class AMPGUI extends JFrame {
         return played;
     }
 
-//The inner class for Theme Mode selection with Action Listener.
-private class ThemeModeHandler implements ActionListener {
-    // Process the theme selection.
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        // The process for color selection.
-        for (int count = 0; count < themeItems.length; count++) {
-            if (themeItems[0].isSelected()) {
-                FlatLightLaf.setup();
-                // create UI here...
-                updateUILater();
-            } // Ends first if statement.
-            else if (themeItems[1].isSelected()) {
-                FlatMacDarkLaf.setup();
-                // create UI here...
-                updateUILater();
-            } // Ends second else if statement.
-        } // Ends the for loop.
-    } // Ends actionPerformed event listener.
+    //The inner class for Theme Mode selection with Action Listener.
+    private class ThemeModeHandler implements ActionListener {
+        // Process the theme selection.
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            // The process for color selection.
+            for (int count = 0; count < themeItems.length; count++) {
+                if (themeItems[0].isSelected()) {
+                    FlatLightLaf.setup();
+                    // create UI here...
+                    updateUILater();
+                } // Ends first if statement.
+                else if (themeItems[1].isSelected()) {
+                    FlatMacDarkLaf.setup();
+                    // create UI here...
+                    updateUILater();
+                } // Ends second else if statement.
+            } // Ends the for loop.
+        } // Ends actionPerformed event listener.
 
-} // Ends ThemeModeHandler inner class.
+    } // Ends ThemeModeHandler inner class.
     // Variables declaration - do not modify
     private javax.swing.JMenuItem add;
     private javax.swing.JButton backButton;
@@ -1209,7 +1288,7 @@ private class ThemeModeHandler implements ActionListener {
     private javax.swing.JMenu preferences;
     private javax.swing.JMenu theme; // changed to JMenu.
     private javax.swing.JMenuItem importSong;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane scrollPane2;
     private javax.swing.JButton library;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu modify;
@@ -1241,6 +1320,7 @@ private class ThemeModeHandler implements ActionListener {
     private javax.swing.JLabel volumeUp;
     private javax.swing.JPopupMenu popupMenuCQ;
     private javax.swing.JPopupMenu popupMenuPL;
+    private javax.swing.JPopupMenu playlistPopupMenu;
     private javax.swing.JPopupMenu createPopupMenu;
     // End of variables declaration
 }
