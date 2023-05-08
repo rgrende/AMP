@@ -1084,7 +1084,12 @@ public class AMPGUI extends JFrame {
         // Action method for the user buttons.
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == addPlaylistBtn) {
-                //TODO: add new playlist
+                DBTools buttonDB = new DBTools();
+                buttonDB.addPlaylist(txtId.getText(), txtPlaylistName.getText());
+                String clr = ""; // String as clear the text.
+                txtId.setText(clr);
+                txtPlaylistName.setText(clr);
+                //TODO: update playlist list
             }
 
             else if (e.getSource() == clrBtn) {
@@ -1232,8 +1237,15 @@ public class AMPGUI extends JFrame {
         // Action method for user input.
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == addBtn) {
-                //TODO: add song import
-
+                DBTools buttonDB = new DBTools();
+                buttonDB.addSong(txtId.getText(), txtArtistID.getText(), txtSongName.getText(),
+                        txtSongLength.getText(), txtRelYr.getText(), txtPath.getText());
+                String clr = ""; // String as clear the text.
+                txtId.setText(clr);
+                txtSongName.setText(clr);
+                txtSongLength.setText(clr);
+                txtRelYr.setText(clr);
+                txtPath.setText(clr);
             }
 
             else if (e.getSource() == clrBtn) {
