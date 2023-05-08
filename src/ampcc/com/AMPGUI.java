@@ -1,44 +1,91 @@
+//Rakiah Grende, Robert Hereth, Elaine Schultz
+//CS-430-A-2023SP Senior Project
+//Professor Nate Williams
+/**
+ * This is the Spring 2023 Senior Project program that mimics that of Sound Director. Sound Director is an application
+ * that many schools use as their main media source for sporting events. The Carroll College Athletic Department uses
+ * an older version of Sound Director currently and is open to the idea of switching to a different program. The goal of
+ * this project was to create a music player with all the best features of Sound Director and then add new desired
+ * features as well.
+ */
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
+
+//package
 package ampcc.com;
 
 //imports
-
 //import javazoom.jl.decoder.JavaLayerException;
-
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
+import org.h2.command.ddl.DeallocateProcedure;
 
 import javax.swing.*;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.MenuKeyListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragGestureRecognizer;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import javax.swing.TransferHandler;
+
 
 /*
     Source of Flatlaf for the Dark and Light Theme to be possible and a brief start on how to get use it.
     https://www.formdev.com/flatlaf/
     https://www.formdev.com/flatlaf/themes/
  */
+
+import static ampcc.com.DBTools.initialize;
+import static ampcc.com.DBTools.test;
+
 import static com.formdev.flatlaf.FlatLaf.updateUILater;
 
 /**
  * @author Rakiah Grende, Robert Hereth, and Elaine Schultz
  */
 public class AMPGUI extends JFrame {
+    //class variables
     private static final String playImage = "/resources/images/playButton.png";
     private static final String pauseImage = "/resources/images/pauseButton.png";
     private static final ImageIcon playIcon = new ImageIcon(MusicPlayer.class.getResource(playImage));
@@ -46,8 +93,6 @@ public class AMPGUI extends JFrame {
     // Added in RadioButtonMenuItems and ButtonGroup.
     private JRadioButtonMenuItem[] themeItems; // This is the theme menu item.
     private ButtonGroup themeModeBtnGrp; // This manages the theme menu items.
-
-
     private FileInputStream fileInputStream;
     private File myFile = null;
     private String filename;
@@ -61,10 +106,10 @@ public class AMPGUI extends JFrame {
     private int musicFileIndex = 0;
     private DefaultListModel songsToPlay;
     private final DBTools db = new DBTools();
-
     /**
      * Creates new form m
      */
+    //adding all the UI components
     public AMPGUI() {
         initComponents(); // Creates the UI components.
     }
@@ -77,71 +122,125 @@ public class AMPGUI extends JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
-
-        DBTools internalDB = new DBTools();
-        backPanel2 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        playlistList = new javax.swing.JList<>();
+        backPanel2 = new JPanel();
+        scrollPane2 = new JScrollPane();
+        playlistList = new JList<>();
         //for (String pl : db.getPlaylistNames()) {playlistList.add(new javax.swing.JLabel(pl));}
-        playlists = new javax.swing.JLabel();
-        fadeButton = new javax.swing.JButton();
-        scrollPane = new javax.swing.JScrollPane();
-        songQueue = new javax.swing.JList();
-        shuffleButton = new javax.swing.JToggleButton();
-        nextButton = new javax.swing.JButton();
-        backButton = new javax.swing.JButton();
-        clearButton = new javax.swing.JButton();
-        volume = new javax.swing.JSlider();
-        queueLabel = new javax.swing.JLabel();
-        backPanel = new javax.swing.JScrollPane();
-        playlist = new javax.swing.JList<>();
-        nowPlaying = new java.awt.Label();
-        playButton = new javax.swing.JButton();
-        stopButton = new javax.swing.JButton();
-        songName = new javax.swing.JLabel();
-        song = new javax.swing.JProgressBar();
-        library = new javax.swing.JButton();
-        menuBar = new javax.swing.JMenuBar();
-        file = new javax.swing.JMenu();
-        create = new javax.swing.JMenu(); // Changed from JMenuItem to a JMenu.
-        importSong = new javax.swing.JMenuItem();
-        edit = new javax.swing.JMenu();
-        clip = new javax.swing.JMenuItem();
-        tags = new javax.swing.JMenuItem();
-        addPlaylist = new javax.swing.JMenuItem(); // added in 2 JMenuItems -Elaine @ 20230428
-        removePlaylist = new javax.swing.JMenuItem();
-        modify = new javax.swing.JMenu();
-        add = new javax.swing.JMenuItem();
-        remove = new javax.swing.JMenuItem();
-        search = new javax.swing.JMenuItem();
-        playMenu = new javax.swing.JMenu();
-        selectAll = new javax.swing.JMenuItem();
-        help = new javax.swing.JMenu();
-        documentation = new javax.swing.JMenuItem();
+        playlists = new JLabel();
+        fadeButton = new JButton();
+        scrollPane = new JScrollPane();
+        songQueue = new JList();
+        shuffleButton = new JToggleButton();
+        nextButton = new JButton();
+        backButton = new JButton();
+        clearButton = new JButton();
+        volume = new JSlider();
+        queueLabel = new JLabel();
+        backPanel = new JScrollPane();
+        playlist = new JList<>();
+        nowPlaying = new Label();
+        playButton = new JButton();
+        stopButton = new JButton();
+        addSongsButton = new JButton();
+        songName = new JLabel();
+        song = new JProgressBar();
+        library = new JButton();
+        menuBar = new JMenuBar();
+        file = new JMenu();
+        create = new JMenu(); // Changed from JMenuItem to a JMenu.
+        importSong = new JMenuItem();
+        edit = new JMenu();
+        clip = new JMenuItem();
+        tags = new JMenuItem();
+        addPlaylist = new JMenuItem(); // added in 2 JMenuItems -Elaine @ 20230428
+        removePlaylist = new JMenuItem();
+        modify = new JMenu();
+        add = new JMenuItem();
+        remove = new JMenuItem();
+        search = new JMenuItem();
+        playMenu = new JMenu();
+        selectAll = new JMenuItem();
+        help = new JMenu();
+        documentation = new JMenuItem();
+        about = new JMenuItem(); // added in 3 JMenuItems and 1 JMenu -Elaine @ 20230331
+        preferences = new JMenu();
+        theme = new JMenu(); // changed JMenuItem to JMenu.
+        newPlaylist = new JMenuItem(); // added in 4 JMenuItems -Elaine @ 20230406
+        newTag = new JMenuItem();
+        newScreen = new JMenuItem();
+        newSong = new JMenuItem();
+        exit = new JMenuItem(); // added in exit JMenuItem.
+        volumeUp = new JLabel();
+        muteButton = new JToggleButton();
+        popupMenuCQ = new JPopupMenu();
+        popupMenuPL = new JPopupMenu();
+        playlistPopupMenu = new JPopupMenu();
 
-        about = new javax.swing.JMenuItem(); // added in 3 JMenuItems and 1 JMenu -Elaine @ 20230331
-        preferences = new javax.swing.JMenu();
-        theme = new javax.swing.JMenu(); // changed JMenuItem to JMenu.
-        newPlaylist = new javax.swing.JMenuItem(); // added in 4 JMenuItems -Elaine @ 20230406
-        newTag = new javax.swing.JMenuItem();
-        newScreen = new javax.swing.JMenuItem();
-        newSong = new javax.swing.JMenuItem();
-        exit = new javax.swing.JMenuItem(); // added in exit JMenuItem.
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new Color(0, 0, 0));
 
-        volumeUp = new javax.swing.JLabel();
-        volumeDown = new javax.swing.JLabel();
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new Color(0, 0, 0));
+        backPanel2.setBackground(new Color(242, 242, 242));
 
+        JMenuItem removeSong = new JMenuItem("Remove from Queue");
+        JMenuItem addSong = new JMenuItem("Add to Queue");
+        JMenuItem importSongsToPlaylist = new JMenuItem("Import Songs");
+        popupMenuPL.add(addSong);
+        addSong.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addSong();
+            }
+        });
+        popupMenuCQ.add(removeSong);
+        removeSong.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeSong();
+            }
+        });
+        playlistPopupMenu.add(importSongsToPlaylist);
+        importSongsToPlaylist.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                importSongActionPerformed(e);
+                importSongToPlaylist();
+            }
+        });
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(0, 0, 0));
+        playlistList.setBackground(new Color(102, 102, 102));
+        playlistList.setDragEnabled(true);
+        playlistList.setTransferHandler(new TransferHandler(){
+            //potential drag and drop
+        });
+        playlistList.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(0, 0, 0));
-        backPanel2.setBackground(new java.awt.Color(51, 51, 51));
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    showPopup2(e);
+                }
+            }
 
-        playlistList.setBackground(new java.awt.Color(102, 102, 102));
-        playlistList.setModel(new javax.swing.AbstractListModel<String>() {
-            final String[] strings = {"Song 1", "Song 2", "Song 3"};
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
+        playlistList.setModel(new AbstractListModel<String>() {
+            final String[] strings = {""};
 
             public int getSize() {
                 return strings.length;
@@ -151,22 +250,24 @@ public class AMPGUI extends JFrame {
                 return strings[i];
             }
         });
-        jScrollPane2.setViewportView(playlistList);
 
-        javax.swing.GroupLayout backPanel2Layout = new javax.swing.GroupLayout(backPanel2);
+
+        scrollPane2.setViewportView(playlistList);
+
+        GroupLayout backPanel2Layout = new GroupLayout(backPanel2);
         backPanel2.setLayout(backPanel2Layout);
         backPanel2Layout.setHorizontalGroup(
-                backPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                backPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(backPanel2Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane2)
+                                .addComponent(scrollPane2)
                                 .addContainerGap())
         );
         backPanel2Layout.setVerticalGroup(
-                backPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backPanel2Layout.createSequentialGroup()
+                backPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(GroupLayout.Alignment.TRAILING, backPanel2Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+                                .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
                                 .addContainerGap())
         );
 
@@ -184,7 +285,6 @@ public class AMPGUI extends JFrame {
         scrollPane.setBackground(new Color(51, 51, 51));
         scrollPane.setForeground(new Color(51, 51, 51));
 
-
         songsToPlay = new DefaultListModel();
         songQueue.setModel(songsToPlay);
         songQueue.addMouseListener(new MouseListener() {
@@ -198,12 +298,12 @@ public class AMPGUI extends JFrame {
                     playThread.start();
                 }
             }
-
             @Override
             public void mousePressed(MouseEvent e) {
-
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    showPopup1(e);
+                }
             }
-
 
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -219,13 +319,11 @@ public class AMPGUI extends JFrame {
             public void mouseExited(MouseEvent e) {
 
             }
-
         });
 
         scrollPane.setViewportView(songQueue);
 
-
-        shuffleButton.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18N
+        shuffleButton.setFont(new Font("Helvetica", 0, 18)); // NOI18N
         shuffleButton.setText("Shuffle");
         shuffleButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -233,15 +331,15 @@ public class AMPGUI extends JFrame {
             }
         });
 
-        queueLabel.setFont(new java.awt.Font("Helvetica", 0, 24)); // NOI18N
-        queueLabel.setText("  Current Queue");
+        queueLabel.setFont(new Font("Helvetica", 0, 24)); // NOI18N
+        queueLabel.setText("    Current Queue");
 
         playlist.setBackground(new Color(153, 153, 153));
         playlist.setBorder(null);
-        playlist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
-        playlist.setForeground(new java.awt.Color(255, 255, 255));
-        playlist.setModel(new javax.swing.AbstractListModel<String>() {
-            final String[] strings = internalDB.getPlaylistNames();
+        playlist.setFont(new Font("Helvetica", 0, 14)); // NOI18N
+        playlist.setForeground(new Color(255, 255, 255));
+        playlist.setModel(new AbstractListModel<String>() {
+            final String[] strings = db.getPlaylistNames();
 
             public int getSize() {
                 return strings.length;
@@ -256,10 +354,37 @@ public class AMPGUI extends JFrame {
                 playlistMouseClicked(evt);
             }
         });
+        playlist.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    showPopup3(e);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
         backPanel.setViewportView(playlist);
 
-
-        nowPlaying.setFont(new Font("Helvetica", 0, 24)); // NOI18N
+        nowPlaying.setFont(new Font("Helvetica", 0, 28)); // NOI18N
         nowPlaying.setForeground(new Color(0, 0, 0));
 
         //nowPlaying.setName(""); // NOI18N
@@ -298,43 +423,63 @@ public class AMPGUI extends JFrame {
 
         // The file JMenu.
         file.setText("File");
-        file.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        file.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         file.setMnemonic(KeyEvent.VK_F); // Added in Mnemonic to F.
 
         // Made changes to create as SubMenu format. And added in JMenuItems for Create.
         create.setText("Create"); // Changed from JMenu to a JMenuItems to be a SubMenu.
-        create.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        create.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         create.setMnemonic(KeyEvent.VK_C); // Changed setToolTipText into a setMnemonic to C.
-        create.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        create.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 createActionPerformed(evt);
             }
         });
 
-        backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/back.png"))); // NOI18N
-        backButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        backButton.setIcon(new ImageIcon(getClass().getResource("/resources/images/back.png"))); // NOI18N
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 backButtonActionPerformed(evt);
             }
         });
 
-        nextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/next.png"))); // NOI18N
-        nextButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        nextButton.setIcon(new ImageIcon(getClass().getResource("/resources/images/next.png"))); // NOI18N
+        nextButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 nextButtonActionPerformed(evt);
             }
         });
 
-        clearButton.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        clearButton.setFont(new Font("Helvetica Neue", 0, 18)); // NOI18N
         clearButton.setText("Clear");
-        clearButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        clearButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 clearButtonActionPerformed(evt);
             }
         });
 
-        volumeUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/volume.png"))); // NOI18N
-        volumeDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/mute.png"))); // NOI18N
+        volumeUp.setIcon(new ImageIcon(getClass().getResource("/resources/images/volume.png"))); // NOI18N
+        muteButton.setIcon(new ImageIcon(getClass().getResource("/resources/images/mute.png"))); // NOI18N
+        muteButton.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent itemEvent) {
+                int state = itemEvent.getStateChange();
+                if (state == itemEvent.SELECTED) {
+                    volumeControl(0.0f);
+                } else {
+                    volumeControl(volume.getValue());
+                }
+            }
+        });
+
+        addSongsButton.setFont(new Font("Helvetica Neue", 0, 18));
+        addSongsButton.setText("Add to Queue");
+        addSongsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addSong();
+            }
+        });
 
         file.setText("File");
         file.setFont(new Font("Helvetica", 0, 14)); // NOI18N
@@ -343,11 +488,9 @@ public class AMPGUI extends JFrame {
         create.setToolTipText("");
         create.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-
                 createActionPerformed(evt);
             }
         });
-
 
         // The JMenuItems for SubMenu Create.
         newPlaylist.setText("New Playlist");
@@ -364,21 +507,34 @@ public class AMPGUI extends JFrame {
         newSong.setMnemonic(KeyEvent.VK_S); // Added in Mnemonic to s.
 
 
+
         file.add(create);
         create.add(newPlaylist);
-        create.add(newTag);
-        create.add(newScreen);
+        //create.add(newTag);
+        //create.add(newScreen);
         create.add(newSong);
+        create.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
+            }
+        });
 
         importSong.setText("Import");
-        importSong.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        importSong.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         importSong.setMnemonic(KeyEvent.VK_R); // Added in Mnemonic to r.
         file.add(importSong);
+        importSong.addActionListener(new ActionListener() {
+            @Override
+            //this is the wrong way of importing music
+            public void actionPerformed(ActionEvent e) {
+                libraryActionPerformed(e);
+            }
+        });
 
         // Added in the Exit application JMenuItem.
         exit.setText("Exit");
-        exit.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        exit.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
         file.add(exit);
 
@@ -397,8 +553,8 @@ public class AMPGUI extends JFrame {
         });
 
         // Added in Action Performed for Exit.
-        exit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        exit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 exitActionPerformed(evt);
             }
         });
@@ -408,26 +564,26 @@ public class AMPGUI extends JFrame {
         // The Edit JMenu and its JMenuItems.
         edit.setText("Edit");
 
-        edit.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        edit.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         edit.setMnemonic(KeyEvent.VK_E); // Added in Mnemonic to e.
 
         clip.setText("Clip");
-        clip.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        clip.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         clip.setMnemonic(KeyEvent.VK_C); // Added in Mnemonic to c.
         edit.add(clip);
 
         tags.setText("Tags");
-        tags.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        tags.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         tags.setMnemonic(KeyEvent.VK_S); // Added in Mnemonic to c.
         edit.add(tags);
 
         addPlaylist.setText("Add Playlist");
-        addPlaylist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        addPlaylist.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         addPlaylist.setMnemonic(KeyEvent.VK_A);
         edit.add(addPlaylist);
 
         removePlaylist.setText("Remove Playlist");
-        removePlaylist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        removePlaylist.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         removePlaylist.setMnemonic(KeyEvent.VK_R);
         edit.add(removePlaylist);
 
@@ -435,7 +591,7 @@ public class AMPGUI extends JFrame {
 
         modify.setText("Modify");
 
-        modify.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        modify.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         modify.setMnemonic(KeyEvent.VK_D);
 
 
@@ -445,32 +601,33 @@ public class AMPGUI extends JFrame {
 
         remove.setText("Remove Song");
         remove.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+
         modify.add(remove);
 
         search.setText("Search");
-        search.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        search.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         modify.add(search);
 
         menuBar.add(modify);
 
         playMenu.setText("Play");
         playMenu.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+
         playMenu.setMnemonic(KeyEvent.VK_A); // Added in Mnemonic to a.
 
-
         selectAll.setText("Select All");
-        selectAll.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        selectAll.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         playMenu.add(selectAll);
 
         menuBar.add(playMenu);
 
         /* Added in new JMenu and its JMenu Items for Preferences. */
         preferences.setText("Preferences");
-        preferences.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        preferences.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         preferences.setMnemonic(KeyEvent.VK_R);
 
         theme.setText("Theme");
-        theme.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        theme.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         theme.setMnemonic(KeyEvent.VK_E);
         preferences.add(theme);
 
@@ -490,153 +647,164 @@ public class AMPGUI extends JFrame {
         }
 
         themeItems[0].setSelected(true); // Selects the first theme from the menu item.
-        themeItems[0].setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
-        themeItems[1].setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        themeItems[0].setFont(new Font("Helvetica", 0, 14)); // NOI18N
+        themeItems[1].setFont(new Font("Helvetica", 0, 14)); // NOI18N
 
         menuBar.add(preferences);
 
         help.setText("Help");
 
-        help.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+        help.setFont(new Font("Helvetica", 0, 14)); // NOI18
         help.setMnemonic(KeyEvent.VK_H);
 
         documentation.setText("Documentation");
-        documentation.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+        documentation.setFont(new Font("Helvetica", 0, 14)); // NOI18
         documentation.setMnemonic(KeyEvent.VK_D);
         help.add(documentation);
 
         /* Added in action listener and its method for documentation MenuItem. */
-        documentation.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        documentation.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 documentationActionPerformed(evt);
             }
         });
 
         /* Added in the About JMenuItem, its Action Listener and its method. */
         about.setText("About...");
-        about.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+        about.setFont(new Font("Helvetica", 0, 14)); // NOI18
         about.setMnemonic(KeyEvent.VK_A);
         help.add(about);
 
-        about.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        about.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 aboutActionPerformed(evt);
             }
         });
 
         menuBar.add(help);
-
         setJMenuBar(menuBar);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addContainerGap(85, Short.MAX_VALUE)
-                                                .addComponent(song, javax.swing.GroupLayout.PREFERRED_SIZE, 468, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(song, GroupLayout.PREFERRED_SIZE, 468, GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addComponent(backPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(backPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                .addComponent(backPanel, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(backPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(79, 79, 79)
-                                                .addComponent(nowPlaying, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(songName, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addGap(33, 33, 33)
+                                                                .addComponent(nowPlaying, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(1, 1, 1)
+                                                                .addComponent(songName, GroupLayout.PREFERRED_SIZE, 335, GroupLayout.PREFERRED_SIZE))
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addGap(24, 24, 24)
+                                                                .addComponent(playlists, GroupLayout.PREFERRED_SIZE, 144, GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(0, 33, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(24, 24, 24)
-                                                .addComponent(playlists, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGap(49, 49, 49)
+                                                .addComponent(muteButton, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addComponent(volume, GroupLayout.PREFERRED_SIZE, 275, GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(12, 12, 12)
+                                                                .addComponent(volumeUp))
+                                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                                .addGroup(layout.createSequentialGroup()
+                                                                        .addComponent(backButton, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE)
+                                                                        .addGap(18, 18, 18)
+                                                                        .addComponent(playButton, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                        .addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+                                                                        .addGap(18, 18, 18)
+                                                                        .addComponent(nextButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                                .addGroup(layout.createSequentialGroup()
+                                                                        .addGap(2, 2, 2)
+                                                                        .addComponent(shuffleButton, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
+                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                        .addComponent(fadeButton, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
+                                                                        .addGap(18, 18, 18)
+                                                                        .addComponent(library, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE)))))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(122, 122, 122)
-                                                .addComponent(queueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(111, 111, 111)
+                                                .addComponent(queueLabel, GroupLayout.PREFERRED_SIZE, 233, GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(170, 170, 170)
-                                                .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(174, 174, 174)
+                                                .addComponent(clearButton, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(18, 18, 18)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(layout.createSequentialGroup()
-                                                                .addGap(26, 26, 26)
-                                                                .addComponent(volumeDown, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addGap(0, 0, 0)
-                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addGroup(layout.createSequentialGroup()
-                                                                                .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                .addGap(12, 12, 12)
-                                                                                .addComponent(volumeUp))
-                                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                                                .addGroup(layout.createSequentialGroup()
-                                                                                        .addComponent(shuffleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                        .addGap(8, 8, 8)
-                                                                                        .addComponent(fadeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                        .addGap(30, 30, 30)
-                                                                                        .addComponent(library, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                                .addGroup(layout.createSequentialGroup()
-                                                                                        .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                        .addGap(18, 18, 18)
-                                                                                        .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                                        .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                        .addGap(18, 18, 18)
-                                                                                        .addComponent(nextButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                                                        .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addContainerGap(15, Short.MAX_VALUE))
+                                                .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 405, GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(26, 26, 26)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(songName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(nowPlaying, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGap(16, 16, 16)
-                                                .addComponent(song, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(16, 16, 16)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                        .addComponent(volumeUp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(volume, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
-                                                        .addComponent(volumeDown, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                         .addGroup(layout.createSequentialGroup()
-                                                                .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addGap(1, 1, 1)))))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                .addGap(30, 30, 30)
+                                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                                        .addComponent(nowPlaying, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(songName, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)))
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addContainerGap()
+                                                                .addComponent(muteButton, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(16, 16, 16)
+                                                .addComponent(song, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(playlists, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                        .addComponent(backPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addGap(16, 16, 16)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                        .addComponent(volumeUp, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(volume, GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                                .addComponent(backButton, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(playButton, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addComponent(nextButton, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(1, 1, 1)))))
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                //.addGap(javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE)
+                                                .addComponent(playlists, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                        .addComponent(backPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                         .addComponent(backPanel)))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(12, 12, 12)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(shuffleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(fadeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(library, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGap(33, 33, 33)
-                                                .addComponent(queueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addGap(18, 18, 18)
+                                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                                        .addComponent(shuffleButton, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(fadeButton, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)))
+                                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(library, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(35, 35, 35)
+                                                .addComponent(queueLabel, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 346, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(clearButton, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap(74, Short.MAX_VALUE))
         );
 
         pack();
-    };
+    }// </editor-fold>
+
 
     /* This method creates a Playlist Add form. */
     private void addPlaylistActionPerformed(java.awt.event.ActionEvent evt) {
@@ -651,7 +819,8 @@ public class AMPGUI extends JFrame {
     /*   This method is an Action Event to open our documentation PDF file
      This may subject to change. I will see if I can adjust this to
      open in a web browser or some other method to open externally.
-     Otherwise, this will be left as is.*/
+     Otherwise, this will be left as is.
+     */
     private void documentationActionPerformed(java.awt.event.ActionEvent evt) {
         if (Desktop.isDesktopSupported()) {
             try {
@@ -663,17 +832,22 @@ public class AMPGUI extends JFrame {
         }
     }
 
-    // Updated this JFrame. Need to retest Internal JFrame again later on.
+    /**
+     * Updated this JFrame. Need to retest Internal JFrame again later on.
+     * @param evt
+     */
     private void aboutActionPerformed(java.awt.event.ActionEvent evt) {
         JFrame abtFrame = new JFrame();
         JPanel abtPane = new JPanel();
         JPanel rows = new JPanel();
 
         abtFrame.setTitle("About AMP");
+
         abtFrame.setSize(505, 125);
         JLabel abtLbl = new JLabel(" AMP (Athlete Music Player) is a DJ application created for Carroll College’s sports programs. ");
         JLabel createdByLbl = new JLabel(" AMP was created by Rakiah Grende, Robert Hereth, and Elaine Schultz. ");
         JLabel copyRightLbl = new JLabel(" @ 2023 Carroll College. ");
+
 
         // Add in the components
         abtPane.setLayout(new BorderLayout());
@@ -691,15 +865,49 @@ public class AMPGUI extends JFrame {
         abtFrame.setLocationRelativeTo(null);
     }
 
-    // An action to perform Exit application.
+    /**
+     * This is the method that shows the JOptionPane associated with the popup JMenu for the screens located on the far
+     * left of the GUI.
+     * @param evt
+     */
+    private void importSongActionPerformed(java.awt.event.ActionEvent evt){
+        initialize();
+        test();
+
+        JFrame importFrame = new JFrame();
+        JPanel importPane = new JPanel();
+        JPanel rows = new JPanel();
+
+        importFrame.setTitle("Import Songs");
+        importFrame.setSize(400, 400);
+
+
+        // Add in the components
+        importPane.setLayout(new BorderLayout());
+        importPane.setLayout(new GridLayout(3, 1));
+        importFrame.add(importPane, BorderLayout.CENTER); // add the panel in the frame
+        rows.setLayout(new GridLayout(3, 1));
+
+        importFrame.add(rows, BorderLayout.CENTER);
+        importFrame.setResizable(false);
+        importFrame.setVisible(true);
+        importFrame.setAlwaysOnTop(true);
+        importFrame.setLocationRelativeTo(null);
+    }
+
+    /**
+     An action to perform Exit application.
+     */
     private void exitActionPerformed(java.awt.event.ActionEvent evt) {
         System.exit(0);
     }
 
-
+    /**
+     This method stops the player at its current position and changes the play icon to pause. Used to pause songs in the
+     queue.
+     */
     private void stopPlaying(boolean clearSong) {
         //stops audio line
-
         if (player != null) {
             Player p = player;
             player = null;
@@ -716,11 +924,12 @@ public class AMPGUI extends JFrame {
         // TODO add your handling code here:
     }
 
+    /**
+     *
+     * @param evt
+     */
     private void playlistMouseClicked(MouseEvent evt) {
-        // TODO add your handling code here:
-        //if (evt.getButton() == 1) {
         String p_name = playlist.getModel().getElementAt(playlist.getSelectedIndex());
-        DBTools db = new DBTools();
         String[][] pid = db.getPlaylistID(p_name);
         String id = "";
         for (String[] r : pid) {
@@ -748,17 +957,21 @@ public class AMPGUI extends JFrame {
                 return strings[i];
             }
         });
-        jScrollPane2.setViewportView(playlistList);
+        scrollPane2.setViewportView(playlistList);
 
     }
 
+    /**
+     This method allows users to choose what types of music to play within their local machine. If the user have .mp3
+     files on their local machine, they will be options for the user to choose to select to add the program. After
+     selecting the desired songs, the current queue will populate with those songs.
+     @param evt
+     */
     private void libraryActionPerformed(java.awt.event.ActionEvent evt) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home") + System.getProperty("file.separator") + "git/AMP/songs"));
         fileChooser.setDialogTitle("Select Music");
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setFileFilter(new FileNameExtensionFilter("AAC files", "aac"));
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Wav files", "wav"));
         fileChooser.setFileFilter(new FileNameExtensionFilter("Mp3 files", "mp3"));
         fileChooser.setMultiSelectionEnabled(true);
         if (fileChooser.showOpenDialog(library) == JFileChooser.APPROVE_OPTION) {
@@ -766,10 +979,25 @@ public class AMPGUI extends JFrame {
             updateQueue();
         }
         //update GUi
-
     }
+/*
+    private boolean importSongs(TransferHandler.TransferSupport songs) {
+        if (playlistList != null) {
+            JList playlistList = (JList) songs.getComponent();
+            DefaultListModel listModel = (DefaultListModel) playlistList.getModel();
+            JList.DropLocation dl = (JList.DropLocation) songs.getDropLocation();
+            int index = dl.getIndex();
+            boolean insert = dl.isInsert();
 
-
+        }
+        return true;
+    }
+ */
+    /**
+     This method is responsible for the play button and its functionality. If the user presses the play JButton the
+     first song in the current queue will play. After a song is paused, this method will resume the song.
+     @param evt
+     */
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //code for play button
         if (playButton.getIcon() == playIcon) {
@@ -786,24 +1014,38 @@ public class AMPGUI extends JFrame {
         }
     }
 
+    /**
+     This method is linked to the stop button in the program. If the user clicks the JButton labeled "stop" and there is
+     song currently playing, the song will stop.
+     */
     private void stopButtonActionPerformed() {
         //code for stop button
         stopPlaying(true);
     }
 
-
+    /**
+     This method randomized the songs in the current queue using java's random import and then updates the queue after
+     the songs have been randomized.
+     @param evt
+     */
     private void shuffleButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //code for shuffle button
         Collections.shuffle(musicFiles, new Random());
         updateQueue();
     }
 
+    /**
+     One of the requirements for the program. This method allows the user to fade OUT of the current song that is being
+     played. It has its own runnable as it relies on a new thread to end the song. The method essentially decreases the
+     volume by a quarter of a second over a five-second duration period.
+     @param evt
+     */
     private void fadeButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //code for fade button
         Runnable fadeRunnable = new Runnable() {
             @Override
             public void run() {
-                float decrease = currentVolume / 20; //slow down every quarter second by 1/20 for five seconds
+                float decrease = currentVolume / 12; //slow down every quarter second by 1/20 for three seconds
                 float origVolume = currentVolume;
                 while (currentVolume > 0) {
                     volumeControl(currentVolume - decrease);
@@ -821,7 +1063,11 @@ public class AMPGUI extends JFrame {
         t.start();
     }
 
-
+    /**
+     This method is responsible for the back button and allows the user to go back to a previous song in the queue as this
+     method also keeps track of song position.
+     @param evt
+     */
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //code for back button
         if (player != null) {
@@ -835,7 +1081,12 @@ public class AMPGUI extends JFrame {
             playThread.start();
         }
     }
-
+    /**
+     This method is responsible for the functionality of the next button in th GUI. If the user wishes to switch songs in the
+     queue, the next button will play the next song in the next position, keeping track of all the indices of each song. Once
+     the user has reached the end of the queue, this method will circle back to the song in the first position.
+     @param evt
+     */
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //code for next button
         if (player != null) {
@@ -850,25 +1101,38 @@ public class AMPGUI extends JFrame {
         }
     }
 
+    /**
+     This method refers to the array list that keeps track of all the songs the user has selected to played in the
+     current queue. If the user wishes to clear both the array list and JList, the clear button will do so.
+     @param evt
+     */
     private void clearButtonActionPerformed(ActionEvent evt) {
         //code for clear button
         musicFiles.clear();
         updateQueue();
+        //TODO: set text to be null if queue and player are empty.
     }
 
-
+    /**
+     This method controls thw volume of the program with the use of a JSlider. The volume for the jplayer library uses
+     decibels to measure sound output. It passes in a float value and if the player is not null, the volume is divided by
+     100 and then that number is plugged into the logarithmic function of log/log of base 10 * 20.
+     */
     public void volumeControl(float volume) {
-        //code for volume
+        //code for volumes slider
         currentVolume = volume;
         if (player != null) {
             float value = volume / 100.0f;
             float dB = (float) (Math.log(value) / Math.log(10.0) * 20.0);
-            player.getClass();
-
+            player.setVolume(dB);
         }
-
     }
 
+    /**
+     This method updates the current queue on the right side of the GUI. It clears the queue and allows for new songs to
+     be added and played. It strips each song of its file extension and displays the correct name in the now playing
+     JLabel.
+     */
     private void updateQueue() {
         //code that updates the current queue
         songsToPlay.clear();
@@ -883,11 +1147,59 @@ public class AMPGUI extends JFrame {
         }
     }
 
+    /**
+     * This method removes one or more songs in the current queue when the user right clicks with the use of a pop-up
+     * JMenu."
+     */
+    private void removeSong() {
+        int[] selectedIndices = songQueue.getSelectedIndices();
+        for (int i = selectedIndices.length-1; i >=0; i--) {
+            musicFiles.remove(selectedIndices[i]);
+        }
+        updateQueue();
+    }
 
     /**
+     * This method adds one or more songs from the playlists JList (middle most list) when the user right clicks on one
+     * or more songs with the use of a pop-up JMenu."
+     */
+    private void addSong() {
+        for (int index : playlistList.getSelectedIndices()) {
+            String songName = playlistList.getModel().getElementAt(index);
+            String filepath = db.getSongPath(songName);
+            musicFiles.add(new File(filepath));
+        }
+        updateQueue();
+    }
+
+    /**
+     * This method adds songs from the database into the selected playlist also with the use of a pop-up JMenu."
+     */
+    private void importSongToPlaylist() {
+        updateQueue();
+    }
+
+    /**
+     * The following methods show popup menus in all the JLists."
+     * @param e
+     */
+    private void showPopup1(MouseEvent e){
+        popupMenuCQ.show(e.getComponent(),
+                e.getX(),e.getY());
+    }
+    private void showPopup2(MouseEvent e){
+        popupMenuPL.show(e.getComponent(),
+                e.getX(),e.getY());
+    }
+    private void showPopup3(MouseEvent e){
+        playlistPopupMenu.show(e.getComponent(),
+                e.getX(),e.getY());
+    }
+    /**
+     * Main method.
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main (String[]args){
         /* Set the Nimbus look and feel */
         //<editor-fold default state="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -920,8 +1232,12 @@ public class AMPGUI extends JFrame {
             }
         });
     }
-
-
+    /**
+     The runnable below is the main run method of the program. It looks at what songs are in the queue, how many, and if
+     it is acceptable to play the next song. It is responsible for loading in the desired songs to the current queue by
+     importing them from the user's library, file explorer, or wherever the music files are stored on the local machine.
+     It also starts a timer, changes the name of the song being played and checks to see if the song has completed.
+     */
     Runnable runnablePlay = new Runnable() {
         @Override
         public void run() {
@@ -978,8 +1294,11 @@ public class AMPGUI extends JFrame {
         } finally {
             timer.stop();
         }
+        //check if this is right
+        songsToPlay.removeElement(musicFileIndex);
         return played;
     }
+
 
     // The inner class for Theme Mode selection with Action Listener.
     private class ThemeModeHandler implements ActionListener {
@@ -1283,13 +1602,13 @@ public class AMPGUI extends JFrame {
         }
     } //Ends JTextFieldLimit Class.
 
+
     // Variables declaration - do not modify
     private javax.swing.JMenuItem add;
     private javax.swing.JButton backButton;
     private javax.swing.JScrollPane backPanel;
     private javax.swing.JPanel backPanel2;
     private javax.swing.JMenuItem clip;
-
     private javax.swing.JMenu create;  // Changed from JMenuItem to JMenu.
     private javax.swing.JButton clearButton;
     private javax.swing.JMenuItem documentation;
@@ -1303,7 +1622,7 @@ public class AMPGUI extends JFrame {
     private javax.swing.JMenu preferences;
     private javax.swing.JMenu theme; // changed to JMenu.
     private javax.swing.JMenuItem importSong;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane scrollPane2;
     private javax.swing.JButton library;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu modify;
@@ -1322,20 +1641,31 @@ public class AMPGUI extends JFrame {
     private javax.swing.JMenuItem selectAll;
     private javax.swing.JToggleButton shuffleButton;
     private javax.swing.JProgressBar song;
+    private javax.swing.JToggleButton muteButton;
     private javax.swing.JLabel songName;
     private javax.swing.JButton stopButton;
+    private javax.swing.JButton addSongsButton;
     private javax.swing.JMenuItem tags;
     private javax.swing.JSlider volume;
-
     private javax.swing.JMenuItem newPlaylist; // added in JMenuItems for Import.
     private javax.swing.JMenuItem newTag;
     private javax.swing.JMenuItem newScreen;
     private javax.swing.JMenuItem newSong;
-    private javax.swing.JMenuItem exit; // added in Exit JMenuItem.
-
-    private javax.swing.JLabel volumeDown;
+    private javax.swing.JMenuItem exit; // added in Exit JMenuItem
     private javax.swing.JLabel volumeUp;
 
-
+    private javax.swing.JPopupMenu popupMenuCQ;
+    private javax.swing.JPopupMenu popupMenuPL;
+    private javax.swing.JPopupMenu playlistPopupMenu;
+    private javax.swing.JPopupMenu createPopupMenu;
     // End of variables declaration
 }
+
+    /**
+     *  Next Years ToDos:
+     *  - create new relative GUI
+     *  - add logo
+     *  - drag and drop
+     *  - look into changing player (song time, pause, etc)
+     */
+
