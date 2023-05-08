@@ -1084,7 +1084,7 @@ public class AMPGUI extends JFrame {
         // Action method for the user buttons.
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == addPlaylistBtn) {
-                // add if statements here...
+                //TODO: add new playlist
             }
 
             else if (e.getSource() == clrBtn) {
@@ -1108,8 +1108,8 @@ public class AMPGUI extends JFrame {
         private JTextField txtId;
         private JLabel lblSongName;
         private JTextField txtSongName;
-        private JLabel lblArtistName;
-        private JTextField txtArtistName;
+        private JLabel lblArtistID;
+        private JTextField txtArtistID;
         private JLabel lblSongLength;
         private JTextField txtSongLength;
         private JLabel lblRelYr;
@@ -1161,17 +1161,17 @@ public class AMPGUI extends JFrame {
             txtSongName.setLocation(200, 150);
             cont.add(txtSongName);
 
-            lblArtistName = new JLabel("Artist Name:");
-            lblArtistName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
-            lblArtistName.setSize(130, 30);
-            lblArtistName.setLocation(75, 200);
-            cont.add(lblArtistName);
+            lblArtistID = new JLabel("Artist ID:");
+            lblArtistID.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblArtistID.setSize(130, 30);
+            lblArtistID.setLocation(75, 200);
+            cont.add(lblArtistID);
 
-            txtArtistName = new JTextField();
-            txtArtistName.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
-            txtArtistName.setSize(200, 30);
-            txtArtistName.setLocation(200, 200);
-            cont.add(txtArtistName);
+            txtArtistID = new JTextField();
+            txtArtistID.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtArtistID.setSize(200, 30);
+            txtArtistID.setLocation(200, 200);
+            cont.add(txtArtistID);
 
             lblSongLength = new JLabel("Song Length:");
             lblSongLength.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
@@ -1232,7 +1232,7 @@ public class AMPGUI extends JFrame {
         // Action method for user input.
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == addBtn) {
-                // add if statements here...
+                //TODO: add song import
 
             }
 
