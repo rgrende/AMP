@@ -17,6 +17,9 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -25,6 +28,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/*
+    Source of Flatlaf for the Dark and Light Theme to be possible and a brief start on how to get use it.
+    https://www.formdev.com/flatlaf/
+    https://www.formdev.com/flatlaf/themes/
+ */
 import static com.formdev.flatlaf.FlatLaf.updateUILater;
 
 /**
@@ -59,7 +67,6 @@ public class AMPGUI extends JFrame {
      */
     public AMPGUI() {
         initComponents(); // Creates the UI components.
-        setLocationRelativeTo(null); // Centers the application.
     }
 
     /**
@@ -345,12 +352,16 @@ public class AMPGUI extends JFrame {
         // The JMenuItems for SubMenu Create.
         newPlaylist.setText("New Playlist");
         newPlaylist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        newPlaylist.setMnemonic(KeyEvent.VK_A); // Added in Mnemonic to a.
         newTag.setText("New Tag");
         newTag.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        newTag.setMnemonic(KeyEvent.VK_T); // Added in Mnemonic to t.
         newScreen.setText("New Screen");
         newScreen.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        newScreen.setMnemonic(KeyEvent.VK_R); // Added in Mnemonic to r.
         newSong.setText("New Song");
         newSong.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
+        newSong.setMnemonic(KeyEvent.VK_S); // Added in Mnemonic to s.
 
 
         file.add(create);
@@ -371,12 +382,27 @@ public class AMPGUI extends JFrame {
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
         file.add(exit);
 
+        // Under Create JMenu, added in Action Performed for a new Playlist.
+        newPlaylist.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addPlaylistActionPerformed(evt);
+            }
+        });
+
+        // Under Create JMenu, added in Action Performed for a new Song.
+        newSong.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addSongActionPerformed(evt);
+            }
+        });
+
         // Added in Action Performed for Exit.
         exit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exitActionPerformed(evt);
             }
         });
+
         menuBar.add(file);
 
         // The Edit JMenu and its JMenuItems.
@@ -413,11 +439,11 @@ public class AMPGUI extends JFrame {
         modify.setMnemonic(KeyEvent.VK_D);
 
 
-        add.setText("Add");
+        add.setText("Add Song");
         add.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         modify.add(add);
 
-        remove.setText("Remove");
+        remove.setText("Remove Song");
         remove.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         modify.add(remove);
 
@@ -428,7 +454,6 @@ public class AMPGUI extends JFrame {
         menuBar.add(modify);
 
         playMenu.setText("Play");
-
         playMenu.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         playMenu.setMnemonic(KeyEvent.VK_A); // Added in Mnemonic to a.
 
@@ -486,6 +511,7 @@ public class AMPGUI extends JFrame {
                 documentationActionPerformed(evt);
             }
         });
+
         /* Added in the About JMenuItem, its Action Listener and its method. */
         about.setText("About...");
         about.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
@@ -612,6 +638,15 @@ public class AMPGUI extends JFrame {
         pack();
     };
 
+    /* This method creates a Playlist Add form. */
+    private void addPlaylistActionPerformed(java.awt.event.ActionEvent evt) {
+        new AddNewPlaylist();
+    }
+
+    /* This method creates a Song Add form. */
+    private void addSongActionPerformed(java.awt.event.ActionEvent evt) {
+        new AddNewSong();
+    }
 
     /*   This method is an Action Event to open our documentation PDF file
      This may subject to change. I will see if I can adjust this to
@@ -635,10 +670,10 @@ public class AMPGUI extends JFrame {
         JPanel rows = new JPanel();
 
         abtFrame.setTitle("About AMP");
-        abtFrame.setSize(500, 125);
-        JLabel abtLbl = new JLabel(" AMP (Athlete Music Player) is a DJ application created for Carroll College’s sports programs.");
-        JLabel createdByLbl = new JLabel(" AMP was created by Rakiah Grende, Robert Hereth, and Elaine Schultz.");
-        JLabel copyRightLbl = new JLabel(" @ 2023 Carroll College.");
+        abtFrame.setSize(505, 125);
+        JLabel abtLbl = new JLabel(" AMP (Athlete Music Player) is a DJ application created for Carroll College’s sports programs. ");
+        JLabel createdByLbl = new JLabel(" AMP was created by Rakiah Grende, Robert Hereth, and Elaine Schultz. ");
+        JLabel copyRightLbl = new JLabel(" @ 2023 Carroll College. ");
 
         // Add in the components
         abtPane.setLayout(new BorderLayout());
@@ -830,18 +865,6 @@ public class AMPGUI extends JFrame {
             float dB = (float) (Math.log(value) / Math.log(10.0) * 20.0);
             player.getClass();
 
-/*          player.setVolume(dB);
-            (3/31/23)This does not work on my end. I get 1 error that says:
-
-            C:\Users\ELTECH\IdeaProjects\AMP\src\ampcc\com\AMPGUI.java:483:19
-            java: cannot find symbol
-            symbol:   method setVolume(float)
-            location: variable player of type javazoom.jl.player.Player
-
-            So, I had to gray this out for now.
-            Hence, the volume slider does not work when it is gray out.
-*/
-
         }
 
     }
@@ -893,6 +916,7 @@ public class AMPGUI extends JFrame {
                 AMPGUI amp = new AMPGUI();
                 amp.setVisible(true);
                 amp.setMinimumSize(new Dimension(1000, 400));
+                amp.setLocationRelativeTo(null); // Centers the application.
             }
         });
     }
@@ -957,8 +981,8 @@ public class AMPGUI extends JFrame {
         return played;
     }
 
-// The inner class for Theme Mode selection with Action Listener.
-private class ThemeModeHandler implements ActionListener {
+    // The inner class for Theme Mode selection with Action Listener.
+    private class ThemeModeHandler implements ActionListener {
 
     // Process the theme selection.
     @Override
@@ -978,7 +1002,274 @@ private class ThemeModeHandler implements ActionListener {
         } // Ends the for loop.
     } // Ends actionPerformed event listener.
 
-} // Ends ThemeModeHandler inner class.
+}   // Ends ThemeModeHandler inner class.
+
+    /*
+        Inner class Playlist to create a form.
+        https://www.geeksforgeeks.org/java-swing-simple-user-registration-form/#
+     */
+    class AddNewPlaylist extends JFrame implements ActionListener {
+
+        // Components for the form.
+        private Container cont;
+        private JLabel title;
+        private JLabel lblId;
+        private JTextField txtId;
+        private JLabel lblPlaylistName;
+        private JTextField txtPlaylistName;
+
+        private JButton addPlaylistBtn;
+        private JButton clrBtn;
+
+
+        // The constructor.
+        public AddNewPlaylist() {
+            setSize(500,300);
+            setResizable(false);
+            setLocationRelativeTo(null);
+
+            cont = getContentPane();
+            cont.setLayout(null);
+
+            title = new JLabel("Add a Playlist");
+            title.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
+            title.setSize(300, 30);
+            title.setLocation(185, 30);
+            cont.add(title);
+
+            lblId = new JLabel("ID:");
+            lblId.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblId.setSize(130, 30);
+            lblId.setLocation(75, 100);
+            cont.add(lblId);
+
+            txtId = new JTextField();
+            txtId.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtId.setSize(200, 30);
+            txtId.setLocation(200, 100);
+            cont.add(txtId);
+            txtId.setDocument(new JTextFieldLimit(31));
+
+
+            lblPlaylistName = new JLabel("Playlist Name:");
+            lblPlaylistName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblPlaylistName.setSize(130, 30);
+            lblPlaylistName.setLocation(75, 150);
+            cont.add(lblPlaylistName);
+
+            txtPlaylistName = new JTextField();
+            txtPlaylistName.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtPlaylistName.setSize(200, 30);
+            txtPlaylistName.setLocation(200, 150);
+            cont.add(txtPlaylistName);
+
+            clrBtn = new JButton("Clear");
+            clrBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            clrBtn.setSize(100, 30);
+            clrBtn.setLocation(75, 200);
+            clrBtn.addActionListener(this);
+            cont.add(clrBtn);
+
+            addPlaylistBtn = new JButton("Add Playlist");
+            addPlaylistBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            addPlaylistBtn.setSize(110, 30);
+            addPlaylistBtn.setLocation(290, 200);
+            addPlaylistBtn.addActionListener(this);
+            cont.add(addPlaylistBtn);
+
+            setVisible(true);
+
+        }
+
+        // Action method for the user buttons.
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == addPlaylistBtn) {
+                // add if statements here...
+            }
+
+            else if (e.getSource() == clrBtn) {
+                String clr = ""; // String as clear the text.
+                txtId.setText(clr);
+                txtPlaylistName.setText(clr);
+            }
+        } // Ends method actionPerformed.
+    } //Ends Class Frame.
+
+    /*
+        Inner class AddNewSong to create a form.
+        https://www.geeksforgeeks.org/java-swing-simple-user-registration-form/#
+     */
+    class AddNewSong extends JFrame implements ActionListener {
+
+        // Components for the form.
+        private Container cont;
+        private JLabel title;
+        private JLabel lblId;
+        private JTextField txtId;
+        private JLabel lblSongName;
+        private JTextField txtSongName;
+        private JLabel lblArtistName;
+        private JTextField txtArtistName;
+        private JLabel lblSongLength;
+        private JTextField txtSongLength;
+        private JLabel lblRelYr;
+        private JTextField txtRelYr;
+        private JLabel lblPath;
+        private JTextField txtPath;
+        private JButton addBtn;
+        private JButton clrBtn;
+
+
+        // The constructor.
+        public AddNewSong() {
+            setSize(500,500);
+            setResizable(false);
+            setLocationRelativeTo(null);
+
+            cont = getContentPane();
+            cont.setLayout(null);
+
+            title = new JLabel("Add a Song");
+            title.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
+            title.setSize(300, 30);
+            title.setLocation(185, 30);
+            cont.add(title);
+
+            lblId = new JLabel("ID:");
+            lblId.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblId.setSize(130, 30);
+            lblId.setLocation(75, 100);
+            cont.add(lblId);
+
+            txtId = new JTextField();
+            txtId.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtId.setSize(200, 30);
+            txtId.setLocation(200, 100);
+            cont.add(txtId);
+            txtId.setDocument(new JTextFieldLimit(31));
+
+
+            lblSongName = new JLabel("Song Name:");
+            lblSongName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblSongName.setSize(130, 30);
+            lblSongName.setLocation(75, 150);
+            cont.add(lblSongName);
+
+            txtSongName = new JTextField();
+            txtSongName.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtSongName.setSize(200, 30);
+            txtSongName.setLocation(200, 150);
+            cont.add(txtSongName);
+
+            lblArtistName = new JLabel("Artist Name:");
+            lblArtistName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblArtistName.setSize(130, 30);
+            lblArtistName.setLocation(75, 200);
+            cont.add(lblArtistName);
+
+            txtArtistName = new JTextField();
+            txtArtistName.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtArtistName.setSize(200, 30);
+            txtArtistName.setLocation(200, 200);
+            cont.add(txtArtistName);
+
+            lblSongLength = new JLabel("Song Length:");
+            lblSongLength.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblSongLength.setSize(130, 30);
+            lblSongLength.setLocation(75, 250);
+            cont.add(lblSongLength);
+
+            txtSongLength = new JTextField();
+            txtSongLength.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtSongLength.setSize(200, 30);
+            txtSongLength.setLocation(200, 250);
+            cont.add(txtSongLength);
+
+            lblRelYr = new JLabel("Year Released:");
+            lblRelYr.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblRelYr.setSize(130, 30);
+            lblRelYr.setLocation(75, 300);
+            cont.add(lblRelYr);
+
+            txtRelYr = new JTextField();
+            txtRelYr.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtRelYr.setSize(200, 30);
+            txtRelYr.setLocation(200, 300);
+            cont.add(txtRelYr);
+            txtRelYr.setDocument(new JTextFieldLimit(4));
+
+            lblPath = new JLabel("File Path:");
+            lblPath.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblPath.setSize(130, 30);
+            lblPath.setLocation(75, 350);
+            cont.add(lblPath);
+
+            txtPath = new JTextField();
+            txtPath.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtPath.setSize(200, 30);
+            txtPath.setLocation(200, 350);
+            cont.add(txtPath);
+
+
+            clrBtn = new JButton("Clear");
+            clrBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            clrBtn.setSize(100, 30);
+            clrBtn.setLocation(75, 400);
+            clrBtn.addActionListener(this);
+            cont.add(clrBtn);
+
+            addBtn = new JButton("Add Song");
+            addBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            addBtn.setSize(100, 30);
+            addBtn.setLocation(300, 400);
+            addBtn.addActionListener(this);
+            cont.add(addBtn);
+
+            setVisible(true);
+
+        }
+
+        // Action method for user input.
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == addBtn) {
+                // add if statements here...
+
+            }
+
+            else if (e.getSource() == clrBtn) {
+                String clr = ""; // String as clear the text.
+                txtId.setText(clr);
+                txtSongName.setText(clr);
+                txtSongLength.setText(clr);
+                txtRelYr.setText(clr);
+                txtPath.setText(clr);
+
+            }
+        } // Ends method actionPerformed.
+    } //Ends Class Frame.
+
+    /* Class created to make a character limit restriction.
+       https://www.tutorialspoint.com/how-can-we-limit-the-number-of-characters-inside-a-jtextfield-in-java
+       https://docs.oracle.com/javase/tutorial/uiswing/components/generaltext.html#filter
+     */
+    private class JTextFieldLimit extends PlainDocument {
+        private int limit;
+        JTextFieldLimit(int limit) {
+            super();
+            this.limit = limit;
+        }
+        JTextFieldLimit(int limit, boolean upper) {
+            super();
+            this.limit = limit;
+        }
+        public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
+            if (str == null)
+                return;
+            if ((getLength() + str.length()) <= limit) {
+                super.insertString(offset, str, attr);
+            }
+        }
+    } //Ends JTextFieldLimit Class.
 
     // Variables declaration - do not modify
     private javax.swing.JMenuItem add;
@@ -1032,6 +1323,7 @@ private class ThemeModeHandler implements ActionListener {
 
     private javax.swing.JLabel volumeDown;
     private javax.swing.JLabel volumeUp;
+
 
     // End of variables declaration
 }
