@@ -211,7 +211,7 @@ public class AMPGUI extends JFrame {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON3) {
+                if (SwingUtilities.isRightMouseButton(e)) {
                     showPopup2(e);
                 }
             }
@@ -290,7 +290,7 @@ public class AMPGUI extends JFrame {
             }
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON3) {
+                if (SwingUtilities.isRightMouseButton(e)) {
                     showPopup1(e);
                 }
             }
@@ -352,7 +352,7 @@ public class AMPGUI extends JFrame {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON3) {
+                if (SwingUtilities.isRightMouseButton(e)) {
                     showPopup3(e);
                 }
             }
@@ -1139,25 +1139,16 @@ public class AMPGUI extends JFrame {
      * @param e
      */
     private void showPopup1(MouseEvent e){
-        //code for popup menu in current queue
-        if (e.isPopupTrigger()) {
-            popupMenuCQ.show(e.getComponent(),
-                    e.getX(),e.getY());
-        }
+        popupMenuCQ.show(e.getComponent(),
+                e.getX(),e.getY());
     }
     private void showPopup2(MouseEvent e){
-        //code for popup menu in current queue
-        if (e.isPopupTrigger()) {
-            popupMenuPL.show(e.getComponent(),
-                    e.getX(),e.getY());
-        }
+        popupMenuPL.show(e.getComponent(),
+                e.getX(),e.getY());
     }
     private void showPopup3(MouseEvent e){
-        //code for popup menu in current queue
-        if (e.isPopupTrigger()) {
-            playlistPopupMenu.show(e.getComponent(),
-                    e.getX(),e.getY());
-        }
+        playlistPopupMenu.show(e.getComponent(),
+                e.getX(),e.getY());
     }
     /**
      * Main method.
