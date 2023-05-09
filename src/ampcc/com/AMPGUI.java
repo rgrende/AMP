@@ -1537,7 +1537,6 @@ public class AMPGUI extends JFrame {
             cont.add(addBtn);
 
             setVisible(true);
-
         }
 
         // Action method for user input.
