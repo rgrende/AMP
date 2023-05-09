@@ -890,7 +890,7 @@ public class AMPGUI extends JFrame {
     }
 
     private void createActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+
     }
 
     /**
@@ -1363,7 +1363,7 @@ public class AMPGUI extends JFrame {
                 String clr = ""; // String as clear the text.
                 txtId.setText(clr);
                 txtPlaylistName.setText(clr);
-                //TODO: update playlist list
+                //TODO: update after change
             }
 
             else if (e.getSource() == clrBtn) {
@@ -1533,14 +1533,8 @@ public class AMPGUI extends JFrame {
             }
         } // Ends method actionPerformed.
     } //Ends Class Frame.
-
-
-
-
-
-    //TODO: make it so when you click the popup, it runs the following line: new ModPlaylist();
+    
     class ModPlaylist extends JFrame implements ActionListener {
-
         // Components for the form.
         private Container cont;
         private JLabel playlist;
@@ -1555,8 +1549,6 @@ public class AMPGUI extends JFrame {
         private JPanel scrollPane2;
         private String p_name;
 
-        //TODO: add your two lists of songs here
-
 
         // The constructor.
         public ModPlaylist(String p_name) {
@@ -1569,29 +1561,29 @@ public class AMPGUI extends JFrame {
             cont = getContentPane();
             cont.setLayout(null);
 
-            playlist = new JLabel("Playlist:");
+            playlist = new JLabel("Selected Playlist");
             playlist.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
             playlist.setSize(300, 30);
-            playlist.setLocation(400, 30);
+            playlist.setLocation(360, 30);
             cont.add(playlist);
 
-            library = new JLabel("Library:");
+            library = new JLabel("Library");
             library.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
             library.setSize(300, 30);
-            library.setLocation(85, 30);
+            library.setLocation(100, 30);
             cont.add(library);
 
             addBtn = new JButton("Add Song to Playlist");
             addBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
             addBtn.setSize(160, 30);
-            addBtn.setLocation(50, 500);
+            addBtn.setLocation(55, 500);
             addBtn.addActionListener(this);
             cont.add(addBtn);
 
             remBtn = new JButton("Remove Song from Playlist");
             remBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
             remBtn.setSize(230, 30);
-            remBtn.setLocation(355, 500);
+            remBtn.setLocation(315, 500);
             remBtn.addActionListener(this);
             cont.add(remBtn);
 
@@ -1599,96 +1591,16 @@ public class AMPGUI extends JFrame {
             scrollPane1.setSize(200, 400);
             scrollPane1.setLocation(50, 100);
 
-
             scrollPane2 = new JPanel();
             scrollPane2.setSize(200, 400);
             scrollPane2.setLocation(300, 100);
 
-
-
-            //TODO: add your lists of songs here
-
-
             libraryList = new JList(db.getSongNames());
-//            libraryList.setModel(new AbstractListModel<String>() {
-//                final String[] strings = db.getSongNames();
-//
-//                public int getSize() {
-//                    return strings.length;
-//                }
-//
-//                public String getElementAt(int i) {
-//                    return strings[i];
-//                }
-//            });
             scrollPane1.add(libraryList);
-            libraryList.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
             cont.add(scrollPane1);
 
             newPlaylistList = new JList(db.getSongPlaylist(db.getPlaylistID(p_name)));
-//            newPlaylistList.setModel(new AbstractListModel<String>() {
-//                final String[] strings = db.getSongPlaylist(db.getPlaylistID(p_name));
-//
-//                public int getSize() {
-//                    return strings.length;
-//                }
-//
-//                public String getElementAt(int i) {
-//                    return strings[i];
-//                }
-//            });
             scrollPane2.add(newPlaylistList);
-            newPlaylistList.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
             cont.add(scrollPane2);
 
             setVisible(true);
@@ -1698,12 +1610,12 @@ public class AMPGUI extends JFrame {
 
         // Action method for user input.
         public void actionPerformed(ActionEvent e) {
-            //TODO: add selected song from playlist
             if (e.getSource() == addBtn) {
                 db.addSongToPlaylist(db.getSongID(libraryList.getModel().getElementAt(libraryList.getSelectedIndex())), db.getPlaylistID(this.p_name));
+                //TODO: update after change
             } else if (e.getSource() == remBtn) {
-                //TODO: remove selected song from playlist
                 db.removeSongFromPlaylist(db.getSongID(newPlaylistList.getModel().getElementAt(newPlaylistList.getSelectedIndex())), db.getPlaylistID(this.p_name));
+                //TODO: update after change
             }
         } // Ends method actionPerformed.
 
