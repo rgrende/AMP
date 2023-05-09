@@ -123,6 +123,11 @@ public class DBTools {
         run(1,line);
     }
 
+    public void removeSongFromPlaylist(String s_id, String p_id){
+        String line = "DELETE FROM SongPlaylist WHERE song_id=" + s_id + " AND playlist_id=" + p_id + ";";
+        run(1,line);
+    }
+
     public String[] getSongPlaylist(String p_id) {
         String line = "SELECT DISTINCT s.song_name FROM Song s, SongPlaylist sp, Playlist p WHERE s.id = sp.song_id " +
                 " AND sp.playlist_id = " + p_id + ";";
