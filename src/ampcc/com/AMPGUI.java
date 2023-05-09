@@ -205,7 +205,7 @@ public class AMPGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 importSongActionPerformed(e);
-                importSongToPlaylist();
+                new ModPlaylist();
             }
         });
 
@@ -1290,25 +1290,25 @@ public class AMPGUI extends JFrame {
     // The inner class for Theme Mode selection with Action Listener.
     private class ThemeModeHandler implements ActionListener {
 
-    // Process the theme selection.
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        // The process for color selection.
-        for (int count = 0; count < themeItems.length; count++) {
-            if (themeItems[0].isSelected()) {
-                FlatLightLaf.setup();
-                // create UI here...
-                updateUILater();
-            } // Ends first if statement.
-            else if (themeItems[1].isSelected()) {
-                FlatMacDarkLaf.setup();
-                // create UI here...
-                updateUILater();
-            } // Ends second else if statement.
-        } // Ends the for loop.
-    } // Ends actionPerformed event listener.
+        // Process the theme selection.
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            // The process for color selection.
+            for (int count = 0; count < themeItems.length; count++) {
+                if (themeItems[0].isSelected()) {
+                    FlatLightLaf.setup();
+                    // create UI here...
+                    updateUILater();
+                } // Ends first if statement.
+                else if (themeItems[1].isSelected()) {
+                    FlatMacDarkLaf.setup();
+                    // create UI here...
+                    updateUILater();
+                } // Ends second else if statement.
+            } // Ends the for loop.
+        } // Ends actionPerformed event listener.
 
-}   // Ends ThemeModeHandler inner class.
+    }   // Ends ThemeModeHandler inner class.
 
     /*
         Inner class Playlist to create a form.
@@ -1323,7 +1323,6 @@ public class AMPGUI extends JFrame {
         private JTextField txtId;
         private JLabel lblPlaylistName;
         private JTextField txtPlaylistName;
-
         private JButton addPlaylistBtn;
         private JButton clrBtn;
 
@@ -1537,6 +1536,7 @@ public class AMPGUI extends JFrame {
             cont.add(addBtn);
 
             setVisible(true);
+
         }
 
         // Action method for user input.
@@ -1633,6 +1633,173 @@ public class AMPGUI extends JFrame {
         } // Ends method actionPerformed.
     } //Ends Class Frame.
 
+
+    //TODO: make it so when you click the popup, it runs the following line: new ModPlaylist();
+    class ModPlaylist extends JFrame implements ActionListener {
+
+        // Components for the form.
+        private Container cont;
+        private JLabel playlist;
+        private JLabel library;
+        private JButton addBtn;
+        private JButton remBtn;
+        private JList<String> libraryList;
+        private JList<String> newPlaylistList;
+        private final List<File> newMusicFiles = new ArrayList<>();
+        private int newMusicFileIndex = 0;
+        private DefaultListModel newSongsToAdd;
+        //TODO: add your two lists of songs here
+
+
+        // The constructor.
+        public ModPlaylist() {
+            setSize(600,600);
+            setResizable(false);
+            setLocationRelativeTo(null);
+
+            cont = getContentPane();
+            cont.setLayout(null);
+
+            playlist = new JLabel("Playlist:");
+            playlist.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
+            playlist.setSize(300, 30);
+            playlist.setLocation(400, 30);
+            cont.add(playlist);
+
+            library = new JLabel("Library:");
+            library.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
+            library.setSize(300, 30);
+            library.setLocation(85, 30);
+            cont.add(library);
+
+            addBtn = new JButton("Add Song to Playlist");
+            addBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            addBtn.setSize(160, 30);
+            addBtn.setLocation(50, 500);
+            addBtn.addActionListener(this);
+            cont.add(addBtn);
+
+            remBtn = new JButton("Remove Song from Playlist");
+            remBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            remBtn.setSize(230, 30);
+            remBtn.setLocation(355, 500);
+            remBtn.addActionListener(this);
+            cont.add(remBtn);
+
+            //TODO: add your lists of songs here
+            newSongsToAdd = new DefaultListModel();
+            newSongsToAdd.addAll(db.);
+            libraryList.setModel(newSongsToAdd);
+            libraryList.setSize(200,400);
+            libraryList.setLocation(100,300);
+            libraryList.setModel(new AbstractListModel<String>() {
+                final String[] strings = db.getPlaylistNames();
+
+                public int getSize() {
+                    return strings.length;
+                }
+
+                public String getElementAt(int i) {
+                    return strings[i];
+                }
+            });
+
+            libraryList.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+
+                }
+            });
+
+            scrollPane.setViewportView(libraryList);
+            cont.add(libraryList);
+            newPlaylistList.setSize(200,400);
+            newPlaylistList.setLocation(300,500);
+            newPlaylistList.setModel(new AbstractListModel<String>() {
+                final String[] strings = db.getPlaylistNames();
+
+                public int getSize() {
+                    return strings.length;
+                }
+
+                public String getElementAt(int i) {
+                    return strings[i];
+                }
+            });
+            newPlaylistList.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+
+                }
+            });
+            scrollPane.setViewportView(newPlaylistList);
+            cont.add(newPlaylistList);
+
+
+            setVisible(true);
+        }
+
+        // Action method for user input.
+        public void actionPerformed(ActionEvent e) {
+            //TODO: add selected song from playlist
+            if (e.getSource() == addBtn) {
+                for (int index : libraryList.getSelectedIndices()) {
+                    String songName = libraryList.getModel().getElementAt(index);
+                    String filepath = db.getSongPath(songName);
+                    newMusicFiles.add(new File(filepath));
+                }
+            }
+
+            else if (e.getSource() == remBtn) {
+                //TODO: remove selected song from playlist
+                int[] selectedIndices = newPlaylistList.getSelectedIndices();
+                for (int i = selectedIndices.length-1; i >=0; i--) {
+                    newMusicFiles.remove(selectedIndices[i]);
+                }
+            }
+        } // Ends method actionPerformed.
+    } //Ends Class Frame.
+
     /* Class created to make a character limit restriction.
        https://www.tutorialspoint.com/how-can-we-limit-the-number-of-characters-inside-a-jtextfield-in-java
        https://docs.oracle.com/javase/tutorial/uiswing/components/generaltext.html#filter
@@ -1707,7 +1874,6 @@ public class AMPGUI extends JFrame {
     private javax.swing.JMenuItem newSong;
     private javax.swing.JMenuItem exit; // added in Exit JMenuItem
     private javax.swing.JLabel volumeUp;
-
     private javax.swing.JPopupMenu popupMenuCQ;
     private javax.swing.JPopupMenu popupMenuPL;
     private javax.swing.JPopupMenu playlistPopupMenu;
