@@ -1587,6 +1587,7 @@ public class AMPGUI extends JFrame {
             cont = getContentPane();
             cont.setLayout(null);
 
+
             playlist = new JLabel("Playlist:");
             playlist.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
             playlist.setSize(300, 30);
@@ -1648,11 +1649,12 @@ public class AMPGUI extends JFrame {
         private final List<File> newMusicFiles = new ArrayList<>();
         private int newMusicFileIndex = 0;
         private DefaultListModel newSongsToAdd;
+        private DefaultListModel playListSongs;
         //TODO: add your two lists of songs here
 
 
         // The constructor.
-        public ModPlaylist() {
+        public ModPlaylist(String p_name) {
             setSize(600,600);
             setResizable(false);
             setLocationRelativeTo(null);
@@ -1687,13 +1689,15 @@ public class AMPGUI extends JFrame {
             cont.add(remBtn);
 
             //TODO: add your lists of songs here
-            newSongsToAdd = new DefaultListModel();
-            newSongsToAdd.addAll(db.);
+            //need new default list model for each new JList
+            //newSongsToAdd = new DefaultListModel();
+            //newSongsToAdd.addElement(db.getSongNames());
+            scrollPane.setViewportView(libraryList);
             libraryList.setModel(newSongsToAdd);
             libraryList.setSize(200,400);
             libraryList.setLocation(100,300);
             libraryList.setModel(new AbstractListModel<String>() {
-                final String[] strings = db.getPlaylistNames();
+                final String[] strings = db.getSongNames();
 
                 public int getSize() {
                     return strings.length;
@@ -1730,13 +1734,14 @@ public class AMPGUI extends JFrame {
 
                 }
             });
-
-            scrollPane.setViewportView(libraryList);
             cont.add(libraryList);
+
+            //playListSongs = new DefaultListModel();
+            //newPlaylistList.setModel(playListSongs);
             newPlaylistList.setSize(200,400);
             newPlaylistList.setLocation(300,500);
             newPlaylistList.setModel(new AbstractListModel<String>() {
-                final String[] strings = db.getPlaylistNames();
+                final String[] strings = db.getSongPlaylist(db.getPlaylistID(p_name));
 
                 public int getSize() {
                     return strings.length;
@@ -1775,19 +1780,16 @@ public class AMPGUI extends JFrame {
             scrollPane.setViewportView(newPlaylistList);
             cont.add(newPlaylistList);
 
-
             setVisible(true);
         }
+
+
 
         // Action method for user input.
         public void actionPerformed(ActionEvent e) {
             //TODO: add selected song from playlist
             if (e.getSource() == addBtn) {
-                for (int index : libraryList.getSelectedIndices()) {
-                    String songName = libraryList.getModel().getElementAt(index);
-                    String filepath = db.getSongPath(songName);
-                    newMusicFiles.add(new File(filepath));
-                }
+                //TODO: db.addSongToPlaylist(db.getSongID(libraryList.getModel().getElementAt(libraryList.getSelectedIndex())),db.getPlaylistID(p_name));
             }
 
             else if (e.getSource() == remBtn) {
@@ -1877,7 +1879,6 @@ public class AMPGUI extends JFrame {
     private javax.swing.JPopupMenu popupMenuCQ;
     private javax.swing.JPopupMenu popupMenuPL;
     private javax.swing.JPopupMenu playlistPopupMenu;
-    private javax.swing.JPopupMenu createPopupMenu;
     // End of variables declaration
 }
 
