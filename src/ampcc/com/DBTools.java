@@ -120,12 +120,12 @@ public class DBTools {
 
     public void addSongToPlaylist(String s_id, String p_id){
         String line = "INSERT INTO SongPlaylist(song_id,playlist_id) VALUES (" + s_id + "," + p_id + ");";
-        run(1,line);
+        execLine(line);
     }
 
     public void removeSongFromPlaylist(String s_id, String p_id){
         String line = "DELETE FROM SongPlaylist WHERE song_id=" + s_id + " AND playlist_id=" + p_id + ";";
-        run(1,line);
+        execLine(line);
     }
 
     public String[] getSongPlaylist(String p_id) {
