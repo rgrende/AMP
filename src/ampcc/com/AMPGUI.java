@@ -1716,11 +1716,10 @@ public class AMPGUI extends JFrame {
     // End of variables declaration
 }
 
-    /**
-     *  Next Years ToDos:
-     *  - create new relative GUI
-     *  - add logo
-     *  - drag and drop
-     *  - look into changing player (song time, pause, etc)
-     */
-
+/**
+ *  Next Years ToDos:
+ *  - create new relative GUI
+ *  - add logo
+ *  - drag and drop
+ *  - look into changing player (song time, pause, etc)
+ */
