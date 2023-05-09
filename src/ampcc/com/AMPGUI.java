@@ -204,8 +204,7 @@ public class AMPGUI extends JFrame {
         importSongsToPlaylist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                importSongActionPerformed(e);
-                new ModPlaylist();
+                new ModPlaylist(playlist.getModel().getElementAt(playlist.getSelectedIndex()));
             }
         });
 
@@ -863,36 +862,6 @@ public class AMPGUI extends JFrame {
         abtFrame.setVisible(true);
         abtFrame.setAlwaysOnTop(true);
         abtFrame.setLocationRelativeTo(null);
-    }
-
-    /**
-     * This is the method that shows the JOptionPane associated with the popup JMenu for the screens located on the far
-     * left of the GUI.
-     * @param evt
-     */
-    private void importSongActionPerformed(java.awt.event.ActionEvent evt){
-        initialize();
-        test();
-
-        JFrame importFrame = new JFrame();
-        JPanel importPane = new JPanel();
-        JPanel rows = new JPanel();
-
-        importFrame.setTitle("Import Songs");
-        importFrame.setSize(400, 400);
-
-
-        // Add in the components
-        importPane.setLayout(new BorderLayout());
-        importPane.setLayout(new GridLayout(3, 1));
-        importFrame.add(importPane, BorderLayout.CENTER); // add the panel in the frame
-        rows.setLayout(new GridLayout(3, 1));
-
-        importFrame.add(rows, BorderLayout.CENTER);
-        importFrame.setResizable(false);
-        importFrame.setVisible(true);
-        importFrame.setAlwaysOnTop(true);
-        importFrame.setLocationRelativeTo(null);
     }
 
     /**
@@ -1566,73 +1535,7 @@ public class AMPGUI extends JFrame {
     } //Ends Class Frame.
 
 
-    //TODO: make it so when you click the popup, it runs the following line: new ModPlaylist();
-    class ModPlaylist extends JFrame implements ActionListener {
 
-        // Components for the form.
-        private Container cont;
-        private JLabel playlist;
-        private JLabel library;
-        private JButton addBtn;
-        private JButton remBtn;
-        //TODO: add your two lists of songs here
-
-
-        // The constructor.
-        public ModPlaylist() {
-            setSize(500,500);
-            setResizable(false);
-            setLocationRelativeTo(null);
-
-            cont = getContentPane();
-            cont.setLayout(null);
-
-
-            playlist = new JLabel("Playlist:");
-            playlist.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
-            playlist.setSize(300, 30);
-            playlist.setLocation(385, 30);
-            cont.add(playlist);
-
-            library = new JLabel("Library:");
-            library.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
-            library.setSize(300, 30);
-            library.setLocation(85, 30);
-            cont.add(library);
-
-            addBtn = new JButton("Add Song to Playlist");
-            addBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
-            addBtn.setSize(140, 30);
-            addBtn.setLocation(150, 400);
-            addBtn.addActionListener(this);
-            cont.add(addBtn);
-
-            remBtn = new JButton("Remove Song from Playlist");
-            remBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
-            remBtn.setSize(140, 30);
-            remBtn.setLocation(300, 400);
-            remBtn.addActionListener(this);
-            cont.add(remBtn);
-
-            //TODO: add your lists of songs here
-
-
-
-            setVisible(true);
-
-        }
-
-        // Action method for user input.
-        public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == addBtn) {
-                //TODO: add selected song to playlist
-            }
-
-            else if (e.getSource() == remBtn) {
-                //TODO: remove selected song from playlist
-            }
-        } // Ends method actionPerformed.
-    } //Ends Class Frame.
 
 
     //TODO: make it so when you click the popup, it runs the following line: new ModPlaylist();
@@ -1648,8 +1551,10 @@ public class AMPGUI extends JFrame {
         private JList<String> newPlaylistList;
         private final List<File> newMusicFiles = new ArrayList<>();
         private int newMusicFileIndex = 0;
-        private DefaultListModel newSongsToAdd;
-        private DefaultListModel playListSongs;
+        private JPanel scrollPane1;
+        private JPanel scrollPane2;
+        private String p_name;
+
         //TODO: add your two lists of songs here
 
 
@@ -1658,6 +1563,8 @@ public class AMPGUI extends JFrame {
             setSize(600,600);
             setResizable(false);
             setLocationRelativeTo(null);
+
+            this.p_name = p_name;
 
             cont = getContentPane();
             cont.setLayout(null);
@@ -1688,26 +1595,33 @@ public class AMPGUI extends JFrame {
             remBtn.addActionListener(this);
             cont.add(remBtn);
 
+            scrollPane1 = new JPanel();
+            scrollPane1.setSize(200, 400);
+            scrollPane1.setLocation(50, 100);
+
+
+            scrollPane2 = new JPanel();
+            scrollPane2.setSize(200, 400);
+            scrollPane2.setLocation(300, 100);
+
+
+
             //TODO: add your lists of songs here
-            //need new default list model for each new JList
-            //newSongsToAdd = new DefaultListModel();
-            //newSongsToAdd.addElement(db.getSongNames());
-            scrollPane.setViewportView(libraryList);
-            libraryList.setModel(newSongsToAdd);
-            libraryList.setSize(200,400);
-            libraryList.setLocation(100,300);
-            libraryList.setModel(new AbstractListModel<String>() {
-                final String[] strings = db.getSongNames();
 
-                public int getSize() {
-                    return strings.length;
-                }
 
-                public String getElementAt(int i) {
-                    return strings[i];
-                }
-            });
-
+            libraryList = new JList(db.getSongNames());
+//            libraryList.setModel(new AbstractListModel<String>() {
+//                final String[] strings = db.getSongNames();
+//
+//                public int getSize() {
+//                    return strings.length;
+//                }
+//
+//                public String getElementAt(int i) {
+//                    return strings[i];
+//                }
+//            });
+            scrollPane1.add(libraryList);
             libraryList.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -1734,23 +1648,21 @@ public class AMPGUI extends JFrame {
 
                 }
             });
-            cont.add(libraryList);
+            cont.add(scrollPane1);
 
-            //playListSongs = new DefaultListModel();
-            //newPlaylistList.setModel(playListSongs);
-            newPlaylistList.setSize(200,400);
-            newPlaylistList.setLocation(300,500);
-            newPlaylistList.setModel(new AbstractListModel<String>() {
-                final String[] strings = db.getSongPlaylist(db.getPlaylistID(p_name));
-
-                public int getSize() {
-                    return strings.length;
-                }
-
-                public String getElementAt(int i) {
-                    return strings[i];
-                }
-            });
+            newPlaylistList = new JList(db.getSongPlaylist(db.getPlaylistID(p_name)));
+//            newPlaylistList.setModel(new AbstractListModel<String>() {
+//                final String[] strings = db.getSongPlaylist(db.getPlaylistID(p_name));
+//
+//                public int getSize() {
+//                    return strings.length;
+//                }
+//
+//                public String getElementAt(int i) {
+//                    return strings[i];
+//                }
+//            });
+            scrollPane2.add(newPlaylistList);
             newPlaylistList.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -1777,8 +1689,7 @@ public class AMPGUI extends JFrame {
 
                 }
             });
-            scrollPane.setViewportView(newPlaylistList);
-            cont.add(newPlaylistList);
+            cont.add(scrollPane2);
 
             setVisible(true);
         }
@@ -1789,17 +1700,13 @@ public class AMPGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             //TODO: add selected song from playlist
             if (e.getSource() == addBtn) {
-                //TODO: db.addSongToPlaylist(db.getSongID(libraryList.getModel().getElementAt(libraryList.getSelectedIndex())),db.getPlaylistID(p_name));
-            }
-
-            else if (e.getSource() == remBtn) {
+                db.addSongToPlaylist(db.getSongID(libraryList.getModel().getElementAt(libraryList.getSelectedIndex())), db.getPlaylistID(this.p_name));
+            } else if (e.getSource() == remBtn) {
                 //TODO: remove selected song from playlist
-                int[] selectedIndices = newPlaylistList.getSelectedIndices();
-                for (int i = selectedIndices.length-1; i >=0; i--) {
-                    newMusicFiles.remove(selectedIndices[i]);
-                }
+                db.removeSongFromPlaylist(db.getSongID(newPlaylistList.getModel().getElementAt(newPlaylistList.getSelectedIndex())), db.getPlaylistID(this.p_name));
             }
         } // Ends method actionPerformed.
+
     } //Ends Class Frame.
 
     /* Class created to make a character limit restriction.
