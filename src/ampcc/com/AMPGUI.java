@@ -1579,6 +1579,74 @@ public class AMPGUI extends JFrame {
         } // Ends method actionPerformed.
     } //Ends Class Frame.
 
+
+    //TODO: make it so when you click the popup, it runs the following line: new ModPlaylist();
+    class ModPlaylist extends JFrame implements ActionListener {
+
+        // Components for the form.
+        private Container cont;
+        private JLabel playlist;
+        private JLabel library;
+        private JButton addBtn;
+        private JButton remBtn;
+        //TODO: add your two lists of songs here
+
+
+        // The constructor.
+        public ModPlaylist() {
+            setSize(500,500);
+            setResizable(false);
+            setLocationRelativeTo(null);
+
+            cont = getContentPane();
+            cont.setLayout(null);
+
+            playlist = new JLabel("Playlist:");
+            playlist.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
+            playlist.setSize(300, 30);
+            playlist.setLocation(385, 30);
+            cont.add(playlist);
+
+            library = new JLabel("Library:");
+            library.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
+            library.setSize(300, 30);
+            library.setLocation(85, 30);
+            cont.add(library);
+
+            addBtn = new JButton("Add Song to Playlist");
+            addBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            addBtn.setSize(140, 30);
+            addBtn.setLocation(150, 400);
+            addBtn.addActionListener(this);
+            cont.add(addBtn);
+
+            remBtn = new JButton("Remove Song from Playlist");
+            remBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            remBtn.setSize(140, 30);
+            remBtn.setLocation(300, 400);
+            remBtn.addActionListener(this);
+            cont.add(remBtn);
+
+            //TODO: add your lists of songs here
+
+
+
+            setVisible(true);
+
+        }
+
+        // Action method for user input.
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == addBtn) {
+                //TODO: add selected song to playlist
+            }
+
+            else if (e.getSource() == remBtn) {
+                //TODO: remove selected song from playlist
+            }
+        } // Ends method actionPerformed.
+    } //Ends Class Frame.
+
     /* Class created to make a character limit restriction.
        https://www.tutorialspoint.com/how-can-we-limit-the-number-of-characters-inside-a-jtextfield-in-java
        https://docs.oracle.com/javase/tutorial/uiswing/components/generaltext.html#filter
