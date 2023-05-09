@@ -106,15 +106,48 @@ public class DBTools {
         run(flag, line);
     }
 
-    public String[][] getSongPlaylist(String p_id) {
-        String line = "SELECT DISTINCT s.* FROM Song s, SongPlaylist sp, Playlist p WHERE s.id = sp.song_id " +
-                " AND sp.playlist_id = " + p_id + ";";
-        return arrayLine(line);
+    public String getSongID(String s_name) {
+        String line = "SELECT id FROM Song WHERE Song.song_name = '" + s_name + "';";
+        String[][] result =  arrayLine(line);
+        String sid = "";
+        for (String[] row : result) {
+            for (String s : row) {
+                sid = s;
+            }
+        }
+        return sid;
     }
 
-    public String[][] getPlaylistID(String p_name) {
+    public void addSongToPlaylist(String s_id, String p_id){
+        String line = "INSERT INTO SongPlaylist(song_id,playlist_id) VALUES (" + s_id + "," + p_id + ");";
+        run(1,line);
+    }
+
+    public String[] getSongPlaylist(String p_id) {
+        String line = "SELECT DISTINCT s.song_name FROM Song s, SongPlaylist sp, Playlist p WHERE s.id = sp.song_id " +
+                " AND sp.playlist_id = " + p_id + ";";
+        String[][] result = arrayLine(line);
+        String[] songs = new String[result.length];
+        int count = 0;
+        for (String[] row : result) {
+            for (String s : row) {
+                songs[count] = s;
+            }
+            count++;
+        }
+        return songs;
+    }
+
+    public String getPlaylistID(String p_name) {
         String line = "SELECT id FROM Playlist WHERE Playlist.playlist_name = '" + p_name + "';";
-        return arrayLine(line);
+        String[][] result =  arrayLine(line);
+        String pid = "";
+        for (String[] row : result) {
+            for (String s : row) {
+                pid = s;
+            }
+        }
+        return pid;
     }
 
     public String getSongPath(String s_name) {

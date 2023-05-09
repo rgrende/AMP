@@ -930,24 +930,11 @@ public class AMPGUI extends JFrame {
      */
     private void playlistMouseClicked(MouseEvent evt) {
         String p_name = playlist.getModel().getElementAt(playlist.getSelectedIndex());
-        String[][] pid = db.getPlaylistID(p_name);
-        String id = "";
-        for (String[] r : pid) {
-            for (String s : r) {
-                id = s;
-            }
-        }
-        String[][] songs = db.getSongPlaylist(id);
-        String[] songNames = new String[songs.length];
-        for (int i = 0; i < songs.length; i++) {
-            songNames[i] = songs[i][2];
-        }
-        for (String name : songNames) {
-            System.out.println(name);
-        }
+        String id = db.getPlaylistID(p_name);
+        String[] songs = db.getSongPlaylist(id);
 
         playlistList.setModel(new javax.swing.AbstractListModel<String>() {
-            final String[] strings = songNames;
+            final String[] strings = songs;
 
             public int getSize() {
                 return strings.length;
