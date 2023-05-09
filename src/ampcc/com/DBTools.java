@@ -85,6 +85,21 @@ public class DBTools {
     }
 
 
+    public String[] getSongNames() {
+        String line = "SELECT song_name FROM Song";
+        String[][] result = arrayLine(line);
+        String[] songs = new String[result.length];
+        int count = 0;
+        for (String[] row : result) {
+            for (String s : row) {
+                songs[count] = s;
+            }
+            count++;
+        }
+        return songs;
+    }
+
+
     public void readSongTag(String t_id, int flag) {
         String line = "SELECT * FROM Song s, SongTag st WHERE s.song_id = st.song_id " +
                 " AND st.Tag_id = " + t_id + ";";
