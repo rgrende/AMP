@@ -1533,7 +1533,7 @@ public class AMPGUI extends JFrame {
             }
         } // Ends method actionPerformed.
     } //Ends Class Frame.
-    
+
     class ModPlaylist extends JFrame implements ActionListener {
         // Components for the form.
         private Container cont;
