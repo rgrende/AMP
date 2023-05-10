@@ -910,8 +910,7 @@ public class AMPGUI extends JFrame {
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setFileFilter(new FileNameExtensionFilter("Mp3 files", "mp3"));
         if (fileChooser.showOpenDialog(library) == JFileChooser.APPROVE_OPTION) {
-           //new AddNewSong(fileChooser.getSelectedFile());
-            new AddNewSong();
+           new AddImportSong(fileChooser.getSelectedFile());
         }
         //update GUi
     }
@@ -1517,6 +1516,154 @@ public class AMPGUI extends JFrame {
             }
         } // Ends method actionPerformed.
     } //Ends Class Frame.
+
+
+    class AddImportSong extends JFrame implements ActionListener {
+
+        // Components for the form.
+        private Container cont;
+        private JLabel title;
+        private JLabel lblSongName;
+        private JTextField txtSongName;
+        private JLabel lblArtistName;
+        private JTextField txtArtistName;
+        private JLabel lblSongLength;
+        private JTextField txtSongLength;
+        private JLabel lblRelYr;
+        private JTextField txtRelYr;
+        private JLabel lblPath;
+        private JTextField txtPath;
+        private JButton addBtn;
+        private JButton clrBtn;
+        private File songFile;
+
+
+        // The constructor.
+        public AddImportSong(File f) {
+            this.songFile = f;
+            setSize(500,500);
+            setResizable(false);
+            setLocationRelativeTo(null);
+
+            cont = getContentPane();
+            cont.setLayout(null);
+
+            title = new JLabel("Add a Song");
+            title.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
+            title.setSize(300, 30);
+            title.setLocation(185, 30);
+            cont.add(title);
+
+
+            lblSongName = new JLabel("Song Name:");
+            lblSongName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblSongName.setSize(130, 30);
+            lblSongName.setLocation(75, 150);
+            cont.add(lblSongName);
+
+            txtSongName = new JTextField();
+            txtSongName.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            String songName = f.getName();
+            txtSongName.setText(songName.substring(0,songName.lastIndexOf(".")));
+            txtSongName.setSize(200, 30);
+            txtSongName.setLocation(200, 150);
+            cont.add(txtSongName);
+
+            lblArtistName = new JLabel("Artist Name:");
+            lblArtistName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblArtistName.setSize(130, 30);
+            lblArtistName.setLocation(75, 200);
+            cont.add(lblArtistName);
+
+            txtArtistName = new JTextField();
+            txtArtistName.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtArtistName.setSize(200, 30);
+            txtArtistName.setLocation(200, 200);
+            cont.add(txtArtistName);
+
+            lblSongLength = new JLabel("Song Length:");
+            lblSongLength.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblSongLength.setSize(130, 30);
+            lblSongLength.setLocation(75, 250);
+            cont.add(lblSongLength);
+
+            txtSongLength = new JTextField();
+            txtSongLength.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtSongLength.setSize(200, 30);
+            txtSongLength.setLocation(200, 250);
+            cont.add(txtSongLength);
+
+            lblRelYr = new JLabel("Year Released:");
+            lblRelYr.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblRelYr.setSize(130, 30);
+            lblRelYr.setLocation(75, 300);
+            cont.add(lblRelYr);
+
+            txtRelYr = new JTextField();
+            txtRelYr.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtRelYr.setSize(200, 30);
+            txtRelYr.setLocation(200, 300);
+            cont.add(txtRelYr);
+            txtRelYr.setDocument(new JTextFieldLimit(4));
+
+            lblPath = new JLabel("File Path:");
+            lblPath.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblPath.setSize(130, 30);
+            lblPath.setLocation(75, 350);
+            cont.add(lblPath);
+
+            txtPath = new JTextField();
+            txtPath.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtPath.setText(f.getPath());
+            txtPath.setSize(200, 30);
+            txtPath.setLocation(200, 350);
+            cont.add(txtPath);
+
+
+            clrBtn = new JButton("Clear");
+            clrBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            clrBtn.setSize(100, 30);
+            clrBtn.setLocation(75, 400);
+            clrBtn.addActionListener(this);
+            cont.add(clrBtn);
+
+            addBtn = new JButton("Add Song");
+            addBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            addBtn.setSize(100, 30);
+            addBtn.setLocation(300, 400);
+            addBtn.addActionListener(this);
+            cont.add(addBtn);
+
+            setVisible(true);
+
+        }
+
+        // Action method for user input.
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == addBtn) {
+                DBTools buttonDB = new DBTools();
+                buttonDB.addSong(txtArtistName.getText(), txtSongName.getText(),
+                        txtSongLength.getText(), txtRelYr.getText(), txtPath.getText());
+                String clr = ""; // String as clear the text.
+                txtArtistName.setText(clr);
+                txtSongName.setText(clr);
+                txtSongLength.setText(clr);
+                txtRelYr.setText(clr);
+                txtPath.setText(clr);
+            }
+
+            else if (e.getSource() == clrBtn) {
+                String clr = ""; // String as clear the text.
+                txtArtistName.setText(clr);
+                txtSongName.setText(clr);
+                txtSongLength.setText(clr);
+                txtRelYr.setText(clr);
+                txtPath.setText(clr);
+
+            }
+        } // Ends method actionPerformed.
+    } //Ends Class Frame.
+
 
     class ModPlaylist extends JFrame implements ActionListener {
         // Components for the form.

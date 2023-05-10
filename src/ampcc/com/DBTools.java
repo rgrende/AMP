@@ -169,19 +169,19 @@ public class DBTools {
 
     public void addPlaylist(String p_name) {
         String line = "INSERT INTO Playlist(id,playlist_name) VALUES " +
-                "(NEXT VALUE FOR playlist_seq, " + p_name + "');";
+                "(NEXT VALUE FOR playlist_seq, '" + p_name + "');";
         execLine(line);
     }
 
     public void addArtist(String a_name) {
         String line = "INSERT INTO Artist(id,artist_name) VALUES " +
-                "(NEXT VALUE FOR artist_seq, " + a_name + "');";
+                "(NEXT VALUE FOR artist_seq, '" + a_name + "');";
         execLine(line);
     }
 
     public void addSong(String artist_name, String s_name, String s_length, String release_year, String file_path) {
         String line = "INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES " +
-                "(NEXT VALUE FOR song_seq, (SELECT id FROM Artist WHERE artist_name=" + artist_name + "), '" +
+                "(NEXT VALUE FOR song_seq, (SELECT id FROM Artist WHERE artist_name='" + artist_name + "'), '" +
                 s_name + "', " + s_length + ", " + release_year + ", '" + file_path + "');";
         execLine(line);
         //add a song to the library not to the interface
