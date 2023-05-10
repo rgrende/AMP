@@ -17,7 +17,6 @@
 package ampcc.com;
 
 //imports
-//import javazoom.jl.decoder.JavaLayerException;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import javazoom.jl.decoder.JavaLayerException;
@@ -69,9 +68,8 @@ public class AMPGUI extends JFrame {
     //class variables
     private static final String playImage = "/resources/images/playButton.png";
     private static final String pauseImage = "/resources/images/pauseButton.png";
-    private static final ImageIcon playIcon = new ImageIcon(MusicPlayer.class.getResource(playImage));
-    private static final ImageIcon pauseIcon = new ImageIcon(MusicPlayer.class.getResource(pauseImage));
-    // Added in RadioButtonMenuItems and ButtonGroup.
+    private static final ImageIcon playIcon = new ImageIcon(AMPGUI.class.getResource(playImage));
+    private static final ImageIcon pauseIcon = new ImageIcon(AMPGUI.class.getResource(pauseImage));
     private JRadioButtonMenuItem[] themeItems; // This is the theme menu item.
     private ButtonGroup themeModeBtnGrp; // This manages the theme menu items.
     private FileInputStream fileInputStream;
@@ -106,7 +104,6 @@ public class AMPGUI extends JFrame {
         backPanel2 = new JPanel();
         scrollPane2 = new JScrollPane();
         playlistList = new JList<>();
-        //for (String pl : db.getPlaylistNames()) {playlistList.add(new javax.swing.JLabel(pl));}
         playlists = new JLabel();
         fadeButton = new JButton();
         scrollPane = new JScrollPane();
@@ -568,32 +565,12 @@ public class AMPGUI extends JFrame {
         tags.setMnemonic(KeyEvent.VK_S); // Added in Mnemonic to c.
         edit.add(tags);
 
-        addPlaylist.setText("Add Playlist");
-        addPlaylist.setFont(new Font("Helvetica", 0, 14)); // NOI18N
-        addPlaylist.setMnemonic(KeyEvent.VK_A);
-        edit.add(addPlaylist);
-
-        removePlaylist.setText("Remove Playlist");
-        removePlaylist.setFont(new Font("Helvetica", 0, 14)); // NOI18N
-        removePlaylist.setMnemonic(KeyEvent.VK_R);
-        edit.add(removePlaylist);
-
         menuBar.add(edit);
 
         modify.setText("Modify");
 
         modify.setFont(new Font("Helvetica", 0, 14)); // NOI18N
         modify.setMnemonic(KeyEvent.VK_D);
-
-
-        add.setText("Add Song");
-        add.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
-        modify.add(add);
-
-        remove.setText("Remove Song");
-        remove.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
-
-        modify.add(remove);
 
         search.setText("Search");
         search.setFont(new Font("Helvetica", 0, 14)); // NOI18N
@@ -802,6 +779,11 @@ public class AMPGUI extends JFrame {
      * */
     private void addPlaylistActionPerformed(java.awt.event.ActionEvent evt) {
         new AddNewPlaylist();
+        DefaultListModel update = new DefaultListModel();
+        for (String p: db.getPlaylistNames()) {
+            update.addElement(p);
+        }
+        playlist.setModel(update);
     }
 
     /**
@@ -893,7 +875,7 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     *
+     * Displays the current songs in each of the playlists.
      * @param evt
      */
     private void playlistMouseClicked(MouseEvent evt) {
@@ -917,7 +899,7 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     *
+     * Adds songs from local machine to the database.
      * @param evt
      */
     private void importSongActionPerformed(java.awt.event.ActionEvent evt) {
@@ -932,17 +914,6 @@ public class AMPGUI extends JFrame {
         //update GUi
     }
 
-
-    /**
-     *
-     * @param songName
-     * @param songArtist
-     * @param songAlbum
-     * @param filepath
-     */
-    private void addSongsToDatabase(String songName, String songArtist, String songAlbum, File filepath) {
-
-    }
 
     /**
      Allows users to choose what types of music to play within their local machine. If the user have .mp3
@@ -1053,7 +1024,7 @@ public class AMPGUI extends JFrame {
     }
     /**
      * If switching songs in the queue, the next button will play the next song in the next position,
-     * keeping track of all the indices of each song. Once the user has reached the end of the queue, the list will
+     * keeping track of all the indices of each song. At the end of the queue, the list will
      * circle back to the song in the first position.
      * @param evt
      */
@@ -1079,7 +1050,6 @@ public class AMPGUI extends JFrame {
         //code for clear button
         musicFiles.clear();
         updateQueue();
-        //TODO: set text to be null if queue and player are empty.
     }
 
     /**
@@ -1358,7 +1328,6 @@ public class AMPGUI extends JFrame {
             cont.add(addPlaylistBtn);
 
             setVisible(true);
-
         }
 
         // Action method for the user buttons.
@@ -1447,9 +1416,9 @@ public class AMPGUI extends JFrame {
             txtArtistName.setLocation(200, 200);
             cont.add(txtArtistName);
 
-            lblSongLength = new JLabel("Song Length (# sec.):");
+            lblSongLength = new JLabel("Song Length:");
             lblSongLength.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
-            lblSongLength.setSize(130, 30);
+            lblSongLength.setSize(150, 30);
             lblSongLength.setLocation(75, 250);
             cont.add(lblSongLength);
 
@@ -1459,9 +1428,9 @@ public class AMPGUI extends JFrame {
             txtSongLength.setLocation(200, 250);
             cont.add(txtSongLength);
 
-            lblRelYr = new JLabel("Year Released (#):");
+            lblRelYr = new JLabel("Year Released:");
             lblRelYr.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
-            lblRelYr.setSize(130, 30);
+            lblRelYr.setSize(150, 30);
             lblRelYr.setLocation(75, 300);
             cont.add(lblRelYr);
 
@@ -1519,6 +1488,7 @@ public class AMPGUI extends JFrame {
                 txtSongLength.setText(clr);
                 txtRelYr.setText(clr);
                 txtPath.setText(clr);
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
             }
 
             else if (e.getSource() == clrBtn) {
@@ -1677,6 +1647,7 @@ public class AMPGUI extends JFrame {
                 txtSongLength.setText(clr);
                 txtRelYr.setText(clr);
                 txtPath.setText(clr);
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
             }
 
             else if (e.getSource() == clrBtn) {
@@ -1764,11 +1735,13 @@ public class AMPGUI extends JFrame {
                 buttonDB.addArtist(txtArtistName.getText());
                 String clr = ""; // String as clear the text.
                 txtArtistName.setText(clr);
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
             }
 
             else if (e.getSource() == clrBtn) {
                 String clr = ""; // String as clear the text.
                 txtArtistName.setText(clr);
+
             }
         } // Ends method actionPerformed.
     } //Ends Class AddNewArtist.
@@ -1857,13 +1830,11 @@ public class AMPGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == addBtn) {
                 db.addSongToPlaylist(db.getSongID(libraryList.getModel().getElementAt(libraryList.getSelectedIndex())), db.getPlaylistID(this.p_name));
-                //TODO: update after change
                 DefaultListModel update = new DefaultListModel();
                 for (String s: db.getSongPlaylist(db.getPlaylistID(p_name))) { update.addElement(s);}
                 newPlaylistList.setModel(update);
             } else if (e.getSource() == remBtn) {
                 db.removeSongFromPlaylist(db.getSongID(newPlaylistList.getModel().getElementAt(newPlaylistList.getSelectedIndex())), db.getPlaylistID(this.p_name));
-                //TODO: update after change
                 DefaultListModel update = new DefaultListModel();
                 for (String s: db.getSongPlaylist(db.getPlaylistID(p_name))) { update.addElement(s);}
                 newPlaylistList.setModel(update);
