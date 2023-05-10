@@ -1,53 +1,53 @@
 INSERT INTO Artist(id,artist_name) VALUES
-    (1, 'I DONT KNOW HOW BUT THEY FOUND ME');
+    (NEXT VALUE FOR artist_seq, 'I DONT KNOW HOW BUT THEY FOUND ME');
 
 INSERT INTO Artist(id,artist_name) VALUES
-    (2, 'Backstreet Boys');
+    (NEXT VALUE FOR artist_seq, 'Backstreet Boys');
 
 INSERT INTO Artist(id,artist_name) VALUES
-    (3, 'The Goo Goo Dolls');
+    (NEXT VALUE FOR artist_seq, 'The Goo Goo Dolls');
 
 INSERT INTO Artist(id,artist_name) VALUES
-    (4, 'Capital Cities');
+    (NEXT VALUE FOR artist_seq, 'Capital Cities');
 
 INSERT INTO Artist(id,artist_name) VALUES
-    (5, 'WALK THE MOON');
+    (NEXT VALUE FOR artist_seq, 'WALK THE MOON');
 
 INSERT INTO Artist(id,artist_name) VALUES
-    (6, 'David Guetta');
+    (NEXT VALUE FOR artist_seq, 'David Guetta');
 
 INSERT INTO Artist(id,artist_name) VALUES
-    (7, 'Darius Rucker');
+    (NEXT VALUE FOR artist_seq, 'Darius Rucker');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (1,1,'DO IT ALL THE TIME',167,2018,'songs/IDKHOW - Do It All The Time.mp3');
+    (NEXT VALUE FOR song_seq,1,'DO IT ALL THE TIME',167,2018,'songs/IDKHOW - Do It All The Time.mp3');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (2,2,'I Want It That Way',213,2001,'songs/I Want It That Way.mp3');
+    (NEXT VALUE FOR song_seq,2,'I Want It That Way',213,2001,'songs/I Want It That Way.mp3');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (3,3,'Iris',289,2007,'songs/Iris.mp3');
+    (NEXT VALUE FOR song_seq,3,'Iris',289,2007,'songs/Iris.mp3');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (4,4,'Safe and Sound',192,2013,'songs/Safe And Sound.mp3');
+    (NEXT VALUE FOR song_seq,4,'Safe and Sound',192,2013,'songs/Safe And Sound.mp3');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (5,5,'Shut Up and Dance',199,2014,'songs/Shut Up and Dance.mp3');
+    (NEXT VALUE FOR song_seq,5,'Shut Up and Dance',199,2014,'songs/Shut Up and Dance.mp3');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (6,6,'Titanium (feat. Sia)',245,2011,'songs/Titanium (feat  Sia).mp3');
+    (NEXT VALUE FOR song_seq,6,'Titanium (feat. Sia)',245,2011,'songs/Titanium (feat  Sia).mp3');
 
 INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES
-    (7,7,'Wagon Wheel',298,2013,'songs/Wagon Wheel.mp3');
+    (NEXT VALUE FOR song_seq,7,'Wagon Wheel',298,2013,'songs/Wagon Wheel.mp3');
 
 INSERT INTO Playlist(id,playlist_name) VALUES
-    (1,'Football');
+    (NEXT VALUE FOR playlist_seq,'Football');
 
 INSERT INTO Playlist(id,playlist_name) VALUES
-    (2,'Mens Soccer');
+    (NEXT VALUE FOR playlist_seq,'Mens Soccer');
 
 INSERT INTO Playlist(id,playlist_name) VALUES
-    (3,'Womens Basketball');
+    (NEXT VALUE FOR playlist_seq,'Womens Basketball');
 
 INSERT INTO SongPlaylist(song_id,playlist_id) VALUES
     (1,1);

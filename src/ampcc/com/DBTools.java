@@ -27,9 +27,9 @@ public class DBTools {
 
     public static void modMethods() {
         DBTools t = new DBTools();
-        t.addArtist("17","Billy Joel");
-        t.addPlaylist("17","Intermission");
-        t.addSong("17","17","Piano Man","123","1980","songs/Piano Man.mp3");
+        t.addArtist("Billy Joel");
+        t.addPlaylist("Intermission");
+        t.addSong("Billy Joel","Piano Man","123","1980","songs/Piano Man.mp3");
         System.out.println(t.getSongPath("Piano Man"));
     }
 
@@ -167,21 +167,22 @@ public class DBTools {
         return path;
     }
 
-    public void addPlaylist(String p_id, String p_name) {
+    public void addPlaylist(String p_name) {
         String line = "INSERT INTO Playlist(id,playlist_name) VALUES " +
-                "(" + p_id + ", '" + p_name + "');";
+                "(NEXT VALUE FOR playlist_seq, " + p_name + "');";
         execLine(line);
     }
 
-    public void addArtist(String a_id, String a_name) {
+    public void addArtist(String a_name) {
         String line = "INSERT INTO Artist(id,artist_name) VALUES " +
-                "(" + a_id + ", '" + a_name + "');";
+                "(NEXT VALUE FOR artist_seq, " + a_name + "');";
         execLine(line);
     }
 
-    public void addSong(String s_id, String artist_id, String s_name, String s_length, String release_year, String file_path) {
+    public void addSong(String artist_name, String s_name, String s_length, String release_year, String file_path) {
         String line = "INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES " +
-                "(" + s_id + ", " + artist_id + ", '" + s_name + "', " + s_length + ", " + release_year + ", '" + file_path + "');";
+                "(NEXT VALUE FOR song_seq, (SELECT id FROM Artist WHERE artist_name=" + artist_name + "), '" +
+                s_name + "', " + s_length + ", " + release_year + ", '" + file_path + "');";
         execLine(line);
         //add a song to the library not to the interface
         //select song, song name given, no id or file path needed.
