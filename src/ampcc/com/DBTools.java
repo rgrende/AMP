@@ -183,6 +183,8 @@ public class DBTools {
         String line = "INSERT INTO Song(id,artist_id,song_name,song_length,release_year,file_path) VALUES " +
                 "(" + s_id + ", " + artist_id + ", '" + s_name + "', " + s_length + ", " + release_year + ", '" + file_path + "');";
         execLine(line);
+        //add a song to the library not to the interface
+        //select song, song name given, no id or file path needed.
     }
 
     private void run(int flag, String line) {

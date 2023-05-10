@@ -22,34 +22,14 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
-import org.h2.command.ddl.DeallocateProcedure;
-
 import javax.swing.*;
-import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.MenuKeyListener;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragGestureRecognizer;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DragSourceListener;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -805,17 +785,17 @@ public class AMPGUI extends JFrame {
     }// </editor-fold>
 
 
-    /* This method creates a Playlist Add form. */
+    /** This method creates a Playlist Add form. */
     private void addPlaylistActionPerformed(java.awt.event.ActionEvent evt) {
         new AddNewPlaylist();
     }
 
-    /* This method creates a Song Add form. */
+    /** This method creates a Song Add form. */
     private void addSongActionPerformed(java.awt.event.ActionEvent evt) {
         new AddNewSong();
     }
 
-    /*   This method is an Action Event to open our documentation PDF file
+    /** This method is an Action Event to open our documentation PDF file
      This may subject to change. I will see if I can adjust this to
      open in a web browser or some other method to open externally.
      Otherwise, this will be left as is.
@@ -872,8 +852,8 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     This method stops the player at its current position and changes the play icon to pause. Used to pause songs in the
-     queue.
+     * This stops the player at its current position and changes the play icon to pause. It's used to pause songs in the
+     * queue.
      */
     private void stopPlaying(boolean clearSong) {
         //stops audio line
@@ -918,6 +898,35 @@ public class AMPGUI extends JFrame {
     }
 
     /**
+     *
+     * @param evt
+     */
+    private void importSongActionPerformed(java.awt.event.ActionEvent evt) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home") + System.getProperty("file.separator") + "git/AMP/songs"));
+        fileChooser.setDialogTitle("Select Music");
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Mp3 files", "mp3"));
+        if (fileChooser.showOpenDialog(library) == JFileChooser.APPROVE_OPTION) {
+            Collections.addAll(musicFiles, fileChooser.getSelectedFiles());
+        }
+        //update GUi
+    }
+
+
+    /**
+     *
+     * @param songName
+     * @param songArtist
+     * @param songAlbum
+     * @param filepath
+     */
+    private void addSongsToDatabase(String songName, String songArtist, String songAlbum, File filepath) {
+
+
+    }
+
+    /**
      This method allows users to choose what types of music to play within their local machine. If the user have .mp3
      files on their local machine, they will be options for the user to choose to select to add the program. After
      selecting the desired songs, the current queue will populate with those songs.
@@ -936,23 +945,11 @@ public class AMPGUI extends JFrame {
         }
         //update GUi
     }
-/*
-    private boolean importSongs(TransferHandler.TransferSupport songs) {
-        if (playlistList != null) {
-            JList playlistList = (JList) songs.getComponent();
-            DefaultListModel listModel = (DefaultListModel) playlistList.getModel();
-            JList.DropLocation dl = (JList.DropLocation) songs.getDropLocation();
-            int index = dl.getIndex();
-            boolean insert = dl.isInsert();
 
-        }
-        return true;
-    }
- */
     /**
-     This method is responsible for the play button and its functionality. If the user presses the play JButton the
-     first song in the current queue will play. After a song is paused, this method will resume the song.
-     @param evt
+     * This is responsible for the play button and its functionality. If the user presses the play JButton the
+     * first song in the current queue will play. After a song is paused, this method will resume the song.
+     * @param evt
      */
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //code for play button
@@ -971,8 +968,7 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     This method is linked to the stop button in the program. If the user clicks the JButton labeled "stop" and there is
-     song currently playing, the song will stop.
+     * This stops the current song from playing and clears the song title from the GUI.
      */
     private void stopButtonActionPerformed() {
         //code for stop button
@@ -980,8 +976,8 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     This method randomized the songs in the current queue using java's random import and then updates the queue after
-     the songs have been randomized.
+     * This method randomized the songs in the current queue using java's random import and then updates the queue after
+     * the songs have been randomized.
      @param evt
      */
     private void shuffleButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -991,9 +987,9 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     One of the requirements for the program. This method allows the user to fade OUT of the current song that is being
-     played. It has its own runnable as it relies on a new thread to end the song. The method essentially decreases the
-     volume by a quarter of a second over a five-second duration period.
+     * This allows the user to fade OUT of the current song that is being played. It has its own runnable as it relies
+     * on a new thread to end the song. The method essentially decreases the
+     * volume by a quarter of a second over a five-second duration period.
      @param evt
      */
     private void fadeButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1020,9 +1016,9 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     This method is responsible for the back button and allows the user to go back to a previous song in the queue as this
-     method also keeps track of song position.
-     @param evt
+     * This  allows the user to go back to a previous song in the queue as this method also keeps track of song
+     * position. If the song position is at 0, the previous song is the last song of the list.
+     * @param evt
      */
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //code for back button
@@ -1038,10 +1034,10 @@ public class AMPGUI extends JFrame {
         }
     }
     /**
-     This method is responsible for the functionality of the next button in th GUI. If the user wishes to switch songs in the
-     queue, the next button will play the next song in the next position, keeping track of all the indices of each song. Once
-     the user has reached the end of the queue, this method will circle back to the song in the first position.
-     @param evt
+     * If switching songs in the queue, the next button will play the next song in the next position,
+     * keeping track of all the indices of each song. Once the user has reached the end of the queue, the list will
+     * circle back to the song in the first position.
+     * @param evt
      */
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //code for next button
@@ -1058,9 +1054,8 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     This method refers to the array list that keeps track of all the songs the user has selected to played in the
-     current queue. If the user wishes to clear both the array list and JList, the clear button will do so.
-     @param evt
+     * This clears the songs in the list and updates the song queue.
+     * @param evt
      */
     private void clearButtonActionPerformed(ActionEvent evt) {
         //code for clear button
@@ -1070,9 +1065,9 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     This method controls thw volume of the program with the use of a JSlider. The volume for the jplayer library uses
-     decibels to measure sound output. It passes in a float value and if the player is not null, the volume is divided by
-     100 and then that number is plugged into the logarithmic function of log/log of base 10 * 20.
+     * The volume is controlled by a JSlider. The volume for the jplayer library uses decibels to measure sound output.
+     * It passes in a float value and if the player is not null, the volume is divided by
+     * 100 and then that number is plugged into the logarithmic function of log/log of base 10 * 20.
      */
     public void volumeControl(float volume) {
         //code for volumes slider
@@ -1085,9 +1080,9 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     This method updates the current queue on the right side of the GUI. It clears the queue and allows for new songs to
-     be added and played. It strips each song of its file extension and displays the correct name in the now playing
-     JLabel.
+     * This updates the current queue on the right side of the GUI. It clears the queue and allows for new songs to
+     * be added and played. It strips each song of its file extension and displays the correct name in the now playing
+     * JLabel.
      */
     private void updateQueue() {
         //code that updates the current queue
@@ -1136,7 +1131,7 @@ public class AMPGUI extends JFrame {
     }
 
     /**
-     * The following methods show popup menus in all the JLists."
+     * The following methods show popup menus in all the JLists.
      * @param e
      */
     private void showPopup1(MouseEvent e){
@@ -1188,12 +1183,8 @@ public class AMPGUI extends JFrame {
             }
         });
     }
-    /**
-     The runnable below is the main run method of the program. It looks at what songs are in the queue, how many, and if
-     it is acceptable to play the next song. It is responsible for loading in the desired songs to the current queue by
-     importing them from the user's library, file explorer, or wherever the music files are stored on the local machine.
-     It also starts a timer, changes the name of the song being played and checks to see if the song has completed.
-     */
+
+
     Runnable runnablePlay = new Runnable() {
         @Override
         public void run() {
@@ -1205,6 +1196,12 @@ public class AMPGUI extends JFrame {
         }
     };
 
+    /**
+     * This looks at what songs are in the queue, how many, and if the next song to play is valid. It is responsible for
+     * loading in the desired songs to the current queue by
+     * importing them from the user's library, file explorer, or wherever the music files are stored on the local machine.
+     * It also starts a timer, changes the name of the song being played and checks to see if the song has completed.
+     */
     private boolean playNextSong() {
         if (musicFileIndex < 0 || musicFileIndex >= musicFiles.size())
             return false;
