@@ -147,6 +147,7 @@ public class AMPGUI extends JFrame {
         preferences = new JMenu();
         theme = new JMenu(); // changed JMenuItem to JMenu.
         newPlaylist = new JMenuItem(); // added in 4 JMenuItems -Elaine @ 20230406
+        newArtist = new JMenuItem(); // added in JMenuItem. -Elaine @ 20230509
         newTag = new JMenuItem();
         newScreen = new JMenuItem();
         newSong = new JMenuItem();
@@ -484,6 +485,9 @@ public class AMPGUI extends JFrame {
         newSong.setText("New Song");
         newSong.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         newSong.setMnemonic(KeyEvent.VK_S); // Added in Mnemonic to s.
+        newArtist.setText("New Artist");
+        newArtist.setFont((new java.awt.Font("Helvetica",0,14))); //N0I18N
+        newArtist.setMnemonic(KeyEvent.VK_R); // Added in Mnemonic to r.
 
 
 
@@ -492,6 +496,7 @@ public class AMPGUI extends JFrame {
         //create.add(newTag);
         //create.add(newScreen);
         create.add(newSong);
+        create.add(newArtist);
         create.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -528,6 +533,13 @@ public class AMPGUI extends JFrame {
         newSong.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addSongActionPerformed(evt);
+            }
+        });
+
+        // Under Create JMenu, added in Action Performed for a new Artist.
+        newArtist.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addArtistActionPerformed(evt);
             }
         });
 
@@ -797,6 +809,11 @@ public class AMPGUI extends JFrame {
      * */
     private void addSongActionPerformed(java.awt.event.ActionEvent evt) {
         new AddNewSong();
+    }
+
+    /* This method creates a Artist Add form. */
+    private void addArtistActionPerformed(java.awt.event.ActionEvent evt) {
+        new AddNewArtist();
     }
 
     /**
@@ -1406,7 +1423,7 @@ public class AMPGUI extends JFrame {
             cont.add(reqFieldNote);
 
 
-            lblSongName = new JLabel("Song Name:");
+            lblSongName = new JLabel("*Song Name:");
             lblSongName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
             lblSongName.setSize(130, 30);
             lblSongName.setLocation(75, 150);
@@ -1418,7 +1435,7 @@ public class AMPGUI extends JFrame {
             txtSongName.setLocation(200, 150);
             cont.add(txtSongName);
 
-            lblArtistName = new JLabel("Artist Name:");
+            lblArtistName = new JLabel("*Artist Name:");
             lblArtistName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
             lblArtistName.setSize(130, 30);
             lblArtistName.setLocation(75, 200);
@@ -1430,7 +1447,7 @@ public class AMPGUI extends JFrame {
             txtArtistName.setLocation(200, 200);
             cont.add(txtArtistName);
 
-            lblSongLength = new JLabel("Song Length:");
+            lblSongLength = new JLabel("Song Length (# sec.):");
             lblSongLength.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
             lblSongLength.setSize(130, 30);
             lblSongLength.setLocation(75, 250);
@@ -1442,7 +1459,7 @@ public class AMPGUI extends JFrame {
             txtSongLength.setLocation(200, 250);
             cont.add(txtSongLength);
 
-            lblRelYr = new JLabel("Year Released:");
+            lblRelYr = new JLabel("Year Released (#):");
             lblRelYr.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
             lblRelYr.setSize(130, 30);
             lblRelYr.setLocation(75, 300);
@@ -1455,7 +1472,7 @@ public class AMPGUI extends JFrame {
             cont.add(txtRelYr);
             txtRelYr.setDocument(new JTextFieldLimit(4));
 
-            lblPath = new JLabel("File Path:");
+            lblPath = new JLabel("*File Path:");
             lblPath.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
             lblPath.setSize(130, 30);
             lblPath.setLocation(75, 350);
@@ -1490,8 +1507,12 @@ public class AMPGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == addBtn) {
                 DBTools buttonDB = new DBTools();
+                String sLen = txtSongLength.getText();
+                String sYear = txtRelYr.getText();
+                if (sLen.isEmpty()) { sLen = "0";}
+                if (sYear.isEmpty()) { sYear = "0";}
                 buttonDB.addSong(txtArtistName.getText(), txtSongName.getText(),
-                        txtSongLength.getText(), txtRelYr.getText(), txtPath.getText());
+                        sLen, sYear, txtPath.getText());
                 String clr = ""; // String as clear the text.
                 txtArtistName.setText(clr);
                 txtSongName.setText(clr);
@@ -1583,7 +1604,7 @@ public class AMPGUI extends JFrame {
             txtArtistName.setLocation(200, 200);
             cont.add(txtArtistName);
 
-            lblSongLength = new JLabel("Song Length:");
+            lblSongLength = new JLabel("Song Length (# sec.):");
             lblSongLength.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
             lblSongLength.setSize(130, 30);
             lblSongLength.setLocation(75, 250);
@@ -1595,7 +1616,7 @@ public class AMPGUI extends JFrame {
             txtSongLength.setLocation(200, 250);
             cont.add(txtSongLength);
 
-            lblRelYr = new JLabel("Year Released:");
+            lblRelYr = new JLabel("Year Released (#):");
             lblRelYr.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
             lblRelYr.setSize(130, 30);
             lblRelYr.setLocation(75, 300);
@@ -1644,8 +1665,12 @@ public class AMPGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == addBtn) {
                 DBTools buttonDB = new DBTools();
+                String sLen = txtSongLength.getText();
+                String sYear = txtRelYr.getText();
+                if (sLen.isEmpty()) { sLen = "0";}
+                if (sYear.isEmpty()) { sYear = "0";}
                 buttonDB.addSong(txtArtistName.getText(), txtSongName.getText(),
-                        txtSongLength.getText(), txtRelYr.getText(), txtPath.getText());
+                        sLen, sYear, txtPath.getText());
                 String clr = ""; // String as clear the text.
                 txtArtistName.setText(clr);
                 txtSongName.setText(clr);
@@ -1665,6 +1690,88 @@ public class AMPGUI extends JFrame {
             }
         } // Ends method actionPerformed.
     } //Ends Class Frame.
+
+    /**
+     * Inner class AddNewArtist to create a form.
+     */
+    class AddNewArtist extends JFrame implements ActionListener {
+
+        // Components for the form.
+        private Container cont;
+        private JLabel title;
+        private JLabel reqFieldNote;
+        private JLabel lblArtistName;
+        private JTextField txtArtistName;
+        private JButton addArtistBtn;
+        private JButton clrBtn;
+
+
+        // The constructor.
+        public AddNewArtist() {
+            setSize(500,300);
+            setResizable(false);
+            setLocationRelativeTo(null);
+
+            cont = getContentPane();
+            cont.setLayout(null);
+
+            title = new JLabel("Add a Artist");
+            title.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
+            title.setSize(300, 30);
+            title.setLocation(185, 30);
+            cont.add(title);
+
+            reqFieldNote = new JLabel("* = Required Field");
+            reqFieldNote.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            reqFieldNote.setSize(300, 30);
+            reqFieldNote.setLocation(75, 110);
+            cont.add(reqFieldNote);
+
+            lblArtistName = new JLabel("*Artist Name:");
+            lblArtistName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblArtistName.setSize(130, 30);
+            lblArtistName.setLocation(75, 150);
+            cont.add(lblArtistName);
+
+            txtArtistName = new JTextField();
+            txtArtistName.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtArtistName.setSize(200, 30);
+            txtArtistName.setLocation(200, 150);
+            cont.add(txtArtistName);
+
+            clrBtn = new JButton("Clear");
+            clrBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            clrBtn.setSize(100, 30);
+            clrBtn.setLocation(75, 200);
+            clrBtn.addActionListener(this);
+            cont.add(clrBtn);
+
+            addArtistBtn = new JButton("Add Artist");
+            addArtistBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            addArtistBtn.setSize(110, 30);
+            addArtistBtn.setLocation(290, 200);
+            addArtistBtn.addActionListener(this);
+            cont.add(addArtistBtn);
+
+            setVisible(true);
+
+        }
+
+        // Action method for the user buttons.
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == addArtistBtn) {
+                DBTools buttonDB = new DBTools();
+                buttonDB.addArtist(txtArtistName.getText());
+                String clr = ""; // String as clear the text.
+                txtArtistName.setText(clr);
+            }
+
+            else if (e.getSource() == clrBtn) {
+                String clr = ""; // String as clear the text.
+                txtArtistName.setText(clr);
+            }
+        } // Ends method actionPerformed.
+    } //Ends Class AddNewArtist.
 
 
     class ModPlaylist extends JFrame implements ActionListener {
@@ -1837,6 +1944,7 @@ public class AMPGUI extends JFrame {
     private javax.swing.JMenuItem newTag;
     private javax.swing.JMenuItem newScreen;
     private javax.swing.JMenuItem newSong;
+    private javax.swing.JMenuItem newArtist; // added in New Artist JMenu 05092023.
     private javax.swing.JMenuItem exit; // added in Exit JMenuItem
     private javax.swing.JLabel volumeUp;
     private javax.swing.JPopupMenu popupMenuCQ;
