@@ -84,7 +84,7 @@
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=13cm]{Images/referenceImg.png}
+\includegraphics[width=14cm]{Images/referenceImg.png}
 \end{figure}
 
 \begin{center}
@@ -95,13 +95,13 @@
 \hline
 No. & Definition & No. & Definition & No. & Definition \\
 \hline
-1) & File & 8) & Playlists & 15) & Shuffle \\
-2) & Edit & 9) & List of Songs & 16) & Fade \\
-3) & Modify & 10) & Volume & 17) & Upload Music \\
-4) & Play & 11) & Backwards & 18) & Current Queue Songs \\
-5) & Preferences & 12) & Play & 19) & Clears Current Queue \\
-6) & Help & 13) & Stop & & \\
-7) & Current Song Playing & 14) & Forward & & \\
+1) & File & 8) & Playlists & 15) & Forward \\
+2) & Edit & 9) & List of Songs & 16) & Shuffle \\
+3) & Modify & 10) & Mute & 17) & Fade \\
+4) & Play & 11) & Volume & 18) & Upload Music \\
+5) & Preferences & 12) & Backwards & 19) & Current Queue Songs \\
+6) & Help & 13) & Play & 20) & Clears Current Queue \\
+7) & Current Song Playing & 14) & Stop & & \\
 
 \hline
 \end{tabular}
@@ -121,38 +121,61 @@ No. & Definition & No. & Definition & No. & Definition \\
         \item \includegraphics[width=3.5cm]{Images/File Create JMenu.png}
             \item[] Creates the following methods:
     \end{description}
-    \item \textbf{Playlist}: Add new playlist.
+    \item \textbf{New Playlist}: Add new playlist.
     \begin{description}
-        \item[] Create a new playlist in the playlists section:
+        \item[] Create a new playlist in the playlist's section:
     \end{description}
     \begin{description}
         \item \includegraphics[width=3.5cm]{Images/File Create New Playlist.png}
+        \item \includegraphics[width=4cm]{Images/clickAddNewPlaylist05102023.png}
+        \item[] The form to add a new playlist. 
+        \item \includegraphics[width=6cm]{Images/NewPlaylistForm08082023.png}
     \end{description}
-    \item \textbf{Tag}: Add new tag.
+        \item \textbf{New Artist}: Add new artist.
+    \begin{description}
+        \item[] Creates a new artist to the stored library:
+    \end{description}
+    \begin{description}
+        \item \includegraphics[width=3.5cm]{Images/addNewArtistJMenu.png}
+        \item \includegraphics[width=4cm]{Images/clickAddNewArtist.png}
+        \item[] The form to add a new playlist. 
+        \item \includegraphics[width=6cm]{Images/NewArtistForm.png}
+    \end{description}
+
+    \clearpage
+    
+    \item \textbf{New Tag}: Add new tag.
     \begin{description}
         \item[] Creates a new tag to note the song name, artist, and id into a playlist:
     \end{description}
     \begin{description}
         \item \includegraphics[width=3.5cm]{Images/File Create New Tag.png}
     \end{description}
-    \item \textbf{Screen}: Add a new screen button.
+    \item \textbf{New Screen}: Add a new screen button.
     \begin{description}
         \item[] Creates and adds a new screen button:
     \end{description}
         \begin{description}
         \item \includegraphics[width=3.5cm]{Images/File Create New Screen.png}
     \end{description}
-        \item \textbf{Song}: Add a new song.
+        \item \textbf{New Song}: Add a new song.
     \begin{description}
         \item[] Creates and adds a new song to the Playlist:
     \end{description}
         \begin{description}
         \item \includegraphics[width=3.5cm]{Images/File Create New Song.png}
+        \item \includegraphics[width=4cm]{Images/clickAddNewSong05102023.png}
+        \item[] The form to add a new song. 
+        \item \includegraphics[width=6cm]{Images/NewSongForm05082023.png}
     \end{description}
+
+    \clearpage
+    
     \item \textbf{Import}: Import a music file.
     \begin{description}
         \item[] Imports an audio file:
         \item[] \includegraphics[width=3.5cm]{Images/File Import.png}
+        \item[] \includegraphics[width=8cm]{Images/musicFileSearch.png}
         \item[]Supported audio files: \faIcon{file-audio}
         \item[-]\textbf{.acc}
         \item[-]\textbf{.wav}
@@ -239,11 +262,14 @@ No. & Definition & No. & Definition & No. & Definition \\
     \end{description}
 \end{itemize}
 
+\clearpage
+
 \subsection{Help}
 
 \begin{itemize}
     \item \textbf{Documentation}: Read and search content documentation:
     \item[] \includegraphics[width=4cm]{Images/Help Documentation.png}
+    
     \item \textbf{About}:
     \begin{description}
         \item[] Shows what AMP is, who created the program, and information about OS and system requirements.
@@ -288,7 +314,7 @@ No. & Definition & No. & Definition & No. & Definition \\
     \end{description}
 \end{itemize}
 
-\vspace{1cm}
+\clearpage
 
 \section{User Interface}
 \quad How to operate AMP's UI.
@@ -299,13 +325,42 @@ No. & Definition & No. & Definition & No. & Definition \\
     \item \textbf{Top Playlist}: The top playlist.
     \begin{description}
         \item[] Displays the top playlist. This is the top-tier playlist that always remains first in the order of created playlists. Recommended to use for common-use songs.
-        \item[] \includegraphics[width=3cm]{Images/topPlaylist.png}
+        \item[] \includegraphics[width=3.5cm]{Images/topPlaylist.png}
     \end{description}
     \item \textbf{Playlist Name}: A selectable playlist.
     \begin{description}
         \item[] Displays a selectable playlist.
-        \item[] \includegraphics[width=3cm]{Images/Playlist.png}
+        \item[] \includegraphics[width=3.5cm]{Images/Playlist.png}
     \end{description}
+    
+        \item \textbf{Import Songs}: Imports a playlist's songs.
+    \begin{description}
+        \item[] Imports a playlist's songs into the List of Songs.
+        \item[] \includegraphics[width=4cm]{Images/popup_rightClick_Import.png}
+        \item[] \includegraphics[width=4.5cm]{Images/popup_rightClick_ImportSelected.png}
+        \item[] The Import form. 
+        \item[] \includegraphics[width=10cm]{Images/importPopupForm.png}
+    \end{description}
+
+    \clearpage
+    
+    \item \textbf{Add Song to Playlist}: Adds a song to Playlist.
+    \begin{description}
+        \item[] From Import, this adds a song from the playlist's library to Selected Playlist's songs.
+        \item[] \includegraphics[width=8cm]{Images/import_addSongToPlaylist.png}
+        \item[] \includegraphics[width=4cm]{Images/import_addSongToPlaylistBtn.png}
+        \item[] \includegraphics[width=3cm]{Images/import_SelectedPlaylist_Selected.png}
+        \item[] The example below shows the \textit{Football} playlist now has a new song added to its list of songs. 
+        \item[] \includegraphics[width=6cm]{Images/InsertedSong.png}
+    \end{description}
+
+        \item \textbf{Remove Song from Playlist}: Removes song from Selected Playlist.
+    \begin{description}
+        \item[] From Import, this removes a song from the Selected Playlist's library songs.
+        \item[] \includegraphics[width=5cm]{Images/RemoveSongFromPlaylistBtn.png}
+        \item[] \includegraphics[width=6cm]{Images/RemovedSong.png}
+    \end{description}
+    
 \end{itemize}
 
 \subsection{Player Controls}
@@ -314,10 +369,9 @@ No. & Definition & No. & Definition & No. & Definition \\
     \item \textbf{Fades Out}: Fades out a song.
     \begin{description}
         \item[] This fades out a song about 2 seconds for a smooth transition from the current queue song list to another song.
-        \item[] \includegraphics[width=1.5cm]{Images/Fade.png}
+        \item[] \includegraphics[width=2cm]{Images/Fade.png}
     \end{description}
     
-    \clearpage
     
     \item \textbf{Select All}: Selects all songs.
     \begin{description}
@@ -344,6 +398,25 @@ No. & Definition & No. & Definition & No. & Definition \\
         \item[] Pressing the button \textit{stops} the current queue song:
         \item[] \includegraphics[width=1.5cm]{Images/Stop.png}
     \end{description}
+        \item \textbf{Forward}: Forward a song.
+    \begin{description}
+        \item[] Pressing the button \textit{forward} plays the next song from the current queue:
+        \item[] \includegraphics[width=1.5cm]{Images/Forward.png}
+    \end{description}
+        \item \textbf{Backward}: Backward a song.
+    \begin{description}
+        \item[] Pressing the button \textit{backward} plays the previous song from the current queue:
+        \item[] \includegraphics[width=1.5cm]{Images/Backward.png}
+    \end{description}
+
+    \clearpage
+    
+        \item \textbf{Music Folder icon}: Imports a song.
+    \begin{description}
+        \item[] Pressing the button \textit{music folder icon} imports a song only to the current queue:
+        \item[] \includegraphics[width=2cm]{Images/musicFolderIconBtn.png}
+        \item[] \includegraphics[width=8cm]{Images/musicFileSearch.png}
+    \end{description}
 
 \end{itemize}
 
@@ -352,7 +425,7 @@ No. & Definition & No. & Definition & No. & Definition \\
 \begin{itemize}
     \item \textbf{Selectable list of songs}
         \item[] Readies a selectable list of songs collected by a preset playlist.
-        \item[] \includegraphics[width=8cm]{Images/ListOfSongs.png}
+        \item[] \includegraphics[width=6cm]{Images/ListOfSongs.png}
 \end{itemize}
 
 \subsection{Volume}
@@ -360,7 +433,13 @@ No. & Definition & No. & Definition & No. & Definition \\
 \begin{itemize}
     \item \textbf{Volume}: Adjusts volume.
         \item[] Adjusts the volume for the current song being played by increasing or decreasing the volume output:
-        \item[] \includegraphics[width=8cm]{Images/Volume.png}
+        \item[] \includegraphics[width=10cm]{Images/volume.png}
+\end{itemize}
+
+\begin{itemize}
+    \item \textbf{Mute}: Mutes volume.
+        \item[] Mutes the volume for the current song being played:
+        \item[] \includegraphics[width=2cm]{Images/muteBtn.png}
 \end{itemize}
 
 \subsection{Queue}
@@ -371,14 +450,19 @@ No. & Definition & No. & Definition & No. & Definition \\
         \item[] A shuffle button that randomizes the queue's contained set of songs.
         \item[] \includegraphics[width=2cm]{Images/Shuffle.png}
     \end{description}
-    \item \textbf{Queue}: Displays the current list of songs.
-        \begin{description}
-        \item[] Displays the current list of songs and is ready to be operated by the player's controls.
-        \item[] \includegraphics[width=9cm]{Images/CurrentQueue.png}
-        \end{description}
+
+    \item \textbf{Add to Queue:} Add a song to Queue.
+        \item[] Adds a song to the Current Queue.
+        \item[] \includegraphics[width=4cm]{Images/popup_rightClick_AddtoQueue.png}
+        \item[] \includegraphics[width=10cm]{Images/popup_rightClick_AddtoQueueSelected.png}
+
+    \item \textbf{Remove from Queue:} Remove a song from Queue.
+        \item[] Removes a song from the Current Queue.
+        \item[] \includegraphics[width=5cm]{Images/popup_rightClick_RemoveFromQueue.png}
+        \item[] \includegraphics[width=10cm]{Images/popup_rightClick_RemoveFromQueueSelected.png}
 \end{itemize}
 
-\vspace{0.5cm}
+\vspace{1cm}
 
 \section{Database}
 \quad The database mockup.
