@@ -38,6 +38,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -86,6 +87,7 @@ public class AMPGUI extends JFrame {
     private int musicFileIndex = 0;
     private DefaultListModel songsToPlay;
     private final DBTools db = new DBTools();
+    private File ids = new File("Database ID Tracker");
     /**
      * Creates new form m
      */
@@ -229,7 +231,6 @@ public class AMPGUI extends JFrame {
                 return strings[i];
             }
         });
-
 
         scrollPane2.setViewportView(playlistList);
 
@@ -507,7 +508,7 @@ public class AMPGUI extends JFrame {
             @Override
             //this is the wrong way of importing music
             public void actionPerformed(ActionEvent e) {
-                libraryActionPerformed(e);
+                importSongActionPerformed(e);
             }
         });
 
@@ -792,7 +793,7 @@ public class AMPGUI extends JFrame {
 
     /** This method creates a Song Add form. */
     private void addSongActionPerformed(java.awt.event.ActionEvent evt) {
-        new AddNewSong();
+        //new AddNewSong(songfile);
     }
 
     /** This method is an Action Event to open our documentation PDF file
@@ -908,7 +909,7 @@ public class AMPGUI extends JFrame {
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setFileFilter(new FileNameExtensionFilter("Mp3 files", "mp3"));
         if (fileChooser.showOpenDialog(library) == JFileChooser.APPROVE_OPTION) {
-            Collections.addAll(musicFiles, fileChooser.getSelectedFiles());
+           new AddNewSong(fileChooser.getSelectedFile());
         }
         //update GUi
     }
@@ -922,7 +923,6 @@ public class AMPGUI extends JFrame {
      * @param filepath
      */
     private void addSongsToDatabase(String songName, String songArtist, String songAlbum, File filepath) {
-
 
     }
 
@@ -1380,24 +1380,20 @@ public class AMPGUI extends JFrame {
         // Components for the form.
         private Container cont;
         private JLabel title;
-        private JLabel lblId;
-        private JTextField txtId;
         private JLabel lblSongName;
         private JTextField txtSongName;
-        private JLabel lblArtistID;
-        private JTextField txtArtistID;
-        private JLabel lblSongLength;
-        private JTextField txtSongLength;
-        private JLabel lblRelYr;
-        private JTextField txtRelYr;
-        private JLabel lblPath;
-        private JTextField txtPath;
+        private JLabel lblSongArtist;
+        private JTextField txtSongArtist;
+        private JLabel lblSongAlbum;
+        private JTextField txtSongAlbum;
         private JButton addBtn;
         private JButton clrBtn;
+        private File songfile;
 
 
         // The constructor.
-        public AddNewSong() {
+        public AddNewSong(File songfile) {
+            this.songfile = songfile;
             setSize(500,500);
             setResizable(false);
             setLocationRelativeTo(null);
@@ -1411,20 +1407,6 @@ public class AMPGUI extends JFrame {
             title.setLocation(185, 30);
             cont.add(title);
 
-            lblId = new JLabel("ID:");
-            lblId.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
-            lblId.setSize(130, 30);
-            lblId.setLocation(75, 100);
-            cont.add(lblId);
-
-            txtId = new JTextField();
-            txtId.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
-            txtId.setSize(200, 30);
-            txtId.setLocation(200, 100);
-            cont.add(txtId);
-            txtId.setDocument(new JTextFieldLimit(31));
-
-
             lblSongName = new JLabel("Song Name:");
             lblSongName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
             lblSongName.setSize(130, 30);
@@ -1437,55 +1419,30 @@ public class AMPGUI extends JFrame {
             txtSongName.setLocation(200, 150);
             cont.add(txtSongName);
 
-            lblArtistID = new JLabel("Artist ID:");
-            lblArtistID.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
-            lblArtistID.setSize(130, 30);
-            lblArtistID.setLocation(75, 200);
-            cont.add(lblArtistID);
+            lblSongArtist = new JLabel("Artist Name:");
+            lblSongArtist.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblSongArtist.setSize(130, 30);
+            lblSongArtist.setLocation(75, 200);
+            cont.add(lblSongArtist);
 
-            txtArtistID = new JTextField();
-            txtArtistID.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
-            txtArtistID.setSize(200, 30);
-            txtArtistID.setLocation(200, 200);
-            cont.add(txtArtistID);
+            txtSongArtist = new JTextField();
+            txtSongArtist.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtSongArtist.setSize(200, 30);
+            txtSongArtist.setLocation(200, 200);
+            cont.add(txtSongArtist);
 
-            lblSongLength = new JLabel("Song Length:");
-            lblSongLength.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
-            lblSongLength.setSize(130, 30);
-            lblSongLength.setLocation(75, 250);
-            cont.add(lblSongLength);
+            lblSongAlbum = new JLabel("Album Name:");
+            lblSongAlbum.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblSongAlbum.setSize(130, 30);
+            lblSongAlbum.setLocation(75, 300);
+            cont.add(lblSongAlbum);
 
-            txtSongLength = new JTextField();
-            txtSongLength.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
-            txtSongLength.setSize(200, 30);
-            txtSongLength.setLocation(200, 250);
-            cont.add(txtSongLength);
-
-            lblRelYr = new JLabel("Year Released:");
-            lblRelYr.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
-            lblRelYr.setSize(130, 30);
-            lblRelYr.setLocation(75, 300);
-            cont.add(lblRelYr);
-
-            txtRelYr = new JTextField();
-            txtRelYr.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
-            txtRelYr.setSize(200, 30);
-            txtRelYr.setLocation(200, 300);
-            cont.add(txtRelYr);
-            txtRelYr.setDocument(new JTextFieldLimit(4));
-
-            lblPath = new JLabel("File Path:");
-            lblPath.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
-            lblPath.setSize(130, 30);
-            lblPath.setLocation(75, 350);
-            cont.add(lblPath);
-
-            txtPath = new JTextField();
-            txtPath.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
-            txtPath.setSize(200, 30);
-            txtPath.setLocation(200, 350);
-            cont.add(txtPath);
-
+            txtSongAlbum = new JTextField();
+            txtSongAlbum.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtSongAlbum.setSize(200, 30);
+            txtSongAlbum.setLocation(200, 300);
+            cont.add(txtSongAlbum);
+            txtSongAlbum.setDocument(new JTextFieldLimit(4));
 
             clrBtn = new JButton("Clear");
             clrBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
@@ -1508,27 +1465,15 @@ public class AMPGUI extends JFrame {
         // Action method for user input.
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == addBtn) {
-                DBTools buttonDB = new DBTools();
-                buttonDB.addSong(txtId.getText(), txtArtistID.getText(), txtSongName.getText(),
-                        txtSongLength.getText(), txtRelYr.getText(), txtPath.getText());
-                String clr = ""; // String as clear the text.
-                txtId.setText(clr);
-                txtArtistID.setText(clr);
-                txtSongName.setText(clr);
-                txtSongLength.setText(clr);
-                txtRelYr.setText(clr);
-                txtPath.setText(clr);
-            }
+                addSongsToDatabase(txtSongName.getText() ,txtSongArtist.getText(), txtSongAlbum.getText(), songfile);
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 
+            }
             else if (e.getSource() == clrBtn) {
                 String clr = ""; // String as clear the text.
-                txtId.setText(clr);
-                txtArtistID.setText(clr);
+                txtSongArtist.setText(clr);
                 txtSongName.setText(clr);
-                txtSongLength.setText(clr);
-                txtRelYr.setText(clr);
-                txtPath.setText(clr);
-
+                txtSongAlbum.setText(clr);
             }
         } // Ends method actionPerformed.
     } //Ends Class Frame.
