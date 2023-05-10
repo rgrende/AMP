@@ -169,6 +169,7 @@ public class AMPGUI extends JFrame {
         newTag = new JMenuItem();
         newScreen = new JMenuItem();
         newSong = new JMenuItem();
+        newArtist = new JMenuItem(); // added in JMenuItem. -Elaine @ 20230509
         exit = new JMenuItem(); // added in exit JMenuItem.
         volumeUp = new JLabel();
         muteButton = new JToggleButton();
@@ -495,20 +496,22 @@ public class AMPGUI extends JFrame {
         newPlaylist.setText("New Playlist");
         newPlaylist.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         newPlaylist.setMnemonic(KeyEvent.VK_A); // Added in Mnemonic to a.
+        newArtist.setText("New Artist");
+        newArtist.setFont((new java.awt.Font("Helvetica",0,14))); //N0I18N
+        newArtist.setMnemonic(KeyEvent.VK_R); // Added in Mnemonic to r.
         newTag.setText("New Tag");
         newTag.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         newTag.setMnemonic(KeyEvent.VK_T); // Added in Mnemonic to t.
         newScreen.setText("New Screen");
         newScreen.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
-        newScreen.setMnemonic(KeyEvent.VK_R); // Added in Mnemonic to r.
+        newScreen.setMnemonic(KeyEvent.VK_E); // Added in Mnemonic to e.
         newSong.setText("New Song");
         newSong.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
         newSong.setMnemonic(KeyEvent.VK_S); // Added in Mnemonic to s.
 
-
-
         file.add(create);
         create.add(newPlaylist);
+        create.add(newArtist);
         //create.add(newTag);
         //create.add(newScreen);
         create.add(newSong);
@@ -541,6 +544,13 @@ public class AMPGUI extends JFrame {
         newPlaylist.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addPlaylistActionPerformed(evt);
+            }
+        });
+
+        // Under Create JMenu, added in Action Performed for a new Artist.
+        newArtist.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addArtistActionPerformed(evt);
             }
         });
 
@@ -813,6 +823,11 @@ public class AMPGUI extends JFrame {
     /* This method creates a Song Add form. */
     private void addSongActionPerformed(java.awt.event.ActionEvent evt) {
         new AddNewSong();
+    }
+
+    /* This method creates a Artist Add form. */
+    private void addArtistActionPerformed(java.awt.event.ActionEvent evt) {
+        new AddNewArtist();
     }
 
     /*   This method is an Action Event to open our documentation PDF file
@@ -1279,9 +1294,9 @@ public class AMPGUI extends JFrame {
 
     }   // Ends ThemeModeHandler inner class.
 
-    /*
-        Inner class Playlist to create a form.
-        https://www.geeksforgeeks.org/java-swing-simple-user-registration-form/#
+    /**
+     * Inner class Playlist to create a form.
+     * https://www.geeksforgeeks.org/java-swing-simple-user-registration-form/#
      */
     class AddNewPlaylist extends JFrame implements ActionListener {
 
@@ -1372,11 +1387,105 @@ public class AMPGUI extends JFrame {
                 txtPlaylistName.setText(clr);
             }
         } // Ends method actionPerformed.
-    } //Ends Class Frame.
+    } //Ends Class AddNewPlaylist.
 
-    /*
-        Inner class AddNewSong to create a form.
-        https://www.geeksforgeeks.org/java-swing-simple-user-registration-form/#
+    /**
+     * Inner class AddNewArtist to create a form.
+     */
+    class AddNewArtist extends JFrame implements ActionListener {
+
+        // Components for the form.
+        private Container cont;
+        private JLabel title;
+        private JLabel lblId;
+        private JTextField txtId;
+        private JLabel lblArtistName;
+        private JTextField txtArtistName;
+        private JButton addArtistBtn;
+        private JButton clrBtn;
+
+
+        // The constructor.
+        public AddNewArtist() {
+            setSize(500,300);
+            setResizable(false);
+            setLocationRelativeTo(null);
+
+            cont = getContentPane();
+            cont.setLayout(null);
+
+            title = new JLabel("Add a Artist");
+            title.setFont(new java.awt.Font("Helvetica", 0, 18)); // NOI18
+            title.setSize(300, 30);
+            title.setLocation(185, 30);
+            cont.add(title);
+
+            lblId = new JLabel("ID:");
+            lblId.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblId.setSize(130, 30);
+            lblId.setLocation(75, 100);
+            cont.add(lblId);
+
+            txtId = new JTextField();
+            txtId.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtId.setSize(200, 30);
+            txtId.setLocation(200, 100);
+            cont.add(txtId);
+            txtId.setDocument(new JTextFieldLimit(31));
+
+
+            lblArtistName = new JLabel("Artist Name:");
+            lblArtistName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
+            lblArtistName.setSize(130, 30);
+            lblArtistName.setLocation(75, 150);
+            cont.add(lblArtistName);
+
+            txtArtistName = new JTextField();
+            txtArtistName.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
+            txtArtistName.setSize(200, 30);
+            txtArtistName.setLocation(200, 150);
+            cont.add(txtArtistName);
+
+            clrBtn = new JButton("Clear");
+            clrBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            clrBtn.setSize(100, 30);
+            clrBtn.setLocation(75, 200);
+            clrBtn.addActionListener(this);
+            cont.add(clrBtn);
+
+            addArtistBtn = new JButton("Add Artist");
+            addArtistBtn.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            addArtistBtn.setSize(110, 30);
+            addArtistBtn.setLocation(290, 200);
+            addArtistBtn.addActionListener(this);
+            cont.add(addArtistBtn);
+
+            setVisible(true);
+
+        }
+
+        // Action method for the user buttons.
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == addArtistBtn) {
+                DBTools buttonDB = new DBTools();
+                buttonDB.addPlaylist(txtId.getText(), txtArtistName.getText());
+                String clr = ""; // String as clear the text.
+                txtId.setText(clr);
+                txtArtistName.setText(clr);
+                //TODO: update after change
+            }
+
+            else if (e.getSource() == clrBtn) {
+                String clr = ""; // String as clear the text.
+                txtId.setText(clr);
+                txtArtistName.setText(clr);
+            }
+        } // Ends method actionPerformed.
+    } //Ends Class AddNewArtist.
+
+    /**
+     * Inner class AddNewSong to create a form.
+     * https://www.geeksforgeeks.org/java-swing-simple-user-registration-form/#
      */
     class AddNewSong extends JFrame implements ActionListener {
 
@@ -1534,7 +1643,7 @@ public class AMPGUI extends JFrame {
 
             }
         } // Ends method actionPerformed.
-    } //Ends Class Frame.
+    } //Ends Class AddNewSong.
 
     class ModPlaylist extends JFrame implements ActionListener {
         // Components for the form.
@@ -1706,6 +1815,7 @@ public class AMPGUI extends JFrame {
     private javax.swing.JMenuItem newTag;
     private javax.swing.JMenuItem newScreen;
     private javax.swing.JMenuItem newSong;
+    private javax.swing.JMenuItem newArtist; // added in New Artist JMenu 05092023.
     private javax.swing.JMenuItem exit; // added in Exit JMenuItem
     private javax.swing.JLabel volumeUp;
     private javax.swing.JPopupMenu popupMenuCQ;
