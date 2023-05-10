@@ -1286,8 +1286,7 @@ public class AMPGUI extends JFrame {
         // Components for the form.
         private Container cont;
         private JLabel title;
-        private JLabel lblId;
-        private JTextField txtId;
+        private JLabel reqFieldNote;
         private JLabel lblPlaylistName;
         private JTextField txtPlaylistName;
         private JButton addPlaylistBtn;
@@ -1309,21 +1308,13 @@ public class AMPGUI extends JFrame {
             title.setLocation(185, 30);
             cont.add(title);
 
-            lblId = new JLabel("ID:");
-            lblId.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
-            lblId.setSize(130, 30);
-            lblId.setLocation(75, 100);
-            cont.add(lblId);
+            reqFieldNote = new JLabel("* = Required Field");
+            reqFieldNote.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            reqFieldNote.setSize(300, 30);
+            reqFieldNote.setLocation(75, 110);
+            cont.add(reqFieldNote);
 
-            txtId = new JTextField();
-            txtId.setFont(new java.awt.Font("Helvetica", 0, 15)); // NOI18
-            txtId.setSize(200, 30);
-            txtId.setLocation(200, 100);
-            cont.add(txtId);
-            txtId.setDocument(new JTextFieldLimit(31));
-
-
-            lblPlaylistName = new JLabel("Playlist Name:");
+            lblPlaylistName = new JLabel("*Playlist Name:");
             lblPlaylistName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
             lblPlaylistName.setSize(130, 30);
             lblPlaylistName.setLocation(75, 150);
@@ -1359,14 +1350,11 @@ public class AMPGUI extends JFrame {
                 DBTools buttonDB = new DBTools();
                 buttonDB.addPlaylist(txtPlaylistName.getText());
                 String clr = ""; // String as clear the text.
-                txtId.setText(clr);
                 txtPlaylistName.setText(clr);
-                //TODO: update after change
             }
 
             else if (e.getSource() == clrBtn) {
                 String clr = ""; // String as clear the text.
-                txtId.setText(clr);
                 txtPlaylistName.setText(clr);
             }
         } // Ends method actionPerformed.
@@ -1381,6 +1369,7 @@ public class AMPGUI extends JFrame {
         // Components for the form.
         private Container cont;
         private JLabel title;
+        private JLabel reqFieldNote;
         private JLabel lblSongName;
         private JTextField txtSongName;
         private JLabel lblArtistName;
@@ -1409,6 +1398,12 @@ public class AMPGUI extends JFrame {
             title.setSize(300, 30);
             title.setLocation(185, 30);
             cont.add(title);
+
+            reqFieldNote = new JLabel("* = Required Field");
+            reqFieldNote.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            reqFieldNote.setSize(300, 30);
+            reqFieldNote.setLocation(75, 110);
+            cont.add(reqFieldNote);
 
 
             lblSongName = new JLabel("Song Name:");
@@ -1523,6 +1518,7 @@ public class AMPGUI extends JFrame {
         // Components for the form.
         private Container cont;
         private JLabel title;
+        private JLabel reqFieldNote;
         private JLabel lblSongName;
         private JTextField txtSongName;
         private JLabel lblArtistName;
@@ -1554,8 +1550,14 @@ public class AMPGUI extends JFrame {
             title.setLocation(185, 30);
             cont.add(title);
 
+            reqFieldNote = new JLabel("* = Required Field");
+            reqFieldNote.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18
+            reqFieldNote.setSize(300, 30);
+            reqFieldNote.setLocation(75, 110);
+            cont.add(reqFieldNote);
 
-            lblSongName = new JLabel("Song Name:");
+
+            lblSongName = new JLabel("*Song Name:");
             lblSongName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
             lblSongName.setSize(130, 30);
             lblSongName.setLocation(75, 150);
@@ -1569,7 +1571,7 @@ public class AMPGUI extends JFrame {
             txtSongName.setLocation(200, 150);
             cont.add(txtSongName);
 
-            lblArtistName = new JLabel("Artist Name:");
+            lblArtistName = new JLabel("*Artist Name:");
             lblArtistName.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
             lblArtistName.setSize(130, 30);
             lblArtistName.setLocation(75, 200);
@@ -1606,7 +1608,7 @@ public class AMPGUI extends JFrame {
             cont.add(txtRelYr);
             txtRelYr.setDocument(new JTextFieldLimit(4));
 
-            lblPath = new JLabel("File Path:");
+            lblPath = new JLabel("*File Path:");
             lblPath.setFont(new java.awt.Font("Helvetica", 0, 16)); // NOI18
             lblPath.setSize(130, 30);
             lblPath.setLocation(75, 350);
